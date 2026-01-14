@@ -1,0 +1,45 @@
+eitri-apps:
+    - path: ./_shopping-shopify-template-sdk
+      workspace: sdk
+      alias: sdk
+      focus: false
+      shared: true
+    - path: ./_shopping-shopify-template-shared
+      workspace: shared
+      alias: shared
+      focus: false
+      shared: true
+    - path: ./shopping-shopify-template-home
+      workspace: home
+      alias: home
+      focus: true
+      shared: false
+#bottom-tab-view-simulation:
+#  eitri-apps:
+#    - slug: "shopping-vtex-template-home"
+#      title: "Inicio"
+#      initialization-params:
+#        type: "string"
+#        value: "tabIndex=0"
+#    - slug: "shopping-vtex-template-home"
+#      title: "Categorias"
+#      initialization-params:
+#        type: "string"
+#        value: "tabIndex=1&route=Categories"
+#    - slug: "shopping-vtex-template-cart"
+#      title: "Carrinho"
+#      initialization-params:
+#        type: "string"
+#        value: "tabIndex=2"
+#    - slug: "shopping-vtex-template-home"
+#      title: "Ofertas"
+#      initialization-params:
+#        type: "string"
+#        value: "tabIndex=3&route=LandingPage"
+#    - slug: "shopping-vtex-template-account"
+#      title: "Perfil"
+#      initialization-params:
+#        type: "string"
+#        value: "tabIndex=4"
+
+application-id: cca11cae-342e-4ca6-a955-00abca321d86
