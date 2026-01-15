@@ -43,3 +43,5 @@ eitri-apps:
 #        value: "tabIndex=4"
 
 application-id: cca11cae-342e-4ca6-a955-00abca321d86
+eitri-luminus: "2.22.3"
+eitri-bifrost: "4.7.0"

@@ -6,6 +6,7 @@ import { HeaderContentWrapper, HeaderLogo } from 'shopping-shopify-template-shar
 import { getCmsContent } from '../services/cmsService'
 import CmsContentRender from '../components/CmsContentRender/CmsContentRender'
 import { CmsContent } from '../types/cmscontent.type'
+import Eitri from 'eitri-bifrost'
 
 export default function Home(props) {
 	const [cmsContent, setCmsContent] = useState<CmsContent>()
@@ -27,6 +28,13 @@ export default function Home(props) {
 			<View>
 				<CmsContentRender cmsContent={cmsContent} />
 			</View>
+            <Button
+                className='btn btn-primary w-full text-lg py-3'
+                onClick={() => {
+                    Eitri.navigation.navigate({ path: '/Cart' })
+                }}>
+                Carrinho
+            </Button>
 		</Page>
 	)
 }
