@@ -1,3 +1,3 @@
 export const DIMENSIONS = {
-	HEADER_HEIGHT: 70
+	HEADER_HEIGHT: 60
 }

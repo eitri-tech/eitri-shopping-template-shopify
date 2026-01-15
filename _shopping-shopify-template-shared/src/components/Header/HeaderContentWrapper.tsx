@@ -1,6 +1,6 @@
 import { getRemoteAppConfigProperty } from '../../utils/getRemoteConfigStyleProperty'
 import HeaderOffset from './HeaderOffset'
-import {DIMENSIONS} from "../../utils/constants";
+import { DIMENSIONS } from '../../utils/constants'
 import { useRef, useState, useEffect } from 'react'
 // @ts-ignore
 import { View } from 'eitri-luminus'
@@ -76,12 +76,16 @@ export default function HeaderContentWrapper(props) {
 		<>
 			<View
 				id='header-container'
-				className={`fixed top-0 left-0 right-0 z-[9900] ${translate} transition-all duration-500 ease-in-out shadow-md w-full backdrop-blur-sm bg-header-background ${containerClassName || ''}`}>
-				<View topInset={'auto'} />
+				className={`fixed top-0 left-0 right-0 z-[9900] ${translate} transition-all duration-500 ease-in-out shadow-md w-full ${containerClassName || ''}`}>
+				<View
+					topInset={'auto'}
+					className={'w-full'}
+				/>
 				<View id='header'>
 					<View
 						id='header-content'
-						className={`min-h-[60px] flex items-center w-screen py-[8px] px-4 gap-3 ${className}`}
+						className={`min-h-[60px] flex items-center w-screen py-[8px] px-4 gap-3 backdrop-blur-sm bg-header-background ${className}`}
+						height={_height}
 						{...rest}>
 						{children}
 					</View>
@@ -91,10 +95,7 @@ export default function HeaderContentWrapper(props) {
 				topInset={'auto'}
 				className={`fixed top-0 left-0 right-0 z-[2000] w-full bg-header-background`}
 			/>
-			<HeaderOffset
-				height={_height}
-				topInset={'auto'}
-			/>
+			<HeaderOffset topInset={'auto'} />
 		</>
 	)
 }

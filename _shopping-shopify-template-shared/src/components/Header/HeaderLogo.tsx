@@ -1,6 +1,13 @@
+// @ts-ignore
 import { Image, View } from 'eitri-luminus'
 import { getRemoteAppConfigProperty } from '../../utils/getRemoteConfigStyleProperty'
-export default function HeaderLogo(props) {
+import { useState, useEffect } from 'react'
+
+interface BannerProps {
+	src?: string
+}
+
+export default function HeaderLogo(props: BannerProps) {
 	const { src } = props
 
 	const [urlLogo, setUrlLogo] = useState('')
