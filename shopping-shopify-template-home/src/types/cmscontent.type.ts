@@ -11,6 +11,11 @@ export interface BannerContent {
 	}[]
 }
 
-export type CmsItem = BannerContent
+export interface ProductShelfContent {
+	id: string
+	name: string
+}
+
+export type CmsItem = BannerContent | ProductShelfContent
 
 export type CmsContent = CmsItem[]

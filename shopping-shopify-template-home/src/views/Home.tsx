@@ -7,6 +7,9 @@ import { getCmsContent } from '../services/cmsService'
 import CmsContentRender from '../components/CmsContentRender/CmsContentRender'
 import { CmsContent } from '../types/cmscontent.type'
 import Eitri from 'eitri-bifrost'
+// @ts-ignore
+import { App, Shopify } from 'shopping-shopify-template-sdk'
+import { search } from '../services/productService'
 
 export default function Home(props) {
 	const [cmsContent, setCmsContent] = useState<CmsContent>()
@@ -16,6 +19,10 @@ export default function Home(props) {
 	}, [])
 
 	const start = async () => {
+		await App.configure({ verbose: false })
+
+		search({ query: 'Camisa', first: 1 })
+
 		const _csmContent = await getCmsContent()
 		setCmsContent(_csmContent)
 	}
@@ -28,13 +35,13 @@ export default function Home(props) {
 			<View>
 				<CmsContentRender cmsContent={cmsContent} />
 			</View>
-            <Button
-                className='btn btn-primary w-full text-lg py-3'
-                onClick={() => {
-                    Eitri.navigation.navigate({ path: '/Cart' })
-                }}>
-                Carrinho
-            </Button>
+			<Button
+				className='btn btn-primary w-full text-lg py-3'
+				onClick={() => {
+					Eitri.navigation.navigate({ path: '/Cart' })
+				}}>
+				Carrinho
+			</Button>
 		</Page>
 	)
 }

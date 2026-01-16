@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Text, View, Image } from 'eitri-luminus'
-import { useState } from 'react'
-import { CustomCarousel } from 'shopping-shopify-template-shared'
+import { useEffect, useState } from 'react'
+import { CustomCarousel, useScreen } from 'shopping-shopify-template-shared'
 import { BannerContent } from '../../../../types/cmscontent.type'
 
 interface BannerProps {
@@ -12,21 +12,24 @@ interface BannerProps {
 export default function SliderHero(props: BannerProps) {
 	const { data, onClick } = props
 
+	const { availableWidth } = useScreen()
+
 	const [currentSlide, setCurrentSlide] = useState(0)
+	const [proportionalHeight, setProportionalHeight] = useState('auto')
+
 	const imagesList = data.images
+
+	useEffect(() => {
+		if (data?.aspectRatio && availableWidth > 0) {
+			try {
+				const [aspectWidth, aspectHeight] = data?.aspectRatio?.split(':')?.map(Number)
+				setProportionalHeight(`${availableWidth * (aspectHeight / aspectWidth)}`)
+			} catch (e) {}
+		}
+	}, [availableWidth])
 
 	const onChange = i => {
 		setCurrentSlide(i)
-	}
-
-	let proportionalHeight = 'auto'
-
-	if (data?.aspectRatio) {
-		try {
-			const [aspectWidth, aspectHeight] = data?.aspectRatio?.split(':')?.map(Number)
-			const screenWidth = window.innerWidth
-			proportionalHeight = `${screenWidth * (aspectHeight / aspectWidth)}`
-		} catch (e) {}
 	}
 
 	return (

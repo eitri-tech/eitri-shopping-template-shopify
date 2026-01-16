@@ -2,12 +2,21 @@ import { useState, useEffect } from 'react'
 import Eitri from 'eitri-bifrost'
 
 export default function useScreen() {
-	const [dimens, setDimens] = useState({
-		availableHeight: 0
-	})
+	const [availableHeight, setAvailableHeight] = useState(0)
+	const [availableWidth, setAvailableWidth] = useState(0)
 
 	useEffect(() => {
 		load()
+	}, [])
+
+	useEffect(() => {
+		function update() {
+			setAvailableWidth(window.innerWidth)
+		}
+
+		update() // chama logo após montar
+		window.addEventListener('resize', update)
+		return () => window.removeEventListener('resize', update)
 	}, [])
 
 	const load = async () => {
@@ -18,11 +27,8 @@ export default function useScreen() {
 		if (configs?.superAppData?.platform === 'android') {
 			_bottomValue = bottom / window.devicePixelRatio
 		}
-		setDimens({
-			...dimens,
-			availableHeight: window.innerHeight - headerHeight.offsetHeight - _bottomValue
-		})
+		setAvailableHeight(window.innerHeight - headerHeight.offsetHeight - _bottomValue)
 	}
 
-	return dimens
+	return { availableHeight, availableWidth }
 }

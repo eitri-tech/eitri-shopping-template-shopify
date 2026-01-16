@@ -13,5 +13,9 @@
 				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_e8f7481c-7ea8-498e-9f05-dc6847a32272.jpg"
 			}
 		]
+	},
+	{
+		"id": "2",
+		"name": "Banner"
 	}
 ]

@@ -1,0 +1,130 @@
+fragment ProductFields on Product {
+    category {
+        id
+        name
+    }
+    handle
+    id
+    images(first: 1) {
+        edges {
+            node {
+                url
+                height
+                width
+                thumbhash
+                id
+            }
+        }
+    }
+    isGiftCard
+    title
+    variants(first: 20) {
+        edges {
+            node {
+                availableForSale
+                barcode
+                compareAtPrice {
+                    amount
+                    currencyCode
+                }
+                id
+                image {
+                    altText
+                    height
+                    id
+                    url
+                    width
+                    thumbhash
+                }
+                price {
+                    amount
+                    currencyCode
+                }
+                sku
+                title
+            }
+        }
+    }
+}
+
+query SEARCH_QUERY(
+    $query: String!
+    $after: String
+    $before: String
+    $first: Int
+    $last: Int
+    $prefix: SearchPrefixQueryType
+    $productFilters: [ProductFilter!]
+    $reverse: Boolean
+    $sortKey: SearchSortKeys
+    $types: [SearchType!]
+    $unavailableProducts: SearchUnavailableProductsType
+) {
+    search(
+        query: $query
+        after: $after
+        before: $before
+        first: $first
+        last: $last
+        prefix: $prefix
+        productFilters: $productFilters
+        reverse: $reverse
+        sortKey: $sortKey
+        types: $types
+        unavailableProducts: $unavailableProducts
+    ) {
+        totalCount
+        edges {
+            node {
+                ... on Product {
+                    category {
+                        id
+                        name
+                    }
+                    handle
+                    id
+                    images(first: 1) {
+                        edges {
+                            node {
+                                url
+                                height
+                                width
+                                thumbhash
+                                id
+                            }
+                        }
+                    }
+                    isGiftCard
+                    title
+                    variants(first: 20) {
+                        edges {
+                            node {
+                                availableForSale
+                                barcode
+                                compareAtPrice {
+                                    amount
+                                    currencyCode
+                                }
+                                id
+                                image {
+                                    altText
+                                    height
+                                    id
+                                    url
+                                    width
+                                    thumbhash
+                                }
+                                price {
+                                    amount
+                                    currencyCode
+                                }
+                                sku
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

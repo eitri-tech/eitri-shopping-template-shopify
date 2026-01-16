@@ -1,4 +1,5 @@
 import { Cart, CartResponse } from '../models/Cart'
+// @ts-ignore
 import { GET_CART } from '../queries/get-cart.gql'
 import Eitri from 'eitri-bifrost'
 

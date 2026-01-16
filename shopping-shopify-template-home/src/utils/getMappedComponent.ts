@@ -1,9 +1,11 @@
 import Banner from '../components/CmsComponents/Banner/Banner'
+import ProductShelf from '../components/CmsComponents/ProductShelf/ProductShelf'
 import { CmsItem } from '../types/cmscontent.type'
 import React from 'react'
 
 const componentMap = {
-	Banner: Banner
+	Banner: Banner,
+	ProductShelf: ProductShelf
 }
 
 export const getMappedComponent = (content: CmsItem) => {
