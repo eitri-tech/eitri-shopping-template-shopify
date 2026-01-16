@@ -2,11 +2,10 @@
 import { Text, View, Image, Button, Page } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 // @ts-ignore
-import { HeaderContentWrapper, HeaderLogo } from 'shopping-shopify-template-shared'
+import { HeaderContentWrapper, HeaderLogo, BottomInset } from 'shopping-shopify-template-shared'
 import { getCmsContent } from '../services/cmsService'
 import CmsContentRender from '../components/CmsContentRender/CmsContentRender'
 import { CmsContent } from '../types/cmscontent.type'
-import Eitri from 'eitri-bifrost'
 // @ts-ignore
 import { App, Shopify } from 'shopping-shopify-template-sdk'
 import { search } from '../services/productService'
@@ -21,8 +20,6 @@ export default function Home(props) {
 	const start = async () => {
 		await App.configure({ verbose: false })
 
-		search({ query: 'Camisa', first: 1 })
-
 		const _csmContent = await getCmsContent()
 		setCmsContent(_csmContent)
 	}
@@ -35,13 +32,15 @@ export default function Home(props) {
 			<View>
 				<CmsContentRender cmsContent={cmsContent} />
 			</View>
-			<Button
-				className='btn btn-primary w-full text-lg py-3'
-				onClick={() => {
-					Eitri.navigation.navigate({ path: '/Cart' })
-				}}>
-				Carrinho
-			</Button>
+
+			<BottomInset />
+			{/*<Button*/}
+			{/*	className='btn btn-primary w-full text-lg py-3'*/}
+			{/*	onClick={() => {*/}
+			{/*		Eitri.navigation.navigate({ path: '/Cart' })*/}
+			{/*	}}>*/}
+			{/*	Carrinho*/}
+			{/*</Button>*/}
 		</Page>
 	)
 }

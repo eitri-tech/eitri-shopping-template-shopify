@@ -74,55 +74,49 @@ query SEARCH_QUERY(
         unavailableProducts: $unavailableProducts
     ) {
         totalCount
-        edges {
-            node {
-                ... on Product {
-                    category {
-                        id
-                        name
-                    }
-                    handle
+        nodes {
+            ... on Product {
+                category {
                     id
-                    images(first: 1) {
-                        edges {
-                            node {
-                                url
+                    name
+                }
+                handle
+                id
+                images(first: 1) {
+                    nodes {
+                            url
+                            height
+                            width
+                            thumbhash
+                            id
+                        }
+                }
+                isGiftCard
+                title
+                variants(first: 20) {
+                    nodes {
+                            availableForSale
+                            barcode
+                            compareAtPrice {
+                                amount
+                                currencyCode
+                            }
+                            id
+                            image {
+                                altText
                                 height
+                                id
+                                url
                                 width
                                 thumbhash
-                                id
                             }
-                        }
-                    }
-                    isGiftCard
-                    title
-                    variants(first: 20) {
-                        edges {
-                            node {
-                                availableForSale
-                                barcode
-                                compareAtPrice {
-                                    amount
-                                    currencyCode
-                                }
-                                id
-                                image {
-                                    altText
-                                    height
-                                    id
-                                    url
-                                    width
-                                    thumbhash
-                                }
-                                price {
-                                    amount
-                                    currencyCode
-                                }
-                                sku
-                                title
+                            price {
+                                amount
+                                currencyCode
                             }
+                            sku
+                            title
                         }
-                    }
                 }
             }
         }
