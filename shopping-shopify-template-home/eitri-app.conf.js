@@ -2,7 +2,7 @@ module.exports = {
   'name': 'shopping-shopify-template-home',
   'title': 'shopping-shopify-template-home',
   'slug': 'shopping-shopify-template-home',
-  'eitri-luminus': '2.5.0',
+  'eitri-luminus': '2.22.3',
   'eitri-bifrost': '4.7.0',
   'version': '0.1.0',
   'public-key': '69176ce1-a795-4fe4-b04f-4cf1978d9faf',
