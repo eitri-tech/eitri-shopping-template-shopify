@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
 import { App, Cart, Shopify } from 'shopping-shopify-template-sdk'
 import { HeaderContentWrapper } from 'shopping-shopify-template-shared'
-// @ts-ignore
 import { FiTrash2, FiPlus, FiMinus } from 'react-icons/fi'
 
 export default function CartPage() {
@@ -13,14 +12,6 @@ export default function CartPage() {
 	const [error, setError] = useState<string | null>(null)
 	const [discountCode, setDiscountCode] = useState('')
 	const [loadingDiscount, setLoadingDiscount] = useState(false)
-
-	useEffect(() => {
-		load()
-
-		Eitri.navigation.setOnResumeListener(() => {
-			load()
-		})
-	}, [])
 
 	const load = async () => {
 		setLoading(true)
@@ -37,6 +28,14 @@ export default function CartPage() {
 				setLoading(false)
 			})
 	}
+
+	useEffect(() => {
+		load()
+
+		Eitri.navigation.setOnResumeListener(() => {
+			load()
+		})
+	}, [])
 
 	const formatCurrency = (amount: string, currencyCode: string) => {
 		return new Intl.NumberFormat('pt-BR', {
@@ -70,7 +69,7 @@ export default function CartPage() {
 		if (!discountCode) return
 		setLoadingDiscount(true)
 		try {
-			const currentCodes = cart?.discountCodes?.map((c: any) => c.code) || []
+			const currentCodes = cart?.discountCodes?.map(c => c.code) || []
 			// Avoid adding duplicates
 			if (!currentCodes.includes(discountCode)) {
 				const newCodes = [...currentCodes, discountCode]
@@ -88,7 +87,7 @@ export default function CartPage() {
 	const handleRemoveDiscount = async (codeToRemove: string) => {
 		setLoadingDiscount(true)
 		try {
-			const currentCodes = cart?.discountCodes?.map((c: any) => c.code) || []
+			const currentCodes = cart?.discountCodes?.map(c => c.code) || []
 			const newCodes = currentCodes.filter(c => c !== codeToRemove)
 			await Shopify.cart.updateDiscountCodes(cart!.id, newCodes)
 			await load()
@@ -277,7 +276,7 @@ export default function CartPage() {
 						{/* List of applied discount codes */}
 						{cart.discountCodes && cart.discountCodes.length > 0 && (
 							<View className='mt-2 space-y-2'>
-								{cart.discountCodes.map((dc: any) => (
+								{cart.discountCodes.map(dc => (
 									<View
 										key={dc.code}
 										className='flex flex-row justify-between items-center bg-base-100 p-2 rounded-lg'>
@@ -320,15 +319,14 @@ export default function CartPage() {
 								{formatCurrency(
 									(
 										(cart.discountAllocations?.reduce(
-											(acc: number, allocation: any) =>
-												acc + parseFloat(allocation.discountedAmount.amount),
+											(acc, allocation) => acc + parseFloat(allocation.discountedAmount.amount),
 											0
 										) || 0) +
-										cart.lines.edges.reduce((acc: number, edge: any) => {
+										cart.lines.edges.reduce((acc, edge) => {
 											return (
 												acc +
 												(edge.node.discountAllocations?.reduce(
-													(lineAcc: number, allocation: any) =>
+													(lineAcc, allocation) =>
 														lineAcc + parseFloat(allocation.discountedAmount.amount),
 													0
 												) || 0)
@@ -340,7 +338,6 @@ export default function CartPage() {
 							</Text>
 						</View>
 					)}
-
 					{/* Divider */}
 					<View className='h-px bg-base-content/10 my-3' />
 

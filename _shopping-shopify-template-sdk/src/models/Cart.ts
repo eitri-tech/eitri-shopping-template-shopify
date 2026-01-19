@@ -12,10 +12,19 @@ export interface Cart {
 	attributes: Attribute[]
 	cost: CartCost
 	lines: Lines
-	discountCodes: any[]
-	discountAllocations: any[]
+	discountCodes: CartDiscountCode[]
+	discountAllocations: DiscountAllocation[]
 	appliedGiftCards: AppliedGiftCard[]
 	buyerIdentity: BuyerIdentity
+}
+
+export interface CartDiscountCode {
+	applicable: boolean
+	code: string
+}
+
+export interface DiscountAllocation {
+	discountedAmount: SubtotalAmount
 }
 
 export interface AppliedGiftCard {
@@ -67,7 +76,7 @@ export interface Node {
 	merchandise: Merchandise
 	attributes: any[]
 	cost: NodeCost
-	discountAllocations: any[]
+	discountAllocations: DiscountAllocation[]
 }
 
 export interface NodeCost {
