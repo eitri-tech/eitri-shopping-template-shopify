@@ -18,13 +18,21 @@ export default class ShopifyCaller {
 		return new URL(`/api/${version}/graphql.json`, host).toString()
 	}
 
-	static async post(data = {}, options = {}, baseUrl?: string) {
+	static async post(data = {}, options = { headers: {} }, baseUrl?: string) {
 		const url = baseUrl || ShopifyCaller._mountUrl()
+		const storefrontAccessToken = RemoteConfig.getContent('providerInfo.storefrontAccessToken')
 
 		Logger.log('==Executando POST em ===>', url)
 		Logger.log('==BODY ===>', data)
 
-		const res = await Eitri.http.post(url, data, options)
+		const res = await Eitri.http.post(url, data, {
+			...options,
+			headers: {
+				'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
+				'Content-Type': 'application/json',
+				...(options?.headers || {})
+			}
+		})
 
 		Logger.log('=== POST Finalizado ===>', url)
 

@@ -12,9 +12,26 @@ export interface Cart {
 	attributes: Attribute[]
 	cost: CartCost
 	lines: Lines
-	discountCodes: any[]
-	discountAllocations: any[]
+	discountCodes: CartDiscountCode[]
+	discountAllocations: DiscountAllocation[]
+	appliedGiftCards: AppliedGiftCard[]
 	buyerIdentity: BuyerIdentity
+}
+
+export interface CartDiscountCode {
+	applicable: boolean
+	code: string
+}
+
+export interface DiscountAllocation {
+	discountedAmount: SubtotalAmount
+}
+
+export interface AppliedGiftCard {
+	id: string
+	lastCharacters: string
+	amountUsedV2: SubtotalAmount
+	balanceV2: SubtotalAmount
 }
 
 export interface Attribute {
@@ -59,6 +76,7 @@ export interface Node {
 	merchandise: Merchandise
 	attributes: any[]
 	cost: NodeCost
+	discountAllocations: DiscountAllocation[]
 }
 
 export interface NodeCost {
@@ -91,4 +109,22 @@ export interface FeaturedImage {
 export interface SelectedOption {
 	name: string
 	value: string
+}
+
+export interface CreateCartInput {
+	productVariantId?: string
+	quantity?: number
+	walletPreference?: unknown
+}
+
+export interface UpdateCartInput {
+	quantity: number
+	merchandiseId: string
+}
+
+export interface CartLineUpdateInput {
+	id: string
+	quantity?: number
+	merchandiseId?: string
+	attributes?: Attribute[]
 }

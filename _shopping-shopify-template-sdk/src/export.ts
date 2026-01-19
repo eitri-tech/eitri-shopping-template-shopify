@@ -1,5 +1,3 @@
-export { CartService } from './services/CartService'
-
 export type { Cart } from './models/Cart'
 export type { SearchQueryArguments } from './models/SearchParams.types'
 

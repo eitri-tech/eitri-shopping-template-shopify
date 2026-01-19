@@ -1,4 +1,5 @@
 // @ts-ignore
+import { Shopify } from 'shopping-shopify-template-sdk'
 import { ProductCardFullImage } from 'shopping-shopify-template-shared'
 import { openProduct } from '../../services/navigationService'
 
@@ -26,5 +27,16 @@ export default function ProductCard({ product }) {
 		onPressOnCard: goToProduct
 	}
 
-	return <ProductCardFullImage {...productProps} />
+	return (
+		<ProductCardFullImage
+			{...productProps}
+			onPressCartButton={async () => {
+				const cart = await Shopify.cart.getCurrentOrCreateCart()
+				await Shopify.cart.addItemToCart(cart.id, {
+					merchandiseId: product.variants.nodes[0].id,
+					quantity: 1
+				})
+			}}
+		/>
+	)
 }
