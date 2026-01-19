@@ -14,34 +14,34 @@ eitri-apps:
       alias: home
       focus: true
       shared: false
-#bottom-tab-view-simulation:
-#  eitri-apps:
-#    - slug: "shopping-vtex-template-home"
-#      title: "Inicio"
-#      initialization-params:
-#        type: "string"
-#        value: "tabIndex=0"
-#    - slug: "shopping-vtex-template-home"
-#      title: "Categorias"
-#      initialization-params:
-#        type: "string"
-#        value: "tabIndex=1&route=Categories"
-#    - slug: "shopping-vtex-template-cart"
-#      title: "Carrinho"
-#      initialization-params:
-#        type: "string"
-#        value: "tabIndex=2"
-#    - slug: "shopping-vtex-template-home"
-#      title: "Ofertas"
-#      initialization-params:
-#        type: "string"
-#        value: "tabIndex=3&route=LandingPage"
-#    - slug: "shopping-vtex-template-account"
-#      title: "Perfil"
-#      initialization-params:
-#        type: "string"
-#        value: "tabIndex=4"
+bottom-tab-view-simulation:
+    eitri-apps:
+        - slug: 'shopping-shopify-template-home'
+          title: 'Inicio'
+          initialization-params:
+              type: 'string'
+              value: 'tabIndex=0'
+        #  - slug: "shopping-shopify-template-home"
+        #    title: "Categorias"
+        #    initialization-params:
+        #      type: "string"
+        #      value: "tabIndex=1&route=Categories"
+        - slug: 'shopping-shopify-template-home'
+          title: 'Carrinho'
+          initialization-params:
+              type: 'string'
+              value: 'tabIndex=2'
+        #  - slug: "shopping-vtex-template-home"
+        #    title: "Ofertas"
+        #    initialization-params:
+        #      type: "string"
+        #      value: "tabIndex=3&route=LandingPage"
+        #  - slug: "shopping-vtex-template-account"
+        #    title: "Perfil"
+        #    initialization-params:
+        #      type: "string"
+        #      value: "tabIndex=4"
 
 application-id: cca11cae-342e-4ca6-a955-00abca321d86
-eitri-luminus: "2.22.3"
-eitri-bifrost: "4.7.0"
+eitri-luminus: '2.22.3'
+eitri-bifrost: '4.7.0'

@@ -92,3 +92,21 @@ export interface SelectedOption {
 	name: string
 	value: string
 }
+
+export interface CreateCartInput {
+	productVariantId?: string
+	quantity?: number
+	walletPreference?: unknown
+}
+
+export interface UpdateCartInput {
+	quantity: number
+	merchandiseId: string
+}
+
+export interface CartLineUpdateInput {
+	id: string
+	quantity?: number
+	merchandiseId?: string
+	attributes?: Attribute[]
+}

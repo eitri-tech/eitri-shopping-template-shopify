@@ -2,8 +2,10 @@
 import { View, Page, Text, Image, Button } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
-import { Cart, CartService } from 'shopping-shopify-template-sdk'
+import { App, Cart, Shopify } from 'shopping-shopify-template-sdk'
 import { HeaderContentWrapper } from 'shopping-shopify-template-shared'
+// @ts-ignore
+import { FiTrash2, FiPlus, FiMinus } from 'react-icons/fi'
 
 export default function CartPage() {
 	const [cart, setCart] = useState<Cart | null>(null)
@@ -11,9 +13,19 @@ export default function CartPage() {
 	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
-		setLoading(true)
+		load()
 
-		CartService.getCart('gid://shopify/Cart/hWN7bGLEjn26ChhrH86f5QQc?key=8983467152a64fff4bc43a4de2273199')
+		Eitri.navigation.setOnResumeListener(() => {
+			load()
+		})
+	}, [])
+
+	const load = async () => {
+		setLoading(true)
+		await App.configure({ verbose: false })
+
+		Shopify.cart
+			.getCurrentOrCreateCart()
 			.then(data => {
 				setCart(data)
 				setLoading(false)
@@ -22,13 +34,34 @@ export default function CartPage() {
 				setError(err.message)
 				setLoading(false)
 			})
-	}, [])
+	}
 
 	const formatCurrency = (amount: string, currencyCode: string) => {
 		return new Intl.NumberFormat('pt-BR', {
 			style: 'currency',
 			currency: currencyCode
 		}).format(parseFloat(amount))
+	}
+
+	const handleUpdateQuantity = async (lineId: string, currentQuantity: number, delta: number) => {
+		const newQuantity = currentQuantity + delta
+		if (newQuantity < 1) return
+
+		try {
+			await Shopify.cart.updateCartLines(cart!.id, [{ id: lineId, quantity: newQuantity }])
+			await load()
+		} catch (err) {
+			console.error('Erro ao atualizar quantidade:', err)
+		}
+	}
+
+	const handleRemoveItem = async (lineId: string) => {
+		try {
+			await Shopify.cart.removeItemFromCart(cart!.id, [lineId])
+			await load()
+		} catch (err) {
+			console.error('Erro ao remover item:', err)
+		}
 	}
 
 	if (loading) {
@@ -119,26 +152,53 @@ export default function CartPage() {
 
 								{/* Product Info */}
 								<View className='flex-1 ml-4 flex-col justify-between'>
-									<View className='flex flex-col'>
-										<Text className='font-semibold text-base-content text-sm leading-tight'>
-											{product.title}
-										</Text>
-										{item.merchandise.selectedOptions?.length > 0 && (
-											<Text className='text-xs text-base-content/60 mt-1'>
-												{item.merchandise.selectedOptions
-													.map(opt => `${opt.name}: ${opt.value}`)
-													.join(' | ')}
+									<View className='flex flex-row justify-between items-start'>
+										<View className='flex flex-col flex-1'>
+											<Text className='font-semibold text-base-content text-sm leading-tight'>
+												{product.title}
 											</Text>
-										)}
+											{item.merchandise.selectedOptions?.length > 0 && (
+												<Text className='text-xs text-base-content/60 mt-1'>
+													{item.merchandise.selectedOptions
+														.map(opt => `${opt.name}: ${opt.value}`)
+														.join(' | ')}
+												</Text>
+											)}
+										</View>
+
+										{/* Remove Button */}
+										<Button
+											className='btn !btn-ghost btn-sm p-1 ml-2'
+											onClick={() => handleRemoveItem(item.id)}>
+											<FiTrash2
+												className='text-error'
+												size={18}
+											/>
+										</Button>
 									</View>
 
 									<View className='flex flex-row items-center justify-between mt-2'>
-										{/* Quantity */}
-										<View className='flex flex-row items-center bg-base-300 rounded-lg px-3 py-1'>
-											<Text className='text-base-content/70 text-sm'>Qtd:</Text>
-											<Text className='font-semibold text-base-content ml-2'>
+										{/* Quantity Controls */}
+										<View className='flex flex-row items-center bg-base-300 rounded-lg'>
+											<Button
+												className='btn !btn-ghost btn-sm px-2'
+												onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}>
+												<FiMinus
+													size={16}
+													color='#000'
+												/>
+											</Button>
+											<Text className='font-semibold text-base-content px-3'>
 												{item.quantity}
 											</Text>
+											<Button
+												className='btn !btn-ghost btn-sm px-2'
+												onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}>
+												<FiPlus
+													size={16}
+													color='#000'
+												/>
+											</Button>
 										</View>
 
 										{/* Price */}
@@ -156,7 +216,9 @@ export default function CartPage() {
 				</View>
 
 				{/* Cart Summary */}
-				<View className='flex-col bg-base-200 px-4 py-5 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)]'>
+				<View
+					className='flex-col bg-base-200 px-4 py-5 pb-8 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)]'
+					bottomInset>
 					{/* Subtotal */}
 					<View className='flex flex-row justify-between items-center mb-2'>
 						<Text className='text-base-content/70'>Subtotal</Text>
@@ -178,7 +240,7 @@ export default function CartPage() {
 
 					{/* Checkout Button */}
 					<Button
-						className='btn btn-primary w-full text-lg py-3'
+						className='btn btn-primary w-full !text-white text-lg py-3 mb-6'
 						onClick={() => {
 							if (cart.checkoutUrl) {
 								Eitri.openBrowser({ url: cart.checkoutUrl })
