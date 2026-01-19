@@ -1,5 +1,5 @@
 // @ts-ignore
-import { View, Page, Text, Image, Button, TextInput } from 'eitri-luminus'
+import { View, Page, Text, Image, Button, TextInput, Loading } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
 import { App, Cart, Shopify } from 'shopping-shopify-template-sdk'
@@ -31,7 +31,6 @@ export default function CartPage() {
 			.then(data => {
 				setCart(data)
 				setLoading(false)
-				console.log(data)
 			})
 			.catch(err => {
 				setError(err.message)
@@ -271,7 +270,7 @@ export default function CartPage() {
 							<Button
 								className='btn btn-neutral btn-sm h-10'
 								onClick={handleAddDiscount}>
-								{loadingDiscount ? 'Adicionando...' : 'Adicionar'}
+								{loadingDiscount ? <Loading classname='loading loading-spinner' /> : 'Adicionar'}
 							</Button>
 						</View>
 
@@ -290,9 +289,12 @@ export default function CartPage() {
 										</View>
 										<Button
 											className='btn !btn-ghost btn-xs !text-error'
-											onClick={() => handleRemoveDiscount(dc.code)}
-											loading={loadingDiscount}>
-											Remover
+											onClick={() => handleRemoveDiscount(dc.code)}>
+											{loadingDiscount ? (
+												<Loading classname='loading loading-spinner' />
+											) : (
+												'Remover'
+											)}
 										</Button>
 									</View>
 								))}
@@ -309,12 +311,30 @@ export default function CartPage() {
 					</View>
 
 					{/* Discount */}
-					{cart.discountAllocations && cart.discountAllocations.length > 0 && (
+					{(cart.discountAllocations?.length > 0 ||
+						cart.lines.edges.some(edge => edge.node.discountAllocations?.length > 0)) && (
 						<View className='flex flex-row justify-between items-center mb-2'>
 							<Text className='text-base-content/70'>Desconto</Text>
 							<Text className='text-success'>
-								-{formatCurrency(
-									cart.discountAllocations.reduce((acc: number, allocation: any) => acc + parseFloat(allocation.discountedAmount.amount), 0).toString(),
+								-
+								{formatCurrency(
+									(
+										(cart.discountAllocations?.reduce(
+											(acc: number, allocation: any) =>
+												acc + parseFloat(allocation.discountedAmount.amount),
+											0
+										) || 0) +
+										cart.lines.edges.reduce((acc: number, edge: any) => {
+											return (
+												acc +
+												(edge.node.discountAllocations?.reduce(
+													(lineAcc: number, allocation: any) =>
+														lineAcc + parseFloat(allocation.discountedAmount.amount),
+													0
+												) || 0)
+											)
+										}, 0)
+									).toString(),
 									cart.cost.totalAmount.currencyCode
 								)}
 							</Text>

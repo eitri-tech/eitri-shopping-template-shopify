@@ -145,6 +145,12 @@ query GET_CART($cartId: ID!) {
 							currencyCode
 						}
 					}
+					discountAllocations {
+						discountedAmount {
+							amount
+							currencyCode
+						}
+					}
 				}
 			}
 		}

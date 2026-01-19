@@ -67,6 +67,7 @@ export interface Node {
 	merchandise: Merchandise
 	attributes: any[]
 	cost: NodeCost
+	discountAllocations: any[]
 }
 
 export interface NodeCost {
