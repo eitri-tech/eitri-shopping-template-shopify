@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 // @ts-ignore
 import { View } from 'eitri-luminus'
 import { ProductShelfContent } from '../../../types/cmscontent.type'
-import { search } from '../../../services/productService'
+import { collection, search } from '../../../services/productService'
 import ProductCard from '../../ProductCard/ProductCard'
 
 interface ProductShelfProps {
@@ -23,7 +23,7 @@ export default function ProductShelf({ data }: ProductShelfProps) {
 		try {
 			setIsLoadingProducts(true)
 
-			const results = await search({ query: 'Camisa', first: 8 })
+			const results = await collection({ handle: 'homem' })
 			setProducts(results.nodes)
 
 			// const params = {

@@ -5,7 +5,7 @@ fragment ProductFields on Product {
     }
     handle
     id
-    images(first: 1) {
+    images(first: 10) {
         edges {
             node {
                 url
@@ -14,6 +14,16 @@ fragment ProductFields on Product {
                 thumbhash
                 id
             }
+        }
+    }
+    priceRange {
+        minVariantPrice {
+            amount
+            currencyCode
+        }
+        maxVariantPrice {
+            amount
+            currencyCode
         }
     }
     isGiftCard
@@ -76,25 +86,69 @@ query SEARCH_QUERY(
         totalCount
         nodes {
             ... on Product {
-                category {
+                ...ProductFields
+            }
+        }
+    }
+}
+
+query COLLECTION_QUERY(
+    $collectionId: ID
+    $handle: String
+    $after: String
+    $before: String
+    $first: Int
+    $last: Int
+    $reverse: Boolean
+    $sortKey: ProductCollectionSortKeys
+) {
+    collection(
+        id: $collectionId
+        handle: $handle
+    ) {
+        id
+        title
+        description
+        handle
+        image {
+            url
+            height
+            width
+            id
+        }
+        trackingParameters,
+        products (first: $first, last:$last, after: $after, before: $before, reverse: $reverse, sortKey: $sortKey) {
+            nodes {
+                ... on Product {
+                    category {
+                        id
+                        name
+                    }
+                    handle
                     id
-                    name
-                }
-                handle
-                id
-                images(first: 1) {
-                    nodes {
+                    priceRange {
+                        minVariantPrice {
+                            amount
+                            currencyCode
+                        }
+                        maxVariantPrice {
+                            amount
+                            currencyCode
+                        }
+                    }
+                    images(first: 10) {
+                        nodes {
                             url
                             height
                             width
                             thumbhash
                             id
                         }
-                }
-                isGiftCard
-                title
-                variants(first: 20) {
-                    nodes {
+                    }
+                    isGiftCard
+                    title
+                    variants(first: 20) {
+                        nodes {
                             availableForSale
                             barcode
                             compareAtPrice {
@@ -117,6 +171,7 @@ query SEARCH_QUERY(
                             sku
                             title
                         }
+                    }
                 }
             }
         }

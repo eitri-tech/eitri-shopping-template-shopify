@@ -14,6 +14,7 @@ export interface BannerContent {
 export interface ProductShelfContent {
 	id: string
 	name: string
+	collectionId: string
 }
 
 export type CmsItem = BannerContent | ProductShelfContent

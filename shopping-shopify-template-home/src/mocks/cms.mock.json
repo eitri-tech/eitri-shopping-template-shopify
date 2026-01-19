@@ -16,6 +16,7 @@
 	},
 	{
 		"id": "2",
-		"name": "ProductShelf"
+		"name": "ProductShelf",
+		"collectionId": "gid://shopify/Collection/240646488213"
 	}
 ]
