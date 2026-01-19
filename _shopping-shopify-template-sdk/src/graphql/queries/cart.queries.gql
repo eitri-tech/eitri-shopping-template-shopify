@@ -158,6 +158,18 @@ query GET_CART($cartId: ID!) {
 				currencyCode
 			}
 		}
+		appliedGiftCards {
+			id
+			lastCharacters
+			amountUsedV2 {
+				amount
+				currencyCode
+			}
+			balanceV2 {
+				amount
+				currencyCode
+			}
+		}
 		buyerIdentity {
 			email
 			phone
@@ -293,6 +305,120 @@ mutation CART_LINES_REMOVE($cartId: ID!, $lineIds: [ID!]!) {
 				}
 			}
 		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+
+mutation CART_GIFT_CARD_CODES_ADD($cartId: ID!, $giftCardCodes: [String!]!) {
+	cartGiftCardCodesAdd(cartId: $cartId, giftCardCodes: $giftCardCodes) {
+		cart {
+			id
+			appliedGiftCards {
+				id
+				lastCharacters
+				amountUsedV2 {
+					amount
+					currencyCode
+				}
+				balanceV2 {
+					amount
+					currencyCode
+				}
+			}
+			cost {
+				totalAmount {
+					amount
+					currencyCode
+				}
+				subtotalAmount {
+					amount
+					currencyCode
+				}
+			}
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+
+mutation CART_GIFT_CARD_CODES_REMOVE($cartId: ID!, $appliedGiftCardIds: [ID!]!) {
+	cartGiftCardCodesRemove(cartId: $cartId, appliedGiftCardIds: $appliedGiftCardIds) {
+		cart {
+			id
+
+			appliedGiftCards {
+				id
+
+				lastCharacters
+
+				amountUsedV2 {
+					amount
+
+					currencyCode
+				}
+
+				balanceV2 {
+					amount
+
+					currencyCode
+				}
+			}
+
+			cost {
+				totalAmount {
+					amount
+
+					currencyCode
+				}
+
+				subtotalAmount {
+					amount
+
+					currencyCode
+				}
+			}
+		}
+
+		userErrors {
+			field
+
+			message
+		}
+	}
+}
+
+mutation CART_DISCOUNT_CODES_UPDATE($cartId: ID!, $discountCodes: [String!]!) {
+	cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+		cart {
+			id
+						discountCodes {
+							applicable
+							code
+						}
+						discountAllocations {
+							discountedAmount {
+								amount
+								currencyCode
+							}
+						}
+						cost {
+				totalAmount {
+					amount
+					currencyCode
+				}
+
+				subtotalAmount {
+					amount
+					currencyCode
+				}
+			}
+		}
+
 		userErrors {
 			field
 			message

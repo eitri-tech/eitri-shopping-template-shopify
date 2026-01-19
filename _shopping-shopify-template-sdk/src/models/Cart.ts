@@ -14,7 +14,15 @@ export interface Cart {
 	lines: Lines
 	discountCodes: any[]
 	discountAllocations: any[]
+	appliedGiftCards: AppliedGiftCard[]
 	buyerIdentity: BuyerIdentity
+}
+
+export interface AppliedGiftCard {
+	id: string
+	lastCharacters: string
+	amountUsedV2: SubtotalAmount
+	balanceV2: SubtotalAmount
 }
 
 export interface Attribute {

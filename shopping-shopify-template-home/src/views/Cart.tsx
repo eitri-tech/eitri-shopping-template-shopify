@@ -1,5 +1,5 @@
 // @ts-ignore
-import { View, Page, Text, Image, Button } from 'eitri-luminus'
+import { View, Page, Text, Image, Button, TextInput } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
 import { App, Cart, Shopify } from 'shopping-shopify-template-sdk'
@@ -11,6 +11,8 @@ export default function CartPage() {
 	const [cart, setCart] = useState<Cart | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
+	const [discountCode, setDiscountCode] = useState('')
+	const [loadingDiscount, setLoadingDiscount] = useState(false)
 
 	useEffect(() => {
 		load()
@@ -22,13 +24,14 @@ export default function CartPage() {
 
 	const load = async () => {
 		setLoading(true)
-		await App.configure({ verbose: false })
+		await App.configure({ verbose: true })
 
 		Shopify.cart
 			.getCurrentOrCreateCart()
 			.then(data => {
 				setCart(data)
 				setLoading(false)
+				console.log(data)
 			})
 			.catch(err => {
 				setError(err.message)
@@ -61,6 +64,39 @@ export default function CartPage() {
 			await load()
 		} catch (err) {
 			console.error('Erro ao remover item:', err)
+		}
+	}
+
+	const handleAddDiscount = async () => {
+		if (!discountCode) return
+		setLoadingDiscount(true)
+		try {
+			const currentCodes = cart?.discountCodes?.map((c: any) => c.code) || []
+			// Avoid adding duplicates
+			if (!currentCodes.includes(discountCode)) {
+				const newCodes = [...currentCodes, discountCode]
+				await Shopify.cart.updateDiscountCodes(cart!.id, newCodes)
+				setDiscountCode('')
+				await load()
+			}
+		} catch (err) {
+			console.error('Erro ao adicionar cupom:', err)
+		} finally {
+			setLoadingDiscount(false)
+		}
+	}
+
+	const handleRemoveDiscount = async (codeToRemove: string) => {
+		setLoadingDiscount(true)
+		try {
+			const currentCodes = cart?.discountCodes?.map((c: any) => c.code) || []
+			const newCodes = currentCodes.filter(c => c !== codeToRemove)
+			await Shopify.cart.updateDiscountCodes(cart!.id, newCodes)
+			await load()
+		} catch (err) {
+			console.error('Erro ao remover cupom:', err)
+		} finally {
+			setLoadingDiscount(false)
 		}
 	}
 
@@ -222,6 +258,48 @@ export default function CartPage() {
 				<View
 					className='flex-col sticky bottom-0 bg-base-200 px-4 py-5 pb-8 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)]'
 					bottomInset>
+					{/* Discount Codes */}
+					<View className='mb-4'>
+						<Text className='font-bold text-base-content mb-2'>Cupom de Desconto</Text>
+						<View className='flex flex-row'>
+							<TextInput
+								className='input input-bordered flex-1 mr-2 h-10'
+								placeholder='Código do cupom'
+								value={discountCode}
+								onChange={e => setDiscountCode(e.target.value)}
+							/>
+							<Button
+								className='btn btn-neutral btn-sm h-10'
+								onClick={handleAddDiscount}>
+								{loadingDiscount ? 'Adicionando...' : 'Adicionar'}
+							</Button>
+						</View>
+
+						{/* List of applied discount codes */}
+						{cart.discountCodes && cart.discountCodes.length > 0 && (
+							<View className='mt-2 space-y-2'>
+								{cart.discountCodes.map((dc: any) => (
+									<View
+										key={dc.code}
+										className='flex flex-row justify-between items-center bg-base-100 p-2 rounded-lg'>
+										<View className='flex flex-col'>
+											<Text className='font-semibold text-sm'>{dc.code}</Text>
+											<Text className='text-xs text-base-content/70'>
+												{dc.applicable ? 'Aplicado' : 'Não aplicável'}
+											</Text>
+										</View>
+										<Button
+											className='btn !btn-ghost btn-xs !text-error'
+											onClick={() => handleRemoveDiscount(dc.code)}
+											loading={loadingDiscount}>
+											Remover
+										</Button>
+									</View>
+								))}
+							</View>
+						)}
+					</View>
+
 					{/* Subtotal */}
 					<View className='flex flex-row justify-between items-center mb-2'>
 						<Text className='text-base-content/70'>Subtotal</Text>
@@ -229,6 +307,19 @@ export default function CartPage() {
 							{formatCurrency(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode)}
 						</Text>
 					</View>
+
+					{/* Discount */}
+					{cart.discountAllocations && cart.discountAllocations.length > 0 && (
+						<View className='flex flex-row justify-between items-center mb-2'>
+							<Text className='text-base-content/70'>Desconto</Text>
+							<Text className='text-success'>
+								-{formatCurrency(
+									cart.discountAllocations.reduce((acc: number, allocation: any) => acc + parseFloat(allocation.discountedAmount.amount), 0).toString(),
+									cart.cost.totalAmount.currencyCode
+								)}
+							</Text>
+						</View>
+					)}
 
 					{/* Divider */}
 					<View className='h-px bg-base-content/10 my-3' />
