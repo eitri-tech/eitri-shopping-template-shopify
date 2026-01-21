@@ -6,14 +6,12 @@ fragment ProductFields on Product {
     handle
     id
     images(first: 10) {
-        edges {
-            node {
-                url
-                height
-                width
-                thumbhash
-                id
-            }
+        nodes {
+            url
+            height
+            width
+            thumbhash
+            id
         }
     }
     priceRange {
@@ -28,31 +26,47 @@ fragment ProductFields on Product {
     }
     isGiftCard
     title
-    variants(first: 20) {
-        edges {
-            node {
-                availableForSale
-                barcode
-                compareAtPrice {
-                    amount
-                    currencyCode
-                }
-                id
-                image {
-                    altText
-                    height
-                    id
-                    url
-                    width
-                    thumbhash
-                }
-                price {
-                    amount
-                    currencyCode
-                }
-                sku
-                title
+    options {
+        name
+        id
+        optionValues {
+            id
+            name
+        }
+    }
+    variants(first: 50) {
+        nodes {
+            availableForSale
+            barcode
+            selectedOptions {
+                name
+                value
             }
+            compareAtPrice {
+                amount
+                currencyCode
+            }
+            id
+            image {
+                altText
+                height
+                id
+                url
+                width
+                thumbhash
+            }
+            price {
+                amount
+                currencyCode
+            }
+            sku
+            title
+        }
+    }
+    selectedOrFirstAvailableVariant {
+        selectedOptions {
+            name
+            value
         }
     }
 }
@@ -120,58 +134,7 @@ query COLLECTION_QUERY(
         products (first: $first, last:$last, after: $after, before: $before, reverse: $reverse, sortKey: $sortKey) {
             nodes {
                 ... on Product {
-                    category {
-                        id
-                        name
-                    }
-                    handle
-                    id
-                    priceRange {
-                        minVariantPrice {
-                            amount
-                            currencyCode
-                        }
-                        maxVariantPrice {
-                            amount
-                            currencyCode
-                        }
-                    }
-                    images(first: 10) {
-                        nodes {
-                            url
-                            height
-                            width
-                            thumbhash
-                            id
-                        }
-                    }
-                    isGiftCard
-                    title
-                    variants(first: 20) {
-                        nodes {
-                            availableForSale
-                            barcode
-                            compareAtPrice {
-                                amount
-                                currencyCode
-                            }
-                            id
-                            image {
-                                altText
-                                height
-                                id
-                                url
-                                width
-                                thumbhash
-                            }
-                            price {
-                                amount
-                                currencyCode
-                            }
-                            sku
-                            title
-                        }
-                    }
+                    ...ProductFields
                 }
             }
         }

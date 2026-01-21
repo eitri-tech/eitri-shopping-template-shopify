@@ -6,12 +6,18 @@ import { openProduct } from '../../services/navigationService'
 export default function ProductCard({ product }) {
 	const getPrice = () => {
 		const price = product?.variants?.nodes?.[0]?.price
-		return Number(price?.amount)?.toLocaleString('pt-BR', { style: 'currency', currency: price?.currencyCode })
+		return Number(price?.amount)?.toLocaleString('pt-BR', {
+			style: 'currency',
+			currency: price?.currencyCode || 'BRL'
+		})
 	}
 
 	const getListPrice = () => {
 		const price = product?.variants?.nodes?.[0]?.compareAtPrice
-		return Number(price?.amount)?.toLocaleString('pt-BR', { style: 'currency', currency: price?.currencyCode })
+		return Number(price?.amount)?.toLocaleString('pt-BR', {
+			style: 'currency',
+			currency: price?.currencyCode || 'BRL'
+		})
 	}
 
 	const goToProduct = () => {

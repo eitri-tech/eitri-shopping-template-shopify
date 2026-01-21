@@ -3,6 +3,7 @@ import { SearchQueryArguments } from '../../models/SearchParams.types'
 // @ts-ignore
 import { SEARCH_QUERY, COLLECTION_QUERY } from '../../graphql/queries/product.queries.gql'
 import { CollectionParams } from '../../models/CollectionParams.types'
+import RemoteConfig from '../RemoteConfig'
 
 export default class CatalogService {
 	static async search(params: SearchQueryArguments, personalizedQuery?: string) {
@@ -35,6 +36,14 @@ export default class CatalogService {
 			}
 		}
 		const res = await ShopifyCaller.post(body)
+		return res.data
+	}
+
+	static async getProductJson(handle: string) {
+		let host = RemoteConfig.getContent('providerInfo.host')
+		const url = `https://${host}/products/${handle}.json`
+
+		const res = await ShopifyCaller.get(null, url)
 		return res.data
 	}
 }

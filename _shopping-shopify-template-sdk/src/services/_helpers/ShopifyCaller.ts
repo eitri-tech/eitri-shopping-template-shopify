@@ -18,9 +18,17 @@ export default class ShopifyCaller {
 		return new URL(`/api/${version}/graphql.json`, host).toString()
 	}
 
+	static _mountHeader = () => {
+		const storefrontAccessToken = RemoteConfig.getContent('providerInfo.storefrontAccessToken')
+		return {
+			'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
+			'Content-Type': 'application/json'
+		}
+	}
+
 	static async post(data = {}, options = { headers: {} }, baseUrl?: string) {
 		const url = baseUrl || ShopifyCaller._mountUrl()
-		const storefrontAccessToken = RemoteConfig.getContent('providerInfo.storefrontAccessToken')
+		const _headers = ShopifyCaller._mountHeader()
 
 		Logger.log('==Executando POST em ===>', url)
 		Logger.log('==BODY ===>', data)
@@ -28,13 +36,31 @@ export default class ShopifyCaller {
 		const res = await Eitri.http.post(url, data, {
 			...options,
 			headers: {
-				'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
-				'Content-Type': 'application/json',
+				..._headers,
 				...(options?.headers || {})
 			}
 		})
 
 		Logger.log('=== POST Finalizado ===>', url)
+
+		return res
+	}
+
+	static async get(options = { headers: {} }, baseUrl?: string) {
+		const url = baseUrl || ShopifyCaller._mountUrl()
+		const _headers = ShopifyCaller._mountHeader()
+
+		Logger.log('==Executando GET em ===>', url)
+
+		const res = await Eitri.http.get(url, {
+			...options,
+			headers: {
+				..._headers,
+				...(options?.headers || {})
+			}
+		})
+
+		Logger.log('=== GET Finalizado ===>', url)
 
 		return res
 	}
