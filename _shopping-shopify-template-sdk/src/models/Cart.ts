@@ -16,6 +16,7 @@ export interface Cart {
 	discountAllocations: DiscountAllocation[]
 	appliedGiftCards: AppliedGiftCard[]
 	buyerIdentity: BuyerIdentity
+	deliveryGroups?: DeliveryGroups
 }
 
 export interface CartDiscountCode {
@@ -40,10 +41,11 @@ export interface Attribute {
 }
 
 export interface BuyerIdentity {
-	email: null
-	phone: null
+	email: string | null
+	phone: string | null
 	countryCode: string
 	preferences: Preferences
+	deliveryAddressPreferences?: DeliveryAddress[]
 }
 
 export interface Preferences {
@@ -88,6 +90,7 @@ export interface Merchandise {
 	id: string
 	title: string
 	priceV2: SubtotalAmount
+	compareAtPrice?: SubtotalAmount | null
 	product: Product
 	selectedOptions: SelectedOption[]
 	availableForSale: boolean
@@ -127,4 +130,58 @@ export interface CartLineUpdateInput {
 	quantity?: number
 	merchandiseId?: string
 	attributes?: Attribute[]
+}
+
+export interface DeliveryAddress {
+	address1?: string
+	address2?: string
+	city?: string
+	province?: string
+	country: string
+	zip: string
+}
+
+export interface DeliveryOption {
+	handle: string
+	title: string
+	estimatedCost: SubtotalAmount
+	deliveryMethodType: string
+}
+
+export interface DeliveryGroup {
+	id?: string
+	deliveryOptions: DeliveryOption[]
+	selectedDeliveryOption: DeliveryOption | null
+}
+
+export interface DeliveryGroups {
+	edges: DeliveryGroupEdge[]
+}
+
+export interface DeliveryGroupEdge {
+	node: DeliveryGroup
+}
+
+export interface CartBuyerIdentityInput {
+	email?: string
+	phone?: string
+	countryCode?: string
+	deliveryAddressPreferences?: DeliveryAddressInput[]
+}
+
+export interface DeliveryAddressInput {
+	deliveryAddress: DeliveryAddress
+}
+
+export interface DeferredCartResponse {
+	data?: {
+		cart: Partial<Cart>
+	}
+	incremental?: Array<{
+		path: string[]
+		data: {
+			deliveryGroups: DeliveryGroups
+		}
+	}>
+	hasNext: boolean
 }

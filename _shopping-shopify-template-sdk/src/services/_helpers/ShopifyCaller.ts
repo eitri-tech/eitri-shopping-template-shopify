@@ -64,4 +64,45 @@ export default class ShopifyCaller {
 
 		return res
 	}
+
+	static async postStream(data = {}, callback: (data: string) => void, options = { headers: {} }, baseUrl?: string) {
+		const url = baseUrl || ShopifyCaller._mountUrl()
+		const storefrontAccessToken = RemoteConfig.getContent('providerInfo.storefrontAccessToken')
+
+		Logger.log('==Executando POST Stream em ===>', url)
+		Logger.log('==BODY ===>', data)
+
+		const res = await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify(data),
+			...options,
+			headers: {
+				'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
+				'Content-Type': 'application/json',
+				'Accept': 'multipart/mixed; deferSpec=20220824, application/json',
+				...(options?.headers || {})
+			}
+		})
+
+		if (!res.body) {
+			throw new Error('Response body is not available')
+		}
+
+		const reader = res.body.getReader()
+		const decoder = new TextDecoder()
+
+		while (true) {
+			const { done, value } = await reader.read()
+
+			if (done) {
+				Logger.log('=== Stream Finalizado ===>', url)
+				break
+			}
+
+			const chunk = decoder.decode(value, { stream: true })
+			callback(chunk)
+		}
+
+		return res
+	}
 }
