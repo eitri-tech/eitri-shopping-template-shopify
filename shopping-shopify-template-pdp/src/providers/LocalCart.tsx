@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState } from 'react'
-import { Cart } from '../types/cart.type'
+import { Cart, UpdateCartInput } from 'shopping-shopify-template-sdk'
+import { addToCart, getCurrentOrCreateCart } from '../services/cartService'
 
 type CartContext = {
 	cart: Cart | null
 	setCart: (arg0: Cart) => void
 	cartIsLoading: boolean
 	startCart: () => Promise<Cart>
+	addItemToCart: (cartId: string, item: UpdateCartInput) => Promise<Cart>
 }
 
 const LocalCart = createContext<CartContext>(null)
@@ -14,21 +16,28 @@ export default function CartProvider({ children }) {
 	const [cart, setCart] = useState(null)
 	const [cartIsLoading, setCartInLoading] = useState(false)
 
-	const executeCartOperation = async (operation: (arg0: any) => any, ...args: undefined[]): Promise<Cart> => {
+	const executeCartOperation = async <Args extends any[]>(
+		operation: (...args: Args) => Promise<Cart>,
+		...args: Args
+	): Promise<Cart | null> => {
 		setCartInLoading(true)
-		// @ts-ignore
+
 		const newCart = await operation(...args)
+
 		if (newCart) {
 			setCart(newCart)
 			return newCart
 		}
+
 		setCartInLoading(false)
 		return null
 	}
-
 	const startCart = async () => {
-		// return executeCartOperation(getCart)
-		return cart
+		return executeCartOperation(getCurrentOrCreateCart)
+	}
+
+	const addItemToCart = async (cartId: string, item: UpdateCartInput) => {
+		return executeCartOperation(addToCart, cartId, item)
 	}
 
 	return (
@@ -36,6 +45,7 @@ export default function CartProvider({ children }) {
 			value={{
 				startCart,
 				setCart,
+				addItemToCart,
 				cart,
 				cartIsLoading
 			}}>

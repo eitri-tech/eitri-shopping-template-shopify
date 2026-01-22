@@ -59,7 +59,7 @@ export class CartService {
 		return cart
 	}
 
-	static async addItemToCart(cartId: string, item: UpdateCartInput) {
+	static async addItemToCart(cartId: string, item: UpdateCartInput): Promise<Cart> {
 		const body = {
 			query: CART_ADD_ITEM,
 			variables: {
@@ -73,7 +73,7 @@ export class CartService {
 		const res = await ShopifyCaller.post(body)
 		Logger.log('[CartService] Item adicionado com sucesso')
 
-		const { data } = res.data as { data: unknown }
+		const { data } = res.data
 
 		return data
 	}

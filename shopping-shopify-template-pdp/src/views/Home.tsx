@@ -1,27 +1,18 @@
 // @ts-ignore
-import { Text, View, Image, Button, Page } from 'eitri-luminus'
-// @ts-ignore
-import { HeaderContentWrapper, HeaderLogo, BottomInset } from 'shopping-shopify-template-shared'
-
-// @ts-ignore
-import { App, Shopify } from 'shopping-shopify-template-sdk'
+import { View, Page } from 'eitri-luminus'
+import { BottomInset } from 'shopping-shopify-template-shared'
+import { App } from 'shopping-shopify-template-sdk'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
-import { Cart } from '../types/cart.type'
-import {
-	EnrichedOptions,
-	Option,
-	Product,
-	ProductEnriched,
-	ProductVariantEnriched,
-	SelectedOption
-} from '../types/product.type'
+import { Option, Product, ProductEnriched, ProductVariantEnriched, SelectedOption } from '../types/product.type'
 import MainHeader from '../components/MainHeader/MainHeader'
 import ImageCarousel from '../components/ImageCarousel/ImageCarousel'
 import MainDescription from '../components/MainDescription/MainDescription'
 import SkuSelector from '../components/SkuSelector/SkuSelector'
 import { getProductJson, resolveProduct } from '../services/productService'
 import { ProductComplementaryData, ProductComplementaryDataVariant } from '../types/productComplementaryData.type'
+import ActionButton from '../components/ActionButton/ActionButton'
+import { useLocalShoppingCart } from '../providers/LocalCart'
 
 type StartParams = {
 	product: Product | null
@@ -31,18 +22,22 @@ export default function Home(props) {
 	const [product, setProduct] = useState<ProductEnriched>()
 	const [productComplementaryData, setProductComplementaryData] = useState<ProductComplementaryData>()
 	const [currentVariant, setCurrentVariant] = useState<ProductVariantEnriched>()
-	const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([])
+	const [selectedVariantOptions, setSelectedVariantOptions] = useState<SelectedOption[]>([])
 	const [variantsOptions, setVariantsOptions] = useState<Option[]>([])
 
 	const [mainLoading, setMainLoading] = useState<Boolean>(true)
+
+	const { startCart } = useLocalShoppingCart()
 
 	useEffect(() => {
 		window.scroll(0, 0)
 
 		startHome()
 
+		startCart()
+
 		Eitri.navigation.setOnResumeListener(() => {
-			startHome()
+			startCart()
 		})
 	}, [])
 
@@ -68,16 +63,27 @@ export default function Home(props) {
 			)
 
 			setCurrentVariant(selected)
-			setSelectedOptions(enrichedProduct?.selectedOrFirstAvailableVariant?.selectedOptions)
-			setVariantsOptions(product.options)
+			setSelectedVariantOptions(enrichedProduct?.selectedOrFirstAvailableVariant?.selectedOptions)
+			setVariantsOptions(
+				product.options.map(opt => {
+					return {
+						...opt,
+						optionValues: opt?.optionValues?.map(optV => {
+							return {
+								...optV,
+								available: true
+							}
+						})
+					}
+				})
+			)
 			setProduct(enrichedProduct)
 			setMainLoading(false)
 		}
 	}
 
 	const selectVariant = (option: SelectedOption) => {
-		console.log('op', option)
-		const newSelectedOptions = selectedOptions.map(so => {
+		const newSelectedOptions = selectedVariantOptions.map(so => {
 			if (so.name === option.name) {
 				return option
 			}
@@ -88,22 +94,36 @@ export default function Home(props) {
 			variant.selectedOptions.some(opt => opt.name === option.name && opt.value === option.value)
 		)
 
-		const available = variantsOptions.map(option => {
+		const variantsOptionsAvailability = variantsOptions.map(vOption => {
 			return {
-				...option,
-				optionValues: option.optionValues.map(value => {
+				...vOption,
+				optionValues: vOption.optionValues.map(oValue => {
 					return {
-						...value,
-						available: variantsWithThisOption.some(variant =>
-							variant.selectedOptions.some(opt => opt.name === option.name && opt.value === value.name)
-						)
+						...oValue,
+						available:
+							vOption.name === option.name
+								? true
+								: variantsWithThisOption.some(variant =>
+										variant.selectedOptions.some(
+											opt => opt.name === vOption.name && opt.value === oValue.name
+										)
+									)
 					}
 				})
 			}
 		})
-		// console.log('available', available)
-		setVariantsOptions(available)
-		setSelectedOptions(newSelectedOptions)
+
+		const selected = product?.variants?.nodes?.find(
+			variant =>
+				variant.selectedOptions.length === newSelectedOptions?.length &&
+				variant.selectedOptions.every(opt =>
+					newSelectedOptions?.some(t => t.name === opt.name && t.value === opt.value)
+				)
+		)
+
+		setCurrentVariant(selected)
+		setVariantsOptions(variantsOptionsAvailability)
+		setSelectedVariantOptions(newSelectedOptions)
 	}
 
 	return (
@@ -118,9 +138,12 @@ export default function Home(props) {
 
 					<SkuSelector
 						product={product}
-						selectedOptions={selectedOptions}
+						variantsOptions={variantsOptions}
+						selectedVariantOptions={selectedVariantOptions}
 						onSelectVariant={selectVariant}
 					/>
+
+					<ActionButton currentVariant={currentVariant} />
 				</View>
 			)}
 
