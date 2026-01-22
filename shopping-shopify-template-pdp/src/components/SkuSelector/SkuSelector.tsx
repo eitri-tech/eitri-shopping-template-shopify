@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 // @ts-ignore
 import { Text, View, Image, Button, Page } from 'eitri-luminus'
-import { Option, Product, ProductEnriched, SelectedOption } from '../../types/product.type'
+import { OptionWithAvailable, Product, SelectedOption } from '../../types/product.type'
 import { colorMap } from '../../utils/colorMap'
 
 type SkuSelectorProps = {
-	product: ProductEnriched
+	product: Product
 	selectedVariantOptions: SelectedOption[]
-	variantsOptions: Option[]
+	variantsOptions: OptionWithAvailable[]
 	onSelectVariant: (option: SelectedOption) => void
 }
 
@@ -109,9 +109,11 @@ export default function SkuSelector(props: SkuSelectorProps) {
 					<View key={option?.id}>
 						<Text className='text-lg font-semibold'>{`${option?.name}`}</Text>
 						<View className='flex flex-wrap mt-2 gap-2'>
-							{option?.optionValues?.map(optionValue =>
-								renderOption(option.name, optionValue.name, optionValue.available)
-							)}
+							{option?.optionValues?.map(optionValue => (
+								<View key={optionValue.name}>
+									{renderOption(option.name, optionValue.name, optionValue.available)}
+								</View>
+							))}
 						</View>
 					</View>
 				))}

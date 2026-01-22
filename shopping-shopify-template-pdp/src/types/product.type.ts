@@ -16,8 +16,19 @@ export interface Option {
 	optionValues: {
 		id: string
 		name: string
-		available: boolean // não pertence ao schema original
 	}[]
+}
+
+export interface ProductVariant {
+	id: string
+	title: string
+	barcode: string
+	selectedOptions: {
+		name: string
+		value: string
+	}[]
+	price: Price
+	sku: string
 }
 
 export interface Product {
@@ -40,28 +51,14 @@ export interface Product {
 		selectedOptions: SelectedOption[]
 	}
 	variants: {
-		nodes: {
-			id: string
-			title: string
-			barcode: string
-			selectedOptions: {
-				name: string
-				value: string
-			}[]
-			price: Price
-			sku: string
-		}[]
+		nodes: ProductVariant[]
 	}
 }
 
-/* Variante enriquecida */
-export type ProductVariantEnriched = Product['variants']['nodes'][number] & {
-	product_id: string
-}
-
-/* Produto enriquecido */
-export interface ProductEnriched extends Omit<Product, 'variants'> {
-	variants: {
-		nodes: ProductVariantEnriched[]
-	}
+export interface OptionWithAvailable extends Option {
+	optionValues: {
+		id: string
+		name: string
+		available: boolean
+	}[]
 }

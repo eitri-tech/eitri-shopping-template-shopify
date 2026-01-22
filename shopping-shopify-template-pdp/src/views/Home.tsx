@@ -4,13 +4,12 @@ import { BottomInset } from 'shopping-shopify-template-shared'
 import { App } from 'shopping-shopify-template-sdk'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
-import { Option, Product, ProductEnriched, ProductVariantEnriched, SelectedOption } from '../types/product.type'
+import { OptionWithAvailable, Product, ProductVariant, SelectedOption } from '../types/product.type'
 import MainHeader from '../components/MainHeader/MainHeader'
 import ImageCarousel from '../components/ImageCarousel/ImageCarousel'
 import MainDescription from '../components/MainDescription/MainDescription'
 import SkuSelector from '../components/SkuSelector/SkuSelector'
-import { getProductJson, resolveProduct } from '../services/productService'
-import { ProductComplementaryData, ProductComplementaryDataVariant } from '../types/productComplementaryData.type'
+import { ProductComplementaryData } from '../types/productComplementaryData.type'
 import ActionButton from '../components/ActionButton/ActionButton'
 import { useLocalShoppingCart } from '../providers/LocalCart'
 
@@ -19,11 +18,11 @@ type StartParams = {
 }
 
 export default function Home(props) {
-	const [product, setProduct] = useState<ProductEnriched>()
+	const [product, setProduct] = useState<Product>()
 	const [productComplementaryData, setProductComplementaryData] = useState<ProductComplementaryData>()
-	const [currentVariant, setCurrentVariant] = useState<ProductVariantEnriched>()
+	const [currentVariant, setCurrentVariant] = useState<ProductVariant>()
 	const [selectedVariantOptions, setSelectedVariantOptions] = useState<SelectedOption[]>([])
-	const [variantsOptions, setVariantsOptions] = useState<Option[]>([])
+	const [variantsOptions, setVariantsOptions] = useState<OptionWithAvailable[]>([])
 
 	const [mainLoading, setMainLoading] = useState<Boolean>(true)
 
@@ -33,12 +32,9 @@ export default function Home(props) {
 		window.scroll(0, 0)
 
 		startHome()
-
 		startCart()
 
-		Eitri.navigation.setOnResumeListener(() => {
-			startCart()
-		})
+		Eitri.navigation.setOnResumeListener(startCart)
 	}, [])
 
 	const startHome = async () => {
@@ -49,37 +45,37 @@ export default function Home(props) {
 		let product = startParams.product
 
 		if (product) {
-			const enrichedProduct = await resolveProduct(product)
+			const selectedOptions = product?.selectedOrFirstAvailableVariant?.selectedOptions
+			const selectedVariant = getSelectedVariant(selectedOptions)
 
-			const selected = enrichedProduct?.variants?.nodes?.find(
-				variant =>
-					variant.selectedOptions.length ===
-						enrichedProduct?.selectedOrFirstAvailableVariant?.selectedOptions?.length &&
-					variant.selectedOptions.every(opt =>
-						enrichedProduct?.selectedOrFirstAvailableVariant?.selectedOptions?.some(
-							t => t.name === opt.name && t.value === opt.value
-						)
-					)
-			)
+			const optionsWithAvailability = product?.options?.map<OptionWithAvailable>(opt => {
+				return {
+					...opt,
+					optionValues: opt?.optionValues?.map(optV => {
+						return {
+							...optV,
+							available: true
+						}
+					})
+				}
+			})
 
-			setCurrentVariant(selected)
-			setSelectedVariantOptions(enrichedProduct?.selectedOrFirstAvailableVariant?.selectedOptions)
-			setVariantsOptions(
-				product.options.map(opt => {
-					return {
-						...opt,
-						optionValues: opt?.optionValues?.map(optV => {
-							return {
-								...optV,
-								available: true
-							}
-						})
-					}
-				})
-			)
-			setProduct(enrichedProduct)
+			setCurrentVariant(selectedVariant)
+			setSelectedVariantOptions(selectedOptions)
+			setVariantsOptions(optionsWithAvailability)
+			setProduct(product)
 			setMainLoading(false)
 		}
+	}
+
+	const getSelectedVariant = (selectedOptions: SelectedOption[]): ProductVariant | null => {
+		return product?.variants?.nodes?.find(
+			variant =>
+				variant.selectedOptions.length === selectedOptions?.length &&
+				variant.selectedOptions.every(opt =>
+					selectedOptions?.some(t => t.name === opt.name && t.value === opt.value)
+				)
+		)
 	}
 
 	const selectVariant = (option: SelectedOption) => {
@@ -113,15 +109,9 @@ export default function Home(props) {
 			}
 		})
 
-		const selected = product?.variants?.nodes?.find(
-			variant =>
-				variant.selectedOptions.length === newSelectedOptions?.length &&
-				variant.selectedOptions.every(opt =>
-					newSelectedOptions?.some(t => t.name === opt.name && t.value === opt.value)
-				)
-		)
+		const selectedVariant = getSelectedVariant(newSelectedOptions)
 
-		setCurrentVariant(selected)
+		setCurrentVariant(selectedVariant)
 		setVariantsOptions(variantsOptionsAvailability)
 		setSelectedVariantOptions(newSelectedOptions)
 	}

@@ -38,7 +38,7 @@ export default function ProductCard({ product }) {
 			{...productProps}
 			onPressCartButton={async () => {
 				const cart = await Shopify.cart.getCurrentOrCreateCart()
-				await Shopify.cart.addItemToCart(cart.id, {
+				await Shopify.cart.addItemToCart({
 					merchandiseId: product.variants.nodes[0].id,
 					quantity: 1
 				})

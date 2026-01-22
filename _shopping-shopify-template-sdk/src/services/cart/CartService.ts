@@ -10,6 +10,7 @@ import {
 	DeliveryGroups
 } from '../../models/Cart'
 import ShopifyCaller from '../_helpers/ShopifyCaller'
+// @ts-ignore
 import {
 	GET_CART,
 	CREATE_CART,
@@ -28,6 +29,7 @@ import Eitri from 'eitri-bifrost'
 
 export class CartService {
 	static SHOPIFY_CART_KEY = 'shopify_cart_key'
+
 	static async getCurrentOrCreateCart() {
 		const cartId = await StorageService.getStorageItem(CartService.SHOPIFY_CART_KEY)
 
@@ -36,6 +38,15 @@ export class CartService {
 		} else {
 			return CartService.generateNewCart({})
 		}
+	}
+
+	static async getCurrentCartIdOrCreate(): Promise<string> {
+		const cartId = await StorageService.getStorageItem(CartService.SHOPIFY_CART_KEY)
+		if (cartId) {
+			return cartId
+		}
+		const newCart = await CartService.generateNewCart({})
+		return newCart.id
 	}
 
 	static async getCartById(cartId: string, personalizedQuery?: string): Promise<Cart> {
@@ -84,7 +95,9 @@ export class CartService {
 		return cart
 	}
 
-	static async addItemToCart(cartId: string, item: UpdateCartInput): Promise<Cart> {
+	static async addItemToCart(item: UpdateCartInput): Promise<Cart> {
+		const cartId = await CartService.getCurrentCartIdOrCreate()
+
 		const body = {
 			query: CART_ADD_ITEM,
 			variables: {

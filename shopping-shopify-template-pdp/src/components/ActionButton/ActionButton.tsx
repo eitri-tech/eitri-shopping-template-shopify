@@ -4,12 +4,10 @@ import { useLocalShoppingCart } from '../../providers/LocalCart'
 import { useEffect, useState } from 'react'
 // @ts-ignore
 import { Text, View, Image, Button, Page } from 'eitri-luminus'
-import { Option, ProductEnriched, ProductVariantEnriched, SelectedOption } from '../../types/product.type'
-
-// import { openCart } from '../../services/NavigationService'
+import { ProductVariant } from '../../types/product.type'
 
 type ActionButtonProps = {
-	currentVariant: ProductVariantEnriched
+	currentVariant: ProductVariant
 }
 
 export default function ActionButton(props: ActionButtonProps) {
@@ -26,6 +24,9 @@ export default function ActionButton(props: ActionButtonProps) {
 	}, [])
 
 	const isItemOnCart = () => {
+		console.log('cart==>', cart)
+
+		return false
 		// return cart?.items?.some(cartItem => cartItem.id === currentSku?.itemId)
 	}
 
@@ -36,19 +37,14 @@ export default function ActionButton(props: ActionButtonProps) {
 	}
 
 	const handleButtonClick = async () => {
-		console.log('cart', cart.id)
-		console.log('==>', { merchandiseId: currentVariant.id, quantity: 1 })
-		const res = await addItemToCart(cart.id, { merchandiseId: currentVariant.id, quantity: 1 })
-
-		console.log('res', res)
-		// if (!isAvailable) return
-		// setLoading(true)
-		// if (isItemOnCart()) {
-		// 	openCart()
-		// } else {
-		// 	addItem(currentSku)
-		// }
-		// setLoading(false)
+		if (!isAvailable) return
+		setLoading(true)
+		if (isItemOnCart()) {
+			// openCart()
+		} else {
+			await addItemToCart(cart.id, { merchandiseId: currentVariant.id, quantity: 1 })
+		}
+		setLoading(false)
 	}
 
 	return (
@@ -56,11 +52,10 @@ export default function ActionButton(props: ActionButtonProps) {
 			<View className='fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-300'>
 				<View className='p-4'>
 					<CustomButton
-						onClick={handleButtonClick}
 						isLoading={isLoading}
-						backgroundColor={isAvailable ? 'primary-700' : 'neutral-300'}
-						className='rounded-pill w-full'
+						disabled={!isAvailable}
 						label={getButtonLabel()}
+						onClick={handleButtonClick}
 					/>
 				</View>
 
