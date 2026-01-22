@@ -2,7 +2,7 @@
 import { View, Page, Text, Image, Button, TextInput, Loading } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
-import { App, Cart, Shopify } from 'shopping-shopify-template-sdk'
+import { App, Cart, Shopify, DeliveryGroups } from 'shopping-shopify-template-sdk'
 import { HeaderContentWrapper } from 'shopping-shopify-template-shared'
 import { FiTrash2, FiPlus, FiMinus, FiChevronUp, FiChevronDown } from 'react-icons/fi'
 
@@ -13,6 +13,9 @@ export default function CartPage() {
 	const [discountCode, setDiscountCode] = useState('')
 	const [loadingDiscount, setLoadingDiscount] = useState(false)
 	const [summaryExpanded, setSummaryExpanded] = useState(false)
+	const [loadingDeliveryOptions, setLoadingDeliveryOptions] = useState(false)
+	const [cep, setCep] = useState('')
+	const [deliveryOptions, setDeliveryOptions] = useState<DeliveryGroups | null>(null)
 
 	const load = async () => {
 		setLoading(true)
@@ -23,11 +26,41 @@ export default function CartPage() {
 			.then(data => {
 				setCart(data)
 				setLoading(false)
+
+				const deliveryAddress = data.buyerIdentity?.deliveryAddressPreferences?.[0]
+				if (deliveryAddress && deliveryAddress.zip) {
+					setCep(deliveryAddress.zip)
+					fetchDeliveryOptions(data.id)
+				}
 			})
 			.catch(err => {
 				setError(err.message)
 				setLoading(false)
 			})
+	}
+
+	const fetchDeliveryOptions = async (cartId: string) => {
+		setLoadingDeliveryOptions(true)
+		setDeliveryOptions(null)
+
+		try {
+			await Shopify.cart.getDeliveryOptionsWithCarrierRates(
+				cartId,
+				cartData => {
+					if (cartData.cost) {
+						setCart(prev => (prev ? { ...prev, cost: cartData.cost! } : prev))
+					}
+				},
+				groups => {
+					console.log('Opções de entrega:', groups)
+					setDeliveryOptions(groups)
+					setLoadingDeliveryOptions(false)
+				}
+			)
+		} catch (err) {
+			console.error('Erro ao buscar opções de entrega:', err)
+			setLoadingDeliveryOptions(false)
+		}
 	}
 
 	useEffect(() => {
@@ -96,6 +129,44 @@ export default function CartPage() {
 			console.error('Erro ao remover cupom:', err)
 		} finally {
 			setLoadingDiscount(false)
+		}
+	}
+
+	const handleCalculateShipping = async () => {
+		const cleanCep = cep.replace(/\D/g, '')
+		if (cleanCep.length !== 8) return
+
+		setDeliveryOptions(null)
+		setLoadingDeliveryOptions(true)
+
+		try {
+			const address = await Shopify.address.getAddressFromCep(cleanCep)
+
+			if (!address) {
+				console.error('CEP não encontrado')
+				setLoadingDeliveryOptions(false)
+				return
+			}
+
+			await Shopify.cart.updateDeliveryAddress(cart!.id, address)
+			await fetchDeliveryOptions(cart!.id)
+		} catch (err) {
+			console.error('Erro ao calcular frete:', err)
+			setLoadingDeliveryOptions(false)
+		}
+	}
+
+	const goToCheckout = async (checkoutUrl: string) => {
+		try {
+			const modules = await Eitri.modules()
+			const startCheckoutFn = modules?.shopify?.startCheckout
+			if (startCheckoutFn) {
+				const res = await startCheckoutFn({
+					checkoutUrl
+				})
+			}
+		} catch (error) {
+			console.error(error)
 		}
 	}
 
@@ -187,7 +258,7 @@ export default function CartPage() {
 			<HeaderContentWrapper>
 				<Text className='text-xl font-bold !text-white'>Sacola</Text>
 			</HeaderContentWrapper>
-			<View className='min-h-screen bg-base-100 flex flex-col pb-44'>
+			<View className='min-h-screen bg-base-100 flex flex-col pb-60'>
 				{/* Cart Items */}
 				<View className='flex-col px-4 py-4 space-y-4'>
 					{cart.lines.edges.map(edge => {
@@ -223,7 +294,7 @@ export default function CartPage() {
 										</Text>
 										{/* Remove Button */}
 										<Button
-											className='btn !btn-ghost btn-sm p-0'
+											className='!btn !btn-ghost btn-sm p-0'
 											onClick={() => handleRemoveItem(item.id)}>
 											<FiTrash2
 												className='text-base-content/50'
@@ -262,7 +333,7 @@ export default function CartPage() {
 									<View className='flex flex-row items-center mt-2'>
 										<View className='flex flex-row items-center border border-base-300 rounded-lg'>
 											<Button
-												className='btn btn-ghost btn-sm px-3 py-1'
+												className='!btn !btn-ghost !btn-sm px-3 py-1'
 												onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}>
 												<FiMinus
 													size={14}
@@ -299,7 +370,7 @@ export default function CartPage() {
 							onChange={e => setDiscountCode(e.target.value)}
 						/>
 						<Button
-							className='btn !btn-outline !btn-sm h-10 px-4'
+							className='!btn !btn-outline !btn-sm h-10 px-4'
 							onClick={handleAddDiscount}>
 							{loadingDiscount ? <Loading classname='loading loading-spinner loading-sm' /> : 'Aplicar'}
 						</Button>
@@ -332,6 +403,70 @@ export default function CartPage() {
 						</View>
 					)}
 				</View>
+
+				{/* Shipping Calculation Section */}
+				<View className='px-4 py-4 bg-base-100 border-t border-base-200'>
+					<Text className='font-semibold text-base-content mb-2'>Calcular Frete</Text>
+					<View className='flex flex-row'>
+						<TextInput
+							className='input input-bordered flex-1 mr-2 h-10 text-sm'
+							placeholder='Digite seu CEP'
+							value={cep}
+							onChange={e => setCep(e.target.value)}
+						/>
+						<Button
+							className='!btn !btn-outline !btn-sm h-10 px-4'
+							onClick={handleCalculateShipping}
+							disabled={loadingDeliveryOptions}>
+							Calcular
+						</Button>
+					</View>
+				</View>
+
+				{/* Delivery Options */}
+				{loadingDeliveryOptions && (
+					<View className='px-4 py-4 bg-base-100 border-t border-base-200'>
+						<Text className='font-semibold text-base-content mb-2'>Opções de Entrega</Text>
+						<View className='flex flex-row items-center justify-center py-4'>
+							<View className='animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full' />
+							<Text className='ml-2 text-base-content/70 text-sm'>Calculando fretes...</Text>
+						</View>
+					</View>
+				)}
+
+				{deliveryOptions && deliveryOptions.edges.length > 0 && (
+					<View className='px-4 py-4 bg-base-100 border-t border-base-200'>
+						<Text className='font-semibold text-base-content mb-2'>Opções de Entrega</Text>
+						<View className='space-y-2'>
+							{deliveryOptions.edges.map((edge, index) =>
+								edge.node.deliveryOptions.map((option, optIndex) => (
+									<View
+										key={`${index}-${optIndex}`}
+										className={`bg-base-200 p-3 rounded-lg ${
+											edge.node.selectedDeliveryOption?.handle === option.handle
+												? 'border-2 border-primary'
+												: 'border border-base-300'
+										}`}>
+										<View className='flex flex-row justify-between items-center'>
+											<View className='flex flex-col'>
+												<Text className='font-semibold text-sm'>{option.title}</Text>
+												<Text className='text-xs text-base-content/70'>
+													{option.deliveryMethodType}
+												</Text>
+											</View>
+											<Text className='font-bold text-primary'>
+												{formatCurrency(
+													option.estimatedCost.amount,
+													option.estimatedCost.currencyCode
+												)}
+											</Text>
+										</View>
+									</View>
+								))
+							)}
+						</View>
+					</View>
+				)}
 
 				{/* Fixed Bottom Summary */}
 				<View
@@ -369,7 +504,7 @@ export default function CartPage() {
 
 					{/* Toggle Area */}
 					<Button
-						className='w-full flex flex-row items-center justify-center py-2 btn-ghost !bg-transparent'
+						className='w-full flex flex-row items-center justify-center py-2 !btn-ghost !bg-transparent'
 						onClick={() => setSummaryExpanded(!summaryExpanded)}>
 						{summaryExpanded ? (
 							<FiChevronDown
@@ -385,21 +520,19 @@ export default function CartPage() {
 					</Button>
 
 					{/* Total Row */}
-					<View className='flex flex-row justify-between items-center px-4 mb-3'>
+					{/* <View className='flex flex-row justify-between items-center px-4 mb-3'>
 						<Text className='text-base font-semibold text-base-content'>Total</Text>
 						<Text className='text-lg font-bold text-base-content'>
 							{formatCurrency(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode)}
 						</Text>
-					</View>
+					</View> */}
 
 					{/* Checkout Button */}
 					<View className='px-4 pb-6'>
 						<Button
 							className='btn btn-primary w-full !text-white text-base py-3'
 							onClick={() => {
-								if (cart.checkoutUrl) {
-									Eitri.openBrowser({ url: cart.checkoutUrl, inApp: true })
-								}
+								goToCheckout(cart.checkoutUrl)
 							}}>
 							Finalizar Compra •{' '}
 							{formatCurrency(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode)}

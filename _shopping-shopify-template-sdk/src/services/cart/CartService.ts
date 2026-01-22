@@ -1,4 +1,14 @@
-import { Cart, CartResponse, CreateCartInput, UpdateCartInput, CartLineUpdateInput } from '../../models/Cart'
+import {
+	Cart,
+	CartResponse,
+	CreateCartInput,
+	UpdateCartInput,
+	CartLineUpdateInput,
+	CartBuyerIdentityInput,
+	DeliveryAddress,
+	DeferredCartResponse,
+	DeliveryGroups
+} from '../../models/Cart'
 import ShopifyCaller from '../_helpers/ShopifyCaller'
 import {
 	GET_CART,
@@ -8,10 +18,13 @@ import {
 	CART_LINES_REMOVE,
 	CART_GIFT_CARD_CODES_ADD,
 	CART_GIFT_CARD_CODES_REMOVE,
-	CART_DISCOUNT_CODES_UPDATE
+	CART_DISCOUNT_CODES_UPDATE,
+	CART_BUYER_IDENTITY_UPDATE,
+	GET_CART_DELIVERY_OPTIONS
 } from '../../graphql/queries/cart.queries.gql'
 import StorageService from '../StorageService'
 import Logger from '../_helpers/Logger'
+import Eitri from 'eitri-bifrost'
 
 export class CartService {
 	static SHOPIFY_CART_KEY = 'shopify_cart_key'
@@ -42,10 +55,22 @@ export class CartService {
 	}
 
 	static async generateNewCart(params: CreateCartInput) {
+		const config = await Eitri.getConfigs()
+		const platform = config.applicationData.platform
+
 		const body = {
 			query: CREATE_CART,
 			variables: {
-				input: params
+				input: params,
+				attribute: {
+					key: 'cart.attributes',
+					fields: [
+						{
+							key: 'provider',
+							value: platform === 'android' ? 'eitri_android' : 'eitri_ios'
+						}
+					]
+				}
 			}
 		}
 
@@ -177,5 +202,90 @@ export class CartService {
 
 	static async saveCartIdOnStorage(cartId: string) {
 		await StorageService.setStorageItem(CartService.SHOPIFY_CART_KEY, cartId)
+	}
+
+	static async updateBuyerIdentity(cartId: string, buyerIdentity: CartBuyerIdentityInput) {
+		const body = {
+			query: CART_BUYER_IDENTITY_UPDATE,
+			variables: {
+				cartId,
+				buyerIdentity
+			}
+		}
+
+		Logger.log('[CartService] Atualizando identidade do comprador')
+
+		const res = await ShopifyCaller.post(body)
+		Logger.log('[CartService] Identidade do comprador atualizada com sucesso')
+
+		const { data } = res.data as { data: unknown }
+
+		return data
+	}
+
+	static async updateDeliveryAddress(cartId: string, address: DeliveryAddress) {
+		const buyerIdentity: CartBuyerIdentityInput = {
+			deliveryAddressPreferences: [
+				{
+					deliveryAddress: address
+				}
+			]
+		}
+
+		return CartService.updateBuyerIdentity(cartId, buyerIdentity)
+	}
+
+	static async getDeliveryOptionsWithCarrierRates(
+		cartId: string,
+		onInitialData?: (cart: Partial<Cart>) => void,
+		onDeliveryOptions?: (deliveryGroups: DeliveryGroups) => void
+	): Promise<void> {
+		const body = {
+			query: GET_CART_DELIVERY_OPTIONS,
+			variables: {
+				cartId
+			}
+		}
+
+		Logger.log('[CartService] Buscando opções de entrega com carrier rates para:', cartId)
+
+		let buffer = ''
+
+		await ShopifyCaller.postStream(body, (chunk: string) => {
+			buffer += chunk
+
+			const parts = buffer.split('\r\n\r\n')
+
+			for (let i = 0; i < parts.length - 1; i++) {
+				const part = parts[i]
+
+				const jsonMatch = part.match(/\{[\s\S]*\}/)
+				if (jsonMatch) {
+					try {
+						const parsed: DeferredCartResponse = JSON.parse(jsonMatch[0])
+
+						if (parsed.data?.cart && onInitialData) {
+							Logger.log('[CartService] Dados iniciais do carrinho recebidos')
+							onInitialData(parsed.data.cart)
+						}
+
+						if (parsed.incremental && onDeliveryOptions) {
+							for (const increment of parsed.incremental) {
+								if (increment.data?.deliveryGroups) {
+									Logger.log('[CartService] Opções de entrega calculadas recebidas')
+									onDeliveryOptions(increment.data.deliveryGroups)
+								}
+							}
+						}
+					} catch (e) {
+						Logger.log('[CartService] Erro ao parsear chunk:', e)
+					}
+				}
+			}
+
+			buffer = parts[parts.length - 1]
+		})
+
+		Logger.log('[CartService] Stream de opções de entrega finalizado')
 	}
 }

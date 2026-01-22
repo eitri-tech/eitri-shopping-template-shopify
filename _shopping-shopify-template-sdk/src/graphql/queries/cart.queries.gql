@@ -114,6 +114,10 @@ query GET_CART($cartId: ID!) {
 								amount
 								currencyCode
 							}
+							compareAtPrice {
+								amount
+								currencyCode
+							}
 							product {
 								id
 								title
@@ -183,6 +187,40 @@ query GET_CART($cartId: ID!) {
 			preferences {
 				wallet
 			}
+			deliveryAddressPreferences {
+				... on MailingAddress {
+					address1
+					address2
+					city
+					province
+					country
+					zip
+				}
+			}
+		}
+		deliveryGroups(first: 10) {
+			edges {
+				node {
+					deliveryOptions {
+						handle
+						title
+						estimatedCost {
+							amount
+							currencyCode
+						}
+						deliveryMethodType
+					}
+					selectedDeliveryOption {
+						handle
+						title
+						estimatedCost {
+							amount
+							currencyCode
+						}
+						deliveryMethodType
+					}
+				}
+			}
 		}
 	}
 }
@@ -212,6 +250,10 @@ mutation CART_ADD_ITEM($cartId: ID!, $lines: [CartLineInput!]!) {
 								id
 								title
 								priceV2 {
+									amount
+									currencyCode
+								}
+								compareAtPrice {
 									amount
 									currencyCode
 								}
@@ -264,6 +306,10 @@ mutation CART_LINES_UPDATE($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
 									amount
 									currencyCode
 								}
+								compareAtPrice {
+									amount
+									currencyCode
+								}
 							}
 						}
 					}
@@ -302,6 +348,10 @@ mutation CART_LINES_REMOVE($cartId: ID!, $lineIds: [ID!]!) {
 								id
 								title
 								priceV2 {
+									amount
+									currencyCode
+								}
+								compareAtPrice {
 									amount
 									currencyCode
 								}
@@ -402,17 +452,17 @@ mutation CART_DISCOUNT_CODES_UPDATE($cartId: ID!, $discountCodes: [String!]!) {
 	cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
 		cart {
 			id
-						discountCodes {
-							applicable
-							code
-						}
-						discountAllocations {
-							discountedAmount {
-								amount
-								currencyCode
-							}
-						}
-						cost {
+			discountCodes {
+				applicable
+				code
+			}
+			discountAllocations {
+				discountedAmount {
+					amount
+					currencyCode
+				}
+			}
+			cost {
 				totalAmount {
 					amount
 					currencyCode
@@ -428,6 +478,102 @@ mutation CART_DISCOUNT_CODES_UPDATE($cartId: ID!, $discountCodes: [String!]!) {
 		userErrors {
 			field
 			message
+		}
+	}
+}
+
+mutation CART_BUYER_IDENTITY_UPDATE($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+	cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+		cart {
+			id
+			buyerIdentity {
+				email
+				phone
+				countryCode
+				deliveryAddressPreferences {
+					... on MailingAddress {
+						address1
+						address2
+						city
+						province
+						country
+						zip
+					}
+				}
+			}
+			deliveryGroups(first: 10) {
+				edges {
+					node {
+						deliveryOptions {
+							handle
+							title
+							estimatedCost {
+								amount
+								currencyCode
+							}
+							deliveryMethodType
+						}
+						selectedDeliveryOption {
+							handle
+							title
+							estimatedCost {
+								amount
+								currencyCode
+							}
+							deliveryMethodType
+						}
+					}
+				}
+			}
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+
+query GET_CART_DELIVERY_OPTIONS($cartId: ID!) {
+	cart(id: $cartId) {
+		id
+		cost {
+			subtotalAmount {
+				amount
+				currencyCode
+			}
+			totalAmount {
+				amount
+				currencyCode
+			}
+		}
+		...DeliveryGroupsWithCarrierRates @defer
+	}
+}
+
+fragment DeliveryGroupsWithCarrierRates on Cart {
+	deliveryGroups(first: 10, withCarrierRates: true) {
+		edges {
+			node {
+				id
+				deliveryOptions {
+					handle
+					title
+					estimatedCost {
+						amount
+						currencyCode
+					}
+					deliveryMethodType
+				}
+				selectedDeliveryOption {
+					handle
+					title
+					estimatedCost {
+						amount
+						currencyCode
+					}
+					deliveryMethodType
+				}
+			}
 		}
 	}
 }
