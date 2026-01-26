@@ -23,6 +23,7 @@ export interface ProductVariant {
 	id: string
 	title: string
 	barcode: string
+	availableForSale: string
 	selectedOptions: {
 		name: string
 		value: string

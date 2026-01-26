@@ -1,22 +1,28 @@
 module.exports = {
-	'name': 'shopping-shopify-template-shared',
-	'title': 'shopping-shopify-template-shared',
-	'slug': 'shopping-shopify-template-shared',
+	'name': 'shopping-shopify-template-cart',
+	'title': 'shopping-shopify-template-cart',
+	'slug': 'shopping-shopify-template-cart',
 	'eitri-luminus': '2.22.3',
 	'eitri-bifrost': '4.7.0',
 	'version': '0.1.0',
-	'public-key': 'dc2a845a-a80a-4c25-b434-61dde87f6c49',
+	'public-key': '9510e0dd-de42-4842-8ba8-78ef1f4a70d2',
 	'applicationId': 'cca11cae-342e-4ca6-a955-00abca321d86',
-	'id': 'f6272800-8c1d-409d-9cf8-230fb8a704c3',
+	'id': '9fa4d1d7-6a48-4a58-83bc-853ed74020e1',
 	'organizationId': 'cf5660ee-bf90-42cd-9a43-9d2c69ee3c89',
 	'organization': {},
 	'type': 'module',
 	'check-js': false,
-	'sharedVersion': 'v2',
 	'eitri-app-dependencies': {
 		'shopping-shopify-template-sdk': {
 			isEitriAppShared: true,
 			version: '0.1.0'
+		},
+		'shopping-shopify-template-shared': {
+			isEitriAppShared: true,
+			version: '0.1.0'
+		},
+		'i18n': {
+			version: '14.1.2'
 		}
 	}
 }

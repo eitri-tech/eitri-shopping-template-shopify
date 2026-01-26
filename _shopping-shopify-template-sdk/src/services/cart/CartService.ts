@@ -32,7 +32,7 @@ export class CartService {
 
 	static async getCurrentOrCreateCart() {
 		const cartId = await StorageService.getStorageItem(CartService.SHOPIFY_CART_KEY)
-
+		console.log('cartId=======>', cartId)
 		if (cartId) {
 			return CartService.getCartById(cartId)
 		} else {
@@ -86,16 +86,19 @@ export class CartService {
 		}
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Novo carrinho criado')
+
 		const { data } = res.data as { data: { cartCreate: CartResponse } }
 
 		const cart = data.cartCreate.cart
+
 		await CartService.saveCartIdOnStorage(cart.id)
 
 		return cart
 	}
 
-	static async addItemToCart(item: UpdateCartInput): Promise<Cart> {
+	static async addItemToCart(item: UpdateCartInput): Promise<{ cart: Cart; userErrors: any[] }> {
 		const cartId = await CartService.getCurrentCartIdOrCreate()
 
 		const body = {
@@ -109,11 +112,12 @@ export class CartService {
 		Logger.log('[CartService] Adicionando item ao carrinho:', item.merchandiseId)
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Item adicionado com sucesso')
 
 		const { data } = res.data
 
-		return data
+		return data.cartLinesAdd
 	}
 
 	static async updateCartLines(cartId: string, lines: CartLineUpdateInput[]) {

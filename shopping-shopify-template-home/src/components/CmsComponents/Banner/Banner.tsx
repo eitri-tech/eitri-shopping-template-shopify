@@ -3,13 +3,16 @@ import { View } from 'eitri-luminus'
 import { BannerContent, CmsContent, CmsItem } from '../../../types/cmscontent.type'
 import FitOnScreen from './Components/FitOnScreen'
 import SliderHero from './Components/SliderHero'
+import Eitri from 'eitri-bifrost'
 
 interface BannerProps {
 	data: BannerContent
 }
 
 export default function Banner({ data }: BannerProps) {
-	const handlePress = () => {}
+	const handlePress = data => {
+		Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params: { data } } })
+	}
 
 	if (data.type === 'fullscreen')
 		return (

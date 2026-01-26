@@ -1,17 +1,21 @@
 import Eitri from 'eitri-bifrost'
+// @ts-ignore
+import { Text, View } from 'eitri-luminus'
 
-export default function HeaderReturn(props) {
-	const { backPage, onClick, className } = props
+interface HeaderReturnProps {
+	className?: string
+	backPage?: number
+	onClick?: () => void
+}
+
+export default function HeaderReturn(props: HeaderReturnProps) {
+	const { backPage = 0, onClick, className } = props
 
 	const onBack = () => {
 		if (typeof onClick === 'function') {
 			return onClick()
 		} else {
-			if (backPage) {
-				Eitri.navigation.back(backPage)
-			} else {
-				Eitri.navigation.back()
-			}
+			Eitri.navigation.back(backPage)
 		}
 	}
 

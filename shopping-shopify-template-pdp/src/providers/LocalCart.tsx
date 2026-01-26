@@ -7,7 +7,7 @@ type CartContext = {
 	setCart: (arg0: Cart) => void
 	cartIsLoading: boolean
 	startCart: () => Promise<Cart>
-	addItemToCart: (cartId: string, item: UpdateCartInput) => Promise<Cart>
+	addItemToCart: (item: UpdateCartInput) => Promise<Cart>
 }
 
 const LocalCart = createContext<CartContext>(null)
@@ -36,8 +36,8 @@ export default function CartProvider({ children }) {
 		return executeCartOperation(getCurrentOrCreateCart)
 	}
 
-	const addItemToCart = async (cartId: string, item: UpdateCartInput) => {
-		return executeCartOperation(addToCart, cartId, item)
+	const addItemToCart = async (item: UpdateCartInput) => {
+		return executeCartOperation(addToCart, item)
 	}
 
 	return (

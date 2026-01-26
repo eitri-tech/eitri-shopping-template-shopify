@@ -32,7 +32,6 @@ export default function Home(props) {
 		window.scroll(0, 0)
 
 		startHome()
-		startCart()
 
 		Eitri.navigation.setOnResumeListener(startCart)
 	}, [])
@@ -40,13 +39,15 @@ export default function Home(props) {
 	const startHome = async () => {
 		await App.configure({ verbose: false })
 
+		startCart()
+
 		const startParams: StartParams = (await Eitri.getInitializationInfos()) as StartParams
 
 		let product = startParams.product
 
 		if (product) {
 			const selectedOptions = product?.selectedOrFirstAvailableVariant?.selectedOptions
-			const selectedVariant = getSelectedVariant(selectedOptions)
+			const selectedVariant = getSelectedVariant(selectedOptions, product)
 
 			const optionsWithAvailability = product?.options?.map<OptionWithAvailable>(opt => {
 				return {
@@ -68,13 +69,11 @@ export default function Home(props) {
 		}
 	}
 
-	const getSelectedVariant = (selectedOptions: SelectedOption[]): ProductVariant | null => {
-		return product?.variants?.nodes?.find(
-			variant =>
-				variant.selectedOptions.length === selectedOptions?.length &&
-				variant.selectedOptions.every(opt =>
-					selectedOptions?.some(t => t.name === opt.name && t.value === opt.value)
-				)
+	const getSelectedVariant = (selectedOptions: SelectedOption[], product: Product): ProductVariant | null => {
+		return product?.variants?.nodes?.find(variant =>
+			variant.selectedOptions.every(opt =>
+				selectedOptions?.some(t => t.name === opt.name && t.value === opt.value)
+			)
 		)
 	}
 
@@ -109,7 +108,7 @@ export default function Home(props) {
 			}
 		})
 
-		const selectedVariant = getSelectedVariant(newSelectedOptions)
+		const selectedVariant = getSelectedVariant(newSelectedOptions, product)
 
 		setCurrentVariant(selectedVariant)
 		setVariantsOptions(variantsOptionsAvailability)
@@ -121,17 +120,19 @@ export default function Home(props) {
 			<MainHeader />
 
 			{product && (
-				<View className={'flex flex-col gap-4 p-4'}>
+				<View>
 					<ImageCarousel product={product} />
 
-					<MainDescription product={product} />
+					<View className={'flex flex-col gap-4 p-4'}>
+						<MainDescription product={product} />
 
-					<SkuSelector
-						product={product}
-						variantsOptions={variantsOptions}
-						selectedVariantOptions={selectedVariantOptions}
-						onSelectVariant={selectVariant}
-					/>
+						<SkuSelector
+							product={product}
+							variantsOptions={variantsOptions}
+							selectedVariantOptions={selectedVariantOptions}
+							onSelectVariant={selectVariant}
+						/>
+					</View>
 
 					<ActionButton currentVariant={currentVariant} />
 				</View>

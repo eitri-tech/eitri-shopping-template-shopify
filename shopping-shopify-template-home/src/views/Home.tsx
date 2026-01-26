@@ -1,12 +1,10 @@
 // @ts-ignore
 import { Text, View, Image, Button, Page } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
-// @ts-ignore
 import { HeaderContentWrapper, HeaderLogo, BottomInset } from 'shopping-shopify-template-shared'
 import { getCmsContent } from '../services/cmsService'
 import CmsContentRender from '../components/CmsContentRender/CmsContentRender'
 import { CmsContent } from '../types/cmscontent.type'
-// @ts-ignore
 import { App, Shopify } from 'shopping-shopify-template-sdk'
 import { search } from '../services/productService'
 import Eitri from 'eitri-bifrost'

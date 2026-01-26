@@ -19,6 +19,11 @@ eitri-apps:
       alias: pdp
       focus: false
       shared: false
+    - path: ./shopping-shopify-template-cart
+      workspace: cart
+      alias: cart
+      focus: false
+      shared: false
 bottom-tab-view-simulation:
     eitri-apps:
         - slug: 'shopping-shopify-template-home'
@@ -31,7 +36,7 @@ bottom-tab-view-simulation:
         #    initialization-params:
         #      type: "string"
         #      value: "tabIndex=1&route=Categories"
-        - slug: 'shopping-shopify-template-home'
+        - slug: 'shopping-shopify-template-cart'
           title: 'Carrinho'
           initialization-params:
               type: 'string'

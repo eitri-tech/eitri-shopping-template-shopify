@@ -6,6 +6,7 @@ export default class StorageService {
 	static async setStorageItem(key: string, item: string) {
 		const host = RemoteConfig.getContent('providerInfo.host')
 		const _key = `${host}_${key}`
+		console.log('key', `${host}_${key}`)
 		return Eitri.sharedStorage.setItem(_key, item)
 	}
 

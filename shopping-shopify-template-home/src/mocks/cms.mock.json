@@ -7,7 +7,9 @@
 		"autoPlay": false,
 		"images": [
 			{
-				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_ef514cc1-cc82-461e-a0fe-7f9fe39e530f.jpg"
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_ef514cc1-cc82-461e-a0fe-7f9fe39e530f.jpg",
+				"type": "collection",
+				"handle": "esportes"
 			},
 			{
 				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_e8f7481c-7ea8-498e-9f05-dc6847a32272.jpg"

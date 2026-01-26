@@ -12,9 +12,9 @@ type ActionButtonProps = {
 
 export default function ActionButton(props: ActionButtonProps) {
 	const { cart, addItemToCart } = useLocalShoppingCart()
+
 	const { t } = useTranslation()
 	const { currentVariant } = props
-	const [isAvailable, setIsAvailable] = useState(true)
 	const [isLoading, setLoading] = useState(false)
 
 	useEffect(() => {
@@ -24,27 +24,33 @@ export default function ActionButton(props: ActionButtonProps) {
 	}, [])
 
 	const isItemOnCart = () => {
-		console.log('cart==>', cart)
+		console.log('cart==>', cart?.lines)
 
 		return false
-		// return cart?.items?.some(cartItem => cartItem.id === currentSku?.itemId)
+		// return cart?.lines?..some(cartItem => cartItem.id === currentSku?.itemId)
 	}
 
 	const getButtonLabel = () => {
-		return 'Comprar'
-		// if (!isAvailable) return t('product.errorNoProduct')
-		// return isItemOnCart() ? t('product.labelGoToCart') : t('product.labelAddToCart')
+		if (!currentVariant.availableForSale) return t('actionButton.notAvailable', 'Indisponível')
+		return isItemOnCart()
+			? t('actionButton.labelGoToCart', 'Ir para o carrinho')
+			: t('actionButton.labelAddToCart', 'Comprar')
 	}
 
 	const handleButtonClick = async () => {
-		if (!isAvailable) return
-		setLoading(true)
-		if (isItemOnCart()) {
-			// openCart()
-		} else {
-			await addItemToCart(cart.id, { merchandiseId: currentVariant.id, quantity: 1 })
+		try {
+			if (!currentVariant.availableForSale || !currentVariant) return
+			setLoading(true)
+			if (isItemOnCart()) {
+				// openCart()
+			} else {
+				await addItemToCart({ merchandiseId: currentVariant.id, quantity: 1 })
+			}
+			setLoading(false)
+		} catch (e) {
+			console.log('error===>', e)
+			setLoading(false)
 		}
-		setLoading(false)
 	}
 
 	return (
@@ -53,7 +59,7 @@ export default function ActionButton(props: ActionButtonProps) {
 				<View className='p-4'>
 					<CustomButton
 						isLoading={isLoading}
-						disabled={!isAvailable}
+						disabled={!currentVariant.availableForSale}
 						label={getButtonLabel()}
 						onClick={handleButtonClick}
 					/>

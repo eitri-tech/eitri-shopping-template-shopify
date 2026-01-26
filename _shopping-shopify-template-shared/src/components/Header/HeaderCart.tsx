@@ -1,14 +1,23 @@
+// @ts-ignore
 import { Text, View } from 'eitri-luminus'
 import Eitri from 'eitri-bifrost'
+import { useEffect, useState } from 'react'
+import { Cart } from 'shopping-shopify-template-sdk'
 
-export default function HeaderCart(props) {
+interface HeaderCartProps {
+	cart?: Cart
+	quantityOfItems?: number
+	onClick?: () => void
+}
+
+export default function HeaderCart(props: HeaderCartProps) {
 	const { quantityOfItems, onClick, cart } = props
 
 	const [_quantityOfItems, setQuantityOfItems] = useState(quantityOfItems ?? 0)
 
 	useEffect(() => {
 		if (cart) {
-			const itemsQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0)
+			const itemsQuantity = cart?.lines?.nodes?.reduce((acc, item) => acc + item.quantity, 0)
 			setQuantityOfItems(itemsQuantity)
 		}
 	}, [cart])

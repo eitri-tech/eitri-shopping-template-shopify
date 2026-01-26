@@ -11,7 +11,9 @@ export interface Cart {
 	note: string
 	attributes: Attribute[]
 	cost: CartCost
-	lines: Lines
+	lines: {
+		nodes: Lines[]
+	}
 	discountCodes: CartDiscountCode[]
 	discountAllocations: DiscountAllocation[]
 	appliedGiftCards: AppliedGiftCard[]
@@ -65,14 +67,6 @@ export interface SubtotalAmount {
 }
 
 export interface Lines {
-	edges: Edge[]
-}
-
-export interface Edge {
-	node: Node
-}
-
-export interface Node {
 	id: string
 	quantity: number
 	merchandise: Merchandise
