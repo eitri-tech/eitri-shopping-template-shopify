@@ -19,7 +19,7 @@ export default function CartPage() {
 
 	const load = async () => {
 		setLoading(true)
-		await App.configure({ verbose: true })
+		await App.configure({ verbose: false })
 
 		Shopify.cart
 			.getCurrentOrCreateCart()

@@ -16,12 +16,11 @@ export default class CatalogService {
 		const body = {
 			query: personalizedQuery || SEARCH_QUERY,
 			variables: {
-				_params
+				..._params
 			}
 		}
-
 		const res = await ShopifyCaller.post(body)
-		return res.data
+		return res?.data?.data?.search
 	}
 
 	static async collection(params: CollectionParams, query: string = COLLECTION_QUERY): Promise<CollectionReturn> {
@@ -41,11 +40,7 @@ export default class CatalogService {
 		return res?.data?.data?.collection
 	}
 
-	static async getProductJson(handle: string) {
-		let host = RemoteConfig.getContent('providerInfo.host')
-		const url = `https://${host}/products/${handle}.json`
-
-		const res = await ShopifyCaller.get(null, url)
-		return res.data
+	static async predictiveSearch(handle: string) {
+		// TODO
 	}
 }

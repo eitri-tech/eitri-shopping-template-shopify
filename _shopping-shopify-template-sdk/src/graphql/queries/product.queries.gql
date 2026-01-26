@@ -27,12 +27,18 @@ query SEARCH_QUERY(
         unavailableProducts: $unavailableProducts
     ) {
         totalCount
+        pageInfo {
+            hasNextPage
+            startCursor
+            endCursor
+            hasPreviousPage
+        }
         nodes {
             ... on Product {
                 ...ProductFields
             }
         }
-        filters {
+        productFilters {
             id
             label
             presentation

@@ -62,12 +62,13 @@ export default function ProductCatalogContent(props: ProductCatalogContent) {
 				return
 			}
 
-			setPageHasEnded(!result.pageInfo.hasNextPage)
+			setPageHasEnded(!result?.pageInfo?.hasNextPage)
 			setProducts(prev => [...prev, ...result.nodes])
 			setEndCursor(result?.pageInfo?.endCursor)
 			setFilterOptions(result?.filters)
 			setProductLoading(false)
 		} catch (error) {
+			console.log('Entrada de pesquisa', 'Erro ao buscar produtos', error)
 			setProductLoading(false)
 		}
 	}

@@ -1,4 +1,4 @@
-import { Shopify, ProductsConnection } from 'shopping-shopify-template-sdk'
+import { Shopify, ProductsConnection, SearchQueryArguments } from 'shopping-shopify-template-sdk'
 
 export const search = async params => {
 	const res = await Shopify.catalog.search(params)
@@ -25,6 +25,12 @@ export const getProductsService = async (params: ProductSearchParams): Promise<P
 		return res?.products
 	}
 
-	const res = await Shopify.catalog.collection(params)
-	return res?.products
+	const { productFilters, ...rest } = await Shopify.catalog.search(params as SearchQueryArguments)
+
+	return {
+		...rest,
+		filters: productFilters
+	}
 }
+
+export const predictiveSearch = async (productId: string): Promise<any> => {}

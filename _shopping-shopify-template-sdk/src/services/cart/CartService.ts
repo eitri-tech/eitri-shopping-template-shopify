@@ -32,7 +32,7 @@ export class CartService {
 
 	static async getCurrentOrCreateCart() {
 		const cartId = await StorageService.getStorageItem(CartService.SHOPIFY_CART_KEY)
-		console.log('cartId=======>', cartId)
+
 		if (cartId) {
 			return CartService.getCartById(cartId)
 		} else {
@@ -58,6 +58,7 @@ export class CartService {
 		}
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Carrinho carregado:', cartId)
 
 		const { data } = res.data as { data: CartResponse }
@@ -189,6 +190,7 @@ export class CartService {
 		Logger.log('[CartService] Removendo gift card(s):', appliedGiftCardIds.join(', '))
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Gift card(s) removido(s) com sucesso')
 
 		const { data } = res.data as { data: unknown }
@@ -208,9 +210,8 @@ export class CartService {
 		Logger.log('[CartService] Atualizando cupom(ns):', discountCodes.join(', '))
 
 		const res = await ShopifyCaller.post(body)
-		Logger.log('[CartService] Cupom(ns) atualizado(s) com sucesso')
 
-		console.log(res.data)
+		Logger.log('[CartService] Cupom(ns) atualizado(s) com sucesso')
 
 		const { data } = res.data as { data: unknown }
 
