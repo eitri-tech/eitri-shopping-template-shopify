@@ -65,7 +65,7 @@ export default function ProductCardFullImage(props) {
 					{loadingCartOp ? (
 						<Loading width='36px' />
 					) : (
-						<Text className='text-primary-content font-medium text-xs'>{actionLabel}</Text>
+						<Text className='text-primary-content font-medium text-xs'>{actionLabel || 'Comprar'}</Text>
 					)}
 				</View>
 			</View>

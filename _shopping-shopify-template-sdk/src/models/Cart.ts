@@ -85,12 +85,12 @@ export interface Merchandise {
 	title: string
 	priceV2: SubtotalAmount
 	compareAtPrice?: SubtotalAmount | null
-	product: Product
+	product: ProductCart
 	selectedOptions: SelectedOption[]
 	availableForSale: boolean
 }
 
-export interface Product {
+export interface ProductCart {
 	id: string
 	title: string
 	handle: string

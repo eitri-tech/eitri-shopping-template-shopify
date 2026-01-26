@@ -30,6 +30,7 @@ export default function ProductCard({ product }) {
 		price: getPrice(),
 		listPrice: getListPrice(),
 		showListItem: true,
+		actionLabel: 'Comprar',
 		onPressOnCard: goToProduct
 	}
 

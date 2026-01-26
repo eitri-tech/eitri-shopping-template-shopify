@@ -4,12 +4,13 @@ import { SearchQueryArguments } from '../../models/SearchParams.types'
 import { SEARCH_QUERY, COLLECTION_QUERY } from '../../graphql/queries/product.queries.gql'
 import { CollectionParams } from '../../models/CollectionParams.types'
 import RemoteConfig from '../RemoteConfig'
+import { CollectionReturn } from '../../models/CollectionReturn.types'
 
 export default class CatalogService {
 	static async search(params: SearchQueryArguments, personalizedQuery?: string) {
 		const _params = {
 			...params,
-			first: params.first || 25
+			first: params.first || 12
 		}
 
 		const body = {
@@ -23,10 +24,10 @@ export default class CatalogService {
 		return res.data
 	}
 
-	static async collection(params: CollectionParams, query: string = COLLECTION_QUERY) {
+	static async collection(params: CollectionParams, query: string = COLLECTION_QUERY): Promise<CollectionReturn> {
 		const _params = {
 			...params,
-			first: params.first || 25
+			first: params.first || 12
 		}
 
 		const body = {
@@ -35,8 +36,9 @@ export default class CatalogService {
 				..._params
 			}
 		}
+
 		const res = await ShopifyCaller.post(body)
-		return res.data
+		return res?.data?.data?.collection
 	}
 
 	static async getProductJson(handle: string) {

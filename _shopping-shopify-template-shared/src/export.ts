@@ -8,5 +8,6 @@ export { default as CustomCarousel } from './components/CustomCarousel/CustomCar
 export { default as ProductCardFullImage } from './components/ProductCard/ProductCardFullImage'
 export { default as BottomInset } from './components/BottomInset/BottomInset'
 export { default as CustomButton } from './components/CustomButton/CustomButton'
+export { default as CustomCheckbox } from './components/CustomCheckbox/CustomCheckbox'
 
 export { default as useScreen } from './services/useScreen'

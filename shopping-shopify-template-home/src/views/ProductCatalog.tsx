@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Text, View, Image, Button, Page } from 'eitri-luminus'
 
-import { HeaderContentWrapper, HeaderReturn, HeaderText } from 'shopping-shopify-template-shared'
+import { HeaderContentWrapper, HeaderReturn, HeaderText, BottomInset } from 'shopping-shopify-template-shared'
 import Eitri from 'eitri-bifrost'
 import { useTranslation } from 'eitri-i18n'
 // import ProductCatalogContent from '../components/ProductCatalogContent/ProductCatalogContent'
@@ -36,25 +36,20 @@ export default function ProductCatalog(props) {
 	}
 
 	return (
-		<Page title={title || t('productCatalog.title')}>
-			<>
-				<HeaderContentWrapper className={`justify-between`}>
-					<View className={`flex items-center gap-4`}>
-						{!openInBottomBar && <HeaderReturn />}
+		<Page title={title || t('productCatalog.title', 'Catálogo')}>
+			<HeaderContentWrapper className={`justify-between`}>
+				<View className={`flex items-center gap-4`}>
+					{!openInBottomBar && <HeaderReturn />}
 
-						<HeaderText text={title || t('productCatalog.title')} />
-					</View>
+					<HeaderText text={title || t('productCatalog.title', 'Catálogo')} />
+				</View>
 
-					{/*<HeaderSearchIcon onClick={goToSearch} />*/}
-				</HeaderContentWrapper>
+				{/*<HeaderSearchIcon onClick={goToSearch} />*/}
+			</HeaderContentWrapper>
 
-				{appliedFacets && (
-					<ProductCatalogContent
-						banner={location?.state?.banner}
-						params={appliedFacets}
-					/>
-				)}
-			</>
+			{appliedFacets && <ProductCatalogContent params={appliedFacets} />}
+
+			<BottomInset />
 		</Page>
 	)
 }

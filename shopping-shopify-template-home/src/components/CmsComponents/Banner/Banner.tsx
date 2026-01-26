@@ -11,7 +11,7 @@ interface BannerProps {
 
 export default function Banner({ data }: BannerProps) {
 	const handlePress = data => {
-		Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params: { data } } })
+		Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params: data } })
 	}
 
 	if (data.type === 'fullscreen')
