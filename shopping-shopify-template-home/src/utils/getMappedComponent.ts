@@ -9,18 +9,18 @@ const componentMap = {
 }
 
 export const getMappedComponent = (content: CmsItem) => {
-	const Component: React.ComponentType<{ data: CmsItem }> = componentMap[content.name] as
+	const Component: React.ComponentType<{ data: CmsItem }> = componentMap[content.blockType] as
 		| React.ComponentType<{ data: CmsItem }>
 		| undefined
 	if (!Component) {
-		console.error(`Component ${content.name} does not exist in the component map.`)
+		console.error(`Component ${content.blockType} does not exist in the component map.`)
 		return null
 	}
 
 	try {
 		return React.createElement(Component, { key: content.id, data: content })
 	} catch (error) {
-		console.error(`Error rendering component ${content.name}:`, error)
+		console.error(`Error rendering component ${content.blockType}:`, error)
 		return null
 	}
 }

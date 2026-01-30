@@ -52,6 +52,8 @@ bottom-tab-view-simulation:
         #      type: "string"
         #      value: "tabIndex=4"
 
-application-id: cca11cae-342e-4ca6-a955-00abca321d86
+#application-id: cca11cae-342e-4ca6-a955-00abca321d86
+#insider
+application-id: aaf9891b-c148-40fc-aa68-0a5028153b78
 eitri-luminus: "2.22.3"
 eitri-bifrost: "4.7.0"

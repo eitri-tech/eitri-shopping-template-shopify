@@ -4,7 +4,7 @@ import { View, Image, Text } from 'eitri-luminus'
 // import { getProductsService } from '../../services/ProductService'
 import { useState } from 'react'
 import { BannerContent } from '../../types/cmscontent.type'
-import { getProductsService, ProductSearchParams } from '../../services/productService'
+import { collection, getProductsService, ProductSearchParams } from '../../services/productService'
 import InfiniteScroll from '../InfiniteScroll/InfiniteScroll'
 import SearchResults from './Components/SearchResults'
 import CatalogFilter from './Components/CatalogFilter'
@@ -32,6 +32,9 @@ export default function ProductCatalogContent(props: ProductCatalogContent) {
 	const [filterOptions, setFilterOptions] = useState([])
 	const [selectedFilters, setSelectedFilters] = useState<FilterValue[]>([])
 
+	const [imageHighlight, setImageHighlight] = useState<string>('')
+	const [description, setDescription] = useState<string>('')
+
 	useEffect(() => {
 		if (params) {
 			// Criar uma cópia limpa dos parâmetros para evitar mutação
@@ -45,16 +48,27 @@ export default function ProductCatalogContent(props: ProductCatalogContent) {
 		}
 	}, [params])
 
+	const resolveGetProducts = async (params: ProductSearchParams, endCursor: string) => {
+		if (params.type === 'collection') {
+			const result = await collection(params)
+			setImageHighlight(result?.image?.url)
+			setDescription(result?.description)
+			return result.products
+		}
+		const result = await getProductsService({
+			...params,
+			...(endCursor && { after: endCursor })
+		})
+		return result
+	}
+
 	const getProducts = async (initialParams: ProductSearchParams, endCursor: string) => {
 		try {
 			if (productLoading) return
 
 			setProductLoading(true)
 
-			const result = await getProductsService({
-				...initialParams,
-				...(endCursor && { after: endCursor })
-			})
+			const result = await resolveGetProducts(initialParams, endCursor)
 
 			if (result?.nodes?.length === 0) {
 				setProductLoading(false)
@@ -114,6 +128,17 @@ export default function ProductCatalogContent(props: ProductCatalogContent) {
 		<View {...rest}>
 			{products.length > 0 && (
 				<>
+					{imageHighlight && (
+						<View>
+							<Image
+								src={imageHighlight}
+								className='w-full'
+							/>
+						</View>
+					)}
+
+					{description && <View className={'p-4 text-semibold'}>{description}</View>}
+
 					<View className='p-4 flex flex-between gap-4 w-full'>
 						<CatalogFilter
 							filters={filterOptions}

@@ -1,15 +1,23 @@
 [
 	{
 		"id": "1",
-		"name": "Banner",
-		"type": "hero",
+		"blockType": "Banner",
+		"mode": "hero",
 		"aspectRatio": "629:860",
 		"autoPlay": false,
 		"images": [
 			{
-				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_ef514cc1-cc82-461e-a0fe-7f9fe39e530f.jpg",
-				"type": "collection",
-				"handle": "esportes"
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_5a9e4997-a4fd-48fd-af30-2050c87f5d98.jpg",
+				"action": {
+					"type": "collection",
+					"value": "best-sellers-com-desconto"
+				}
+			},
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_e8f7481c-7ea8-498e-9f05-dc6847a32272.jpg"
+			},
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_e8f7481c-7ea8-498e-9f05-dc6847a32272.jpg"
 			},
 			{
 				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_e8f7481c-7ea8-498e-9f05-dc6847a32272.jpg"
@@ -18,7 +26,50 @@
 	},
 	{
 		"id": "2",
-		"name": "ProductShelf",
-		"collectionId": "gid://shopify/Collection/240646488213"
+		"blockType": "ProductShelf",
+		"title": "Esportes",
+		"params": {
+			"type": "collection",
+			"value": "esportes",
+			"filters": []
+		}
+	},
+	{
+		"id": "3",
+		"blockType": "Banner",
+		"mode": "hero",
+		"aspectRatio": "117:160",
+		"autoPlay": false,
+		"images": [
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_9aa7fe17-5f24-49c3-9cf7-017925429f1f.jpg"
+			},
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_437dd146-d2f5-4e71-8f24-db07ae5e6f51.jpg",
+				"action": {
+					"type": "collection",
+					"value": "aerolook"
+				}
+			}
+		]
+	},
+	{
+		"id": "4",
+		"blockType": "Banner",
+		"mode": "hero",
+		"aspectRatio": "117:160",
+		"autoPlay": false,
+		"images": [
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/AMBOS_Viagem_5cf8b91d-5a93-4c04-a692-f184102e438b.jpg"
+			},
+			{
+				"imageUrl": "https://www.insiderstore.com.br/cdn/shop/files/banner_mobile_437dd146-d2f5-4e71-8f24-db07ae5e6f51.jpg",
+				"action": {
+					"type": "collection",
+					"value": "aerolook"
+				}
+			}
+		]
 	}
 ]

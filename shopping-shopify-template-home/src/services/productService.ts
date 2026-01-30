@@ -1,21 +1,21 @@
-import { Shopify, ProductsConnection, SearchQueryArguments } from 'shopping-shopify-template-sdk'
+import { Shopify, ProductsConnection, SearchQueryArguments, CollectionReturn } from 'shopping-shopify-template-sdk'
+import { ActionType, SortKey } from '../types/cmscontent.type'
 
 export const search = async params => {
 	const res = await Shopify.catalog.search(params)
 	return res?.data?.search
 }
 
-export const collection = async params => {
-	const res = await Shopify.catalog.collection(params)
-	return res?.products
+export const collection = async (params: ProductSearchParams): Promise<CollectionReturn> => {
+	return await Shopify.catalog.collection(params)
 }
 
 export interface ProductSearchParams {
 	handle?: string
-	type?: 'collection' | 'search'
+	type?: ActionType
 	after?: string
 	filters?: any[]
-	sortKey?: 'BEST_SELLING' | 'COLLECTION_DEFAULT' | 'CREATED' | 'ID' | 'MANUAL' | 'PRICE' | 'RELEVANCE' | 'TITLE'
+	sortKey?: SortKey
 	reverse?: boolean
 }
 

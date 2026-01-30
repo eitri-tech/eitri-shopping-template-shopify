@@ -24,14 +24,12 @@ export default function ActionButton(props: ActionButtonProps) {
 	}, [])
 
 	const isItemOnCart = () => {
-		console.log('cart==>', cart?.lines)
-
 		return false
 		// return cart?.lines?..some(cartItem => cartItem.id === currentSku?.itemId)
 	}
 
 	const getButtonLabel = () => {
-		if (!currentVariant.availableForSale) return t('actionButton.notAvailable', 'Indisponível')
+		if (!currentVariant?.availableForSale) return t('actionButton.notAvailable', 'Indisponível')
 		return isItemOnCart()
 			? t('actionButton.labelGoToCart', 'Ir para o carrinho')
 			: t('actionButton.labelAddToCart', 'Comprar')
@@ -39,7 +37,7 @@ export default function ActionButton(props: ActionButtonProps) {
 
 	const handleButtonClick = async () => {
 		try {
-			if (!currentVariant.availableForSale || !currentVariant) return
+			if (!currentVariant || !currentVariant.availableForSale) return
 			setLoading(true)
 			if (isItemOnCart()) {
 				// openCart()
@@ -59,7 +57,7 @@ export default function ActionButton(props: ActionButtonProps) {
 				<View className='p-4'>
 					<CustomButton
 						isLoading={isLoading}
-						disabled={!currentVariant.availableForSale}
+						disabled={!currentVariant?.availableForSale}
 						label={getButtonLabel()}
 						onClick={handleButtonClick}
 					/>

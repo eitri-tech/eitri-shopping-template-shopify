@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { CustomCarousel, useScreen } from 'shopping-shopify-template-shared'
 import { BannerContent } from '../../../../types/cmscontent.type'
 
+import Slider from '../../../../Slider/Slider'
+
 interface BannerProps {
 	data: BannerContent
 	onClick: (image: BannerContent['images'][number]) => void
@@ -17,7 +19,7 @@ export default function SliderHero(props: BannerProps) {
 	const [currentSlide, setCurrentSlide] = useState(0)
 	const [proportionalHeight, setProportionalHeight] = useState('auto')
 
-	const imagesList = data.images
+	const imagesList = data?.images
 
 	useEffect(() => {
 		if (data?.aspectRatio && availableWidth > 0) {
@@ -29,6 +31,7 @@ export default function SliderHero(props: BannerProps) {
 	}, [availableWidth])
 
 	const onChange = i => {
+		console.log('i', i)
 		setCurrentSlide(i)
 	}
 
@@ -39,15 +42,15 @@ export default function SliderHero(props: BannerProps) {
 					<Text className='font-bold mb-8'>{data.title}</Text>
 				</View>
 			)}
-			<CustomCarousel
-				onSlideChange={onChange}
-				autoPlay={data.autoPlay ?? true}
-				interval={6000}
-				loop={true}>
+
+			<Slider
+				options={{
+					loop: true
+				}}>
 				{imagesList &&
 					imagesList.map(image => (
 						<View
-							className='w-full flex justify-center snap-x snap-always'
+							className='w-full flex justify-center snap-x snap-always keen-slider__slide'
 							key={`image_${image.imageUrl}`}>
 							<View
 								onClick={() => {
@@ -63,7 +66,33 @@ export default function SliderHero(props: BannerProps) {
 							</View>
 						</View>
 					))}
-			</CustomCarousel>
+			</Slider>
+
+			{/*<CustomCarousel*/}
+			{/*	onSlideChange={onChange}*/}
+			{/*	autoPlay={data.autoPlay ?? true}*/}
+			{/*	interval={6000}*/}
+			{/*	loop={true}>*/}
+			{/*	{imagesList &&*/}
+			{/*		imagesList.map(image => (*/}
+			{/*			<View*/}
+			{/*				className='w-full flex justify-center snap-x snap-always'*/}
+			{/*				key={`image_${image.imageUrl}`}>*/}
+			{/*				<View*/}
+			{/*					onClick={() => {*/}
+			{/*						onClick(image)*/}
+			{/*					}}*/}
+			{/*					height={proportionalHeight}*/}
+			{/*					width='100%'>*/}
+			{/*					<Image*/}
+			{/*						fadeIn={1000}*/}
+			{/*						className='w-full h-full'*/}
+			{/*						src={image.imageUrl}*/}
+			{/*					/>*/}
+			{/*				</View>*/}
+			{/*			</View>*/}
+			{/*		))}*/}
+			{/*</CustomCarousel>*/}
 			{imagesList.length > 1 && (
 				<View className='flex justify-center gap-2 mt-2'>
 					{imagesList.map((_, index) => (

@@ -3,6 +3,14 @@ import { Product } from './Product'
 export interface CollectionReturn {
 	handle: string
 	id: string
+	title: string
+	description: string
+	image: {
+		url: string
+		height: number
+		width: number
+		id: string
+	}
 	products: ProductsConnection
 }
 
