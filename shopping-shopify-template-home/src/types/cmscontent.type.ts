@@ -12,7 +12,7 @@ export type SortKey =
 
 export interface BannerContent {
 	id: string
-	name: string
+	blockType: string
 	mode?: string
 	aspectRatio?: string
 	autoPlay?: boolean
@@ -31,7 +31,7 @@ export interface BannerContentImage {
 
 export interface ProductShelfContent {
 	id: string
-	name: string
+	blockType: string
 	mode?: string
 	title?: string
 	params?: {
@@ -53,10 +53,17 @@ export type CategoryListSwipeContentNode = {
 
 export type CategoryListSwipeContent = {
 	id: string
-	name: string
+	blockType: string
 	content: CategoryListSwipeContentNode[]
 }
 
 export type CmsItem = BannerContent | ProductShelfContent | CategoryListSwipeContent
 
 export type CmsContent = CmsItem[]
+
+export type CMSPage = {
+	id: string
+	type: string
+	sections: CmsContent
+	name: string
+}
