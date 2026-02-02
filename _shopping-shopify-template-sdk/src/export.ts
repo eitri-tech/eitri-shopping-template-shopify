@@ -5,7 +5,8 @@ export type {
 	DeliveryGroup,
 	DeliveryGroups,
 	CartBuyerIdentityInput,
-	DeferredCartResponse
+	DeferredCartResponse,
+	CartLineUpdateInput
 } from './models/Cart'
 export type { SearchQueryArguments } from './models/SearchParams.types'
 export type { UpdateCartInput } from './models/Cart'

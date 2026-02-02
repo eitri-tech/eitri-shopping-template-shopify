@@ -49,12 +49,12 @@ export default function CustomButton(props) {
 			return (
 				<View className='flex items-center gap-2'>
 					<View className={_contentColor}>{leftIcon}</View>
-					<Text className={`font-bold ${_contentColor}`}>{label}</Text>
+					<Text className={`font-medium ${_contentColor}`}>{label}</Text>
 				</View>
 			)
 		}
 
-		return <Text className={`font-bold ${_contentColor}`}>{label}</Text>
+		return <Text className={`font-medium text-sm ${_contentColor}`}>{label}</Text>
 	}
 
 	return (
@@ -62,7 +62,7 @@ export default function CustomButton(props) {
 			onClick={_onPress}
 			className={`
 				flex items-center justify-center 
-				h-[45px]
+				h-[40px]
 				rounded
 				w-full
 				${_backgroundColor ? `${_backgroundColor}` : ''}

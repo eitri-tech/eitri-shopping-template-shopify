@@ -121,7 +121,9 @@ export class CartService {
 		return data.cartLinesAdd
 	}
 
-	static async updateCartLines(cartId: string, lines: CartLineUpdateInput[]) {
+	static async updateCartLines(lines: CartLineUpdateInput[]): Promise<{ cart: Cart; userErrors: any[] }> {
+		const cartId = await CartService.getCurrentCartIdOrCreate()
+
 		const body = {
 			query: CART_LINES_UPDATE,
 			variables: {
@@ -133,14 +135,17 @@ export class CartService {
 		Logger.log('[CartService] Atualizando linhas do carrinho:', lines.length, 'item(s)')
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Linhas atualizadas com sucesso')
 
-		const { data } = res.data as { data: unknown }
+		const { data } = res.data
 
-		return data
+		return data.cartLinesUpdate
 	}
 
-	static async removeItemFromCart(cartId: string, lineIds: string[]) {
+	static async removeItemFromCart(lineIds: string[]): Promise<{ cart: Cart; userErrors: any[] }> {
+		const cartId = await CartService.getCurrentCartIdOrCreate()
+
 		const body = {
 			query: CART_LINES_REMOVE,
 			variables: {
@@ -152,11 +157,12 @@ export class CartService {
 		Logger.log('[CartService] Removendo itens do carrinho:', lineIds.length, 'item(s)')
 
 		const res = await ShopifyCaller.post(body)
+
 		Logger.log('[CartService] Itens removidos com sucesso')
 
-		const { data } = res.data as { data: unknown }
+		const { data } = res.data
 
-		return data
+		return data.cartLinesRemove
 	}
 
 	static async addGiftCardCode(cartId: string, giftCardCodes: string[]) {

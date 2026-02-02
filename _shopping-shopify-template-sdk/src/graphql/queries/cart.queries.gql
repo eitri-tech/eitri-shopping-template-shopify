@@ -42,39 +42,8 @@ mutation CART_ADD_ITEM($cartId: ID!, $lines: [CartLineInput!]!) {
 mutation CART_LINES_UPDATE($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
 	cartLinesUpdate(cartId: $cartId, lines: $lines) {
 		cart {
-			id
-			totalQuantity
-			cost {
-				totalAmount {
-					amount
-					currencyCode
-				}
-				subtotalAmount {
-					amount
-					currencyCode
-				}
-			}
-			lines(first: 50) {
-				edges {
-					node {
-						id
-						quantity
-						merchandise {
-							... on ProductVariant {
-								id
-								title
-								priceV2 {
-									amount
-									currencyCode
-								}
-								compareAtPrice {
-									amount
-									currencyCode
-								}
-							}
-						}
-					}
-				}
+			... on Cart {
+				...CartFields
 			}
 		}
 		userErrors {
@@ -87,39 +56,8 @@ mutation CART_LINES_UPDATE($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
 mutation CART_LINES_REMOVE($cartId: ID!, $lineIds: [ID!]!) {
 	cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
 		cart {
-			id
-			totalQuantity
-			cost {
-				totalAmount {
-					amount
-					currencyCode
-				}
-				subtotalAmount {
-					amount
-					currencyCode
-				}
-			}
-			lines(first: 50) {
-				edges {
-					node {
-						id
-						quantity
-						merchandise {
-							... on ProductVariant {
-								id
-								title
-								priceV2 {
-									amount
-									currencyCode
-								}
-								compareAtPrice {
-									amount
-									currencyCode
-								}
-							}
-						}
-					}
-				}
+			... on Cart {
+				...CartFields
 			}
 		}
 		userErrors {

@@ -9,5 +9,6 @@ export { default as ProductCardFullImage } from './components/ProductCard/Produc
 export { default as BottomInset } from './components/BottomInset/BottomInset'
 export { default as CustomButton } from './components/CustomButton/CustomButton'
 export { default as CustomCheckbox } from './components/CustomCheckbox/CustomCheckbox'
+export { default as CustomInput } from './components/CustomInput/CustomInput'
 
 export { default as useScreen } from './services/useScreen'

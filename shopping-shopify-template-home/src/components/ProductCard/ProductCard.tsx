@@ -2,8 +2,11 @@
 import { Shopify } from 'shopping-shopify-template-sdk'
 import { ProductCardFullImage } from 'shopping-shopify-template-shared'
 import { openProduct } from '../../services/navigationService'
+import { useLocalShoppingCart } from '../../providers/LocalCart'
 
 export default function ProductCard({ product }) {
+	const { addItemToCart } = useLocalShoppingCart()
+
 	const getPrice = () => {
 		const price = product?.variants?.nodes?.[0]?.price
 		return Number(price?.amount)?.toLocaleString('pt-BR', {
@@ -38,8 +41,7 @@ export default function ProductCard({ product }) {
 		<ProductCardFullImage
 			{...productProps}
 			onPressCartButton={async () => {
-				const cart = await Shopify.cart.getCurrentOrCreateCart()
-				await Shopify.cart.addItemToCart({
+				addItemToCart({
 					merchandiseId: product.variants.nodes[0].id,
 					quantity: 1
 				})

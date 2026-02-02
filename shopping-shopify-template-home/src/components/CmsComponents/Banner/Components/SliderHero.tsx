@@ -45,7 +45,10 @@ export default function SliderHero(props: BannerProps) {
 
 			<Slider
 				options={{
-					loop: true
+					loop: true,
+					slideChanged(s) {
+						setCurrentSlide(s.track.details.rel)
+					}
 				}}>
 				{imagesList &&
 					imagesList.map(image => (
