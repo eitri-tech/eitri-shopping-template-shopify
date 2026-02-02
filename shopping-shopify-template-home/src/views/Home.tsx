@@ -24,8 +24,6 @@ export default function Home(props) {
 	const start = async () => {
 		await App.configure({ verbose: false })
 
-		await Eitri.navigation.navigate({ path: "/Signin" })
-
 		startCart()
 
 		const startParams = await Eitri.getInitializationInfos()
@@ -38,7 +36,7 @@ export default function Home(props) {
 			}
 		}
 
-		const _csmContent = await getCmsContent('')
+		const _csmContent = await getCmsContent('home')
 		setCmsContent(_csmContent)
 	}
 
