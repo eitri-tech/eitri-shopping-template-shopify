@@ -330,11 +330,10 @@ export default function CartPage() {
 								edge.node.deliveryOptions.map((option, optIndex) => (
 									<View
 										key={`${index}-${optIndex}`}
-										className={`bg-base-200 p-3 rounded-lg ${
-											edge.node.selectedDeliveryOption?.handle === option.handle
-												? 'border-2 border-primary'
-												: 'border border-base-300'
-										}`}>
+										className={`bg-base-200 p-3 rounded-lg ${edge.node.selectedDeliveryOption?.handle === option.handle
+											? 'border-2 border-primary'
+											: 'border border-base-300'
+											}`}>
 										<View className='flex flex-row justify-between items-center'>
 											<View className='flex flex-col'>
 												<Text className='font-semibold text-sm'>{option.title}</Text>

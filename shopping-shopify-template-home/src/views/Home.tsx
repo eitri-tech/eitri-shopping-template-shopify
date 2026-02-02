@@ -24,6 +24,8 @@ export default function Home(props) {
 	const start = async () => {
 		await App.configure({ verbose: false })
 
+		await Eitri.navigation.navigate({ path: "/Signin" })
+
 		startCart()
 
 		const startParams = await Eitri.getInitializationInfos()
