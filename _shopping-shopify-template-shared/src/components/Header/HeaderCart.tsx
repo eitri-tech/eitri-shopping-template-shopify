@@ -2,10 +2,9 @@
 import { Text, View } from 'eitri-luminus'
 import Eitri from 'eitri-bifrost'
 import { useEffect, useState } from 'react'
-import { Cart } from 'shopping-shopify-template-sdk'
 
 interface HeaderCartProps {
-	cart?: Cart
+	cart?: any
 	quantityOfItems?: number
 	onClick?: () => void
 }

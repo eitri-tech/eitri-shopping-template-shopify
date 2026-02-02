@@ -63,7 +63,7 @@ export default function MainDescription(props: MainDescriptionProps) {
 	return (
 		<View className='flex flex-col px-4'>
 			<View>
-				<Text className='text font-bold'>{product.title}</Text>
+				<Text className='text-lg font-bold'>{product.title}</Text>
 			</View>
 			<View className='mt-4'>
 				{/*{mainSeller?.commertialOffer?.Price < mainSeller?.commertialOffer?.ListPrice && (*/}
@@ -72,7 +72,7 @@ export default function MainDescription(props: MainDescriptionProps) {
 				{/*	</Text>*/}
 				{/*)}*/}
 				<View>
-					<Text className='text-primary font-bold'>{getPrice(product?.priceRange?.minVariantPrice)}</Text>
+					<Text className='text-lg font-bold'>{getPrice(product?.priceRange?.minVariantPrice)}</Text>
 				</View>
 
 				{/*{discoverInstallments(currentSku) && (*/}

@@ -1,10 +1,17 @@
 import ShopifyCaller from '../_helpers/ShopifyCaller'
 import { SearchQueryArguments } from '../../models/SearchParams.types'
 // @ts-ignore
-import { SEARCH_QUERY, COLLECTION_QUERY } from '../../graphql/queries/product.queries.gql'
+import { SEARCH_QUERY, COLLECTION_QUERY, PRODUCT_RECOMMENDATIONS } from '../../graphql/queries/product.queries.gql'
 import { CollectionParams } from '../../models/CollectionParams.types'
 import RemoteConfig from '../RemoteConfig'
 import { CollectionReturn } from '../../models/CollectionReturn.types'
+import { Product } from '../../models/Product'
+
+export interface ProductRecommendationsInput {
+	intent: string
+	productHandle: string
+	productId: string
+}
 
 export default class CatalogService {
 	static async search(params: SearchQueryArguments, personalizedQuery?: string) {
@@ -42,5 +49,25 @@ export default class CatalogService {
 
 	static async predictiveSearch(handle: string) {
 		// TODO
+	}
+
+	static async productRecommendations(
+		params: ProductRecommendationsInput,
+		query: string = PRODUCT_RECOMMENDATIONS
+	): Promise<Product[]> {
+		const _params = {
+			...params
+		}
+
+		const body = {
+			query,
+			variables: {
+				..._params
+			}
+		}
+
+		const res = await ShopifyCaller.post(body)
+
+		return res?.data?.data?.productRecommendations
 	}
 }

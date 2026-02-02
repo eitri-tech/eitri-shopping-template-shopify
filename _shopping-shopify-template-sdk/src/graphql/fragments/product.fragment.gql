@@ -5,6 +5,8 @@ fragment ProductFields on Product {
     }
     handle
     id
+    description
+    descriptionHtml
     images(first: 10) {
         nodes {
             url

@@ -11,6 +11,8 @@ import MainDescription from '../components/MainDescription/MainDescription'
 import SkuSelector from '../components/SkuSelector/SkuSelector'
 import ActionButton from '../components/ActionButton/ActionButton'
 import { useLocalShoppingCart } from '../providers/LocalCart'
+import Description from '../components/Description/Description'
+import RelatedProducts from '../components/RelatedProducts/RelatedProducts'
 
 type StartParams = {
 	product: Product | null
@@ -44,7 +46,6 @@ export default function Home(props) {
 		let product = startParams.product
 
 		if (product) {
-			console.log('product', product)
 			const selectedOptions = product?.selectedOrFirstAvailableVariant?.selectedOptions
 			const selectedVariant = getSelectedVariant(selectedOptions, product)
 
@@ -122,7 +123,7 @@ export default function Home(props) {
 				<View>
 					<ImageCarousel product={product} />
 
-					<View className={'flex flex-col gap-5 mt-5'}>
+					<View className={'flex flex-col gap-6 mt-5'}>
 						<MainDescription product={product} />
 
 						<SkuSelector
@@ -131,6 +132,10 @@ export default function Home(props) {
 							selectedVariantOptions={selectedVariantOptions}
 							onSelectVariant={selectVariant}
 						/>
+
+						<Description product={product} />
+
+						<RelatedProducts product={product} />
 					</View>
 
 					<ActionButton currentVariant={currentVariant} />

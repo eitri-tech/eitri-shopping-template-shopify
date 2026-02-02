@@ -30,10 +30,7 @@ export default function Categories() {
 	}
 
 	return (
-		<Page
-			title='Categorias'
-			bottomInset
-			topInset>
+		<Page title='Categorias'>
 			<HeaderContentWrapper className='justify-between'>
 				<HeaderText text={t('categories.title', 'Categorias')} />
 				<FiSearch

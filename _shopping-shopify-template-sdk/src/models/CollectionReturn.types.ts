@@ -5,6 +5,7 @@ export interface CollectionReturn {
 	id: string
 	title: string
 	description: string
+	descriptionHtml: string
 	image: {
 		url: string
 		height: number

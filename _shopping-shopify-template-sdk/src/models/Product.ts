@@ -2,6 +2,8 @@ export interface Product {
 	category: Category
 	handle: string
 	id: string
+	description: string
+	descriptionHtml: string
 	images: Images
 	isGiftCard: boolean
 	title: string

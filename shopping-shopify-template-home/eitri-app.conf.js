@@ -4,7 +4,7 @@ module.exports = {
 	'slug': 'shopping-shopify-template-home',
 	'eitri-luminus': '2.22.3',
 	'eitri-bifrost': '4.7.0',
-	'version': '0.1.2',
+	'version': '0.1.4',
 	'public-key': '69176ce1-a795-4fe4-b04f-4cf1978d9faf',
 	'applicationId': 'cca11cae-342e-4ca6-a955-00abca321d86',
 	'id': 'f29f4cb4-bdf7-4a16-a9d5-26e501fd532e',
@@ -15,11 +15,11 @@ module.exports = {
 	'eitri-app-dependencies': {
 		'shopping-shopify-template-sdk': {
 			isEitriAppShared: true,
-			version: '0.1.1'
+			version: '0.1.3'
 		},
 		'shopping-shopify-template-shared': {
 			isEitriAppShared: true,
-			version: '0.1.1'
+			version: '0.1.2'
 		},
 		'i18n': {
 			version: '14.1.2'

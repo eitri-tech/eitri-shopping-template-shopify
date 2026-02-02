@@ -11,6 +11,7 @@ export type {
 export type { SearchQueryArguments } from './models/SearchParams.types'
 export type { UpdateCartInput } from './models/Cart'
 export type { CollectionReturn, ProductsConnection, Filter, FilterValue } from './models/CollectionReturn.types'
+export type { ProductRecommendationsInput } from './services/catalog/CatalogService'
 export type {
 	Customer,
 	CustomerAddress,

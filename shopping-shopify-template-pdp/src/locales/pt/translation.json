@@ -3,5 +3,8 @@
 		"notAvailable": "Indisponível",
 		"labelGoToCart": "Ir para o carrinho",
 		"labelAddToCart": "Comprar"
+	},
+	"relatedProducts": {
+		"title": "Você também pode gostar"
 	}
 }

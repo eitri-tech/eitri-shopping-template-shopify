@@ -71,6 +71,7 @@ query COLLECTION_QUERY(
         id
         title
         description
+        descriptionHtml
         handle
         image {
             url
@@ -103,6 +104,22 @@ query COLLECTION_QUERY(
                     label
                 }
             }
+        }
+    }
+}
+
+query PRODUCT_RECOMMENDATIONS(
+    $intent:ProductRecommendationIntent
+    $productHandle: String
+    $productId: ID
+) {
+    productRecommendations(
+        intent: $intent
+        productHandle: $productHandle
+        productId: $productId
+    ) {
+        ... on Product {
+            ...ProductFields
         }
     }
 }

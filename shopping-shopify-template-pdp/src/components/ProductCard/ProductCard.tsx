@@ -1,0 +1,53 @@
+// @ts-ignore
+import { ProductCardFullImage } from 'shopping-shopify-template-shared'
+import { useLocalShoppingCart } from '../../providers/LocalCart'
+import Eitri from 'eitri-bifrost'
+
+export default function ProductCard({ product }) {
+	const { addItemToCart } = useLocalShoppingCart()
+
+	const getPrice = () => {
+		const price = product?.variants?.nodes?.[0]?.price
+		return Number(price?.amount)?.toLocaleString('pt-BR', {
+			style: 'currency',
+			currency: price?.currencyCode || 'BRL'
+		})
+	}
+
+	const getListPrice = () => {
+		const price = product?.variants?.nodes?.[0]?.compareAtPrice
+		return Number(price?.amount)?.toLocaleString('pt-BR', {
+			style: 'currency',
+			currency: price?.currencyCode || 'BRL'
+		})
+	}
+
+	const goToProduct = () => {
+		Eitri.nativeNavigation.open({
+			slug: 'pdp',
+			initParams: { product }
+		})
+	}
+
+	const productProps = {
+		image: product?.images?.nodes?.[0]?.url,
+		name: product?.title,
+		price: getPrice(),
+		listPrice: getListPrice(),
+		showListItem: true,
+		actionLabel: 'Comprar',
+		onPressOnCard: goToProduct
+	}
+
+	return (
+		<ProductCardFullImage
+			{...productProps}
+			onPressCartButton={async () => {
+				addItemToCart({
+					merchandiseId: product.variants.nodes[0].id,
+					quantity: 1
+				})
+			}}
+		/>
+	)
+}

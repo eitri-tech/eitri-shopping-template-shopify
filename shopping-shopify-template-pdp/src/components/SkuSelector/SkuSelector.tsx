@@ -72,32 +72,18 @@ export default function SkuSelector(props: SkuSelectorProps) {
 			<View
 				onClick={available ? () => handleSkuChange(optionName, optionValue) : undefined}
 				className={`
-					relative px-4 py-2.5 rounded-lg border-2 transition-all
-					${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}
-					${available ? 'cursor-pointer active:scale-95 hover:border-blue-300' : 'cursor-not-allowed bg-gray-50 opacity-60'}
+					relative px-4 py-2.5 rounded border-2 transition-all
+					${isSelected ? 'bg-primary' : 'bg-white'}
+					${available ? 'cursor-pointer active:scale-95' : 'cursor-not-allowed bg-gray-50 opacity-60'}
 			  `}>
 				<Text
 					className={`
 						  font-semibold text-sm
-						  ${isSelected ? 'text-blue-600' : 'text-gray-700'}
-						  ${!available ? 'line-through text-gray-400' : ''}
+						  ${isSelected ? 'text-primary-content' : 'text-gray-700'}
+						  ${!available ? 'line-through text-gray-500' : ''}
 					`}>
 					{optionValue}
 				</Text>
-
-				{isSelected && (
-					<View className='absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center'>
-						<Text className='text-white text-xs'>✓</Text>
-					</View>
-				)}
-
-				{!available && (
-					<View className='absolute inset-0 flex items-center justify-center'>
-						<Text className='text-xs text-red-500 font-bold bg-white px-2 py-0.5 rounded'>
-							{optionValue}
-						</Text>
-					</View>
-				)}
 			</View>
 		)
 	}
