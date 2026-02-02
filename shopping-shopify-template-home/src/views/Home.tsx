@@ -36,27 +36,19 @@ export default function Home(props) {
 			}
 		}
 
-		const _csmContent = await getCmsContent()
+		const _csmContent = await getCmsContent('')
 		setCmsContent(_csmContent)
 	}
 
 	const processDeepLink = startParams => {
-		if (startParams?.route) {
-			console.log('Deeplink', startParams)
-			let { route, ...rest } = startParams
-			return {
-				path: route,
-				state: rest,
-				replace: true
-			}
-		}
-		const tabIndex = startParams?.tabIndex
-		if (tabIndex || (typeof tabIndex === 'number' && tabIndex >= 0)) {
-			const parsedTabIndex = parseInt(tabIndex)
+		if (!startParams?.route) return
 
-			if (parsedTabIndex === 2) {
-				return { replace: true, path: '/Cart' }
-			}
+		const { route, params, ...rest } = startParams
+
+		return {
+			path: route,
+			state: params ? { params, ...rest } : { params: rest },
+			replace: true
 		}
 	}
 

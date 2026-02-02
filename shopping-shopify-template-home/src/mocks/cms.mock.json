@@ -1,7 +1,7 @@
 [
 	{
 		"id": "1",
-		"blockType": "Banner",
+		"name": "Banner",
 		"mode": "hero",
 		"aspectRatio": "629:860",
 		"autoPlay": false,
@@ -20,7 +20,7 @@
 	},
 	{
 		"id": "2",
-		"blockType": "ProductShelf",
+		"name": "ProductShelf",
 		"title": "Esportes",
 		"params": {
 			"type": "collection",
@@ -30,7 +30,7 @@
 	},
 	{
 		"id": "3",
-		"blockType": "Banner",
+		"name": "Banner",
 		"mode": "hero",
 		"aspectRatio": "117:160",
 		"autoPlay": false,
@@ -49,7 +49,7 @@
 	},
 	{
 		"id": "4",
-		"blockType": "Banner",
+		"name": "Banner",
 		"mode": "hero",
 		"aspectRatio": "117:160",
 		"autoPlay": false,

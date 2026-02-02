@@ -9,7 +9,6 @@ import MainHeader from '../components/MainHeader/MainHeader'
 import ImageCarousel from '../components/ImageCarousel/ImageCarousel'
 import MainDescription from '../components/MainDescription/MainDescription'
 import SkuSelector from '../components/SkuSelector/SkuSelector'
-import { ProductComplementaryData } from '../types/productComplementaryData.type'
 import ActionButton from '../components/ActionButton/ActionButton'
 import { useLocalShoppingCart } from '../providers/LocalCart'
 
@@ -19,7 +18,6 @@ type StartParams = {
 
 export default function Home(props) {
 	const [product, setProduct] = useState<Product>()
-	const [productComplementaryData, setProductComplementaryData] = useState<ProductComplementaryData>()
 	const [currentVariant, setCurrentVariant] = useState<ProductVariant>()
 	const [selectedVariantOptions, setSelectedVariantOptions] = useState<SelectedOption[]>([])
 	const [variantsOptions, setVariantsOptions] = useState<OptionWithAvailable[]>([])
@@ -46,6 +44,7 @@ export default function Home(props) {
 		let product = startParams.product
 
 		if (product) {
+			console.log('product', product)
 			const selectedOptions = product?.selectedOrFirstAvailableVariant?.selectedOptions
 			const selectedVariant = getSelectedVariant(selectedOptions, product)
 
@@ -123,7 +122,7 @@ export default function Home(props) {
 				<View>
 					<ImageCarousel product={product} />
 
-					<View className={'flex flex-col gap-4 p-4'}>
+					<View className={'flex flex-col gap-5 mt-5'}>
 						<MainDescription product={product} />
 
 						<SkuSelector

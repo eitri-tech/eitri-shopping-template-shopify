@@ -31,21 +31,21 @@ bottom-tab-view-simulation:
           initialization-params:
               type: 'string'
               value: 'tabIndex=0'
-        #  - slug: "shopping-shopify-template-home"
-        #    title: "Categorias"
-        #    initialization-params:
-        #      type: "string"
-        #      value: "tabIndex=1&route=Categories"
+        - slug: "shopping-shopify-template-home"
+          title: "Categorias"
+          initialization-params:
+            type: "string"
+            value: "tabIndex=1&route=Categories"
         - slug: 'shopping-shopify-template-cart'
           title: 'Carrinho'
           initialization-params:
               type: 'string'
               value: 'tabIndex=2'
-        #  - slug: "shopping-vtex-template-home"
-        #    title: "Ofertas"
-        #    initialization-params:
-        #      type: "string"
-        #      value: "tabIndex=3&route=LandingPage"
+        - slug: "shopping-shopify-template-home"
+          title: "Ofertas"
+          initialization-params:
+            type: "string"
+            value: "tabIndex=3&route=ProductCatalog&handle=tech-t-shirt-nossa-camiseta-mais-iconica&type=collection"
         #  - slug: "shopping-vtex-template-account"
         #    title: "Perfil"
         #    initialization-params:

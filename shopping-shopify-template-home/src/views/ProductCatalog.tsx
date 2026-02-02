@@ -19,6 +19,7 @@ export default function ProductCatalog(props) {
 
 	useEffect(() => {
 		const params = location.state.params
+
 		setAppliedFacets(params)
 
 		// if (!openInBottomBar) {

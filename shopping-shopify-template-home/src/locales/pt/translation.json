@@ -16,5 +16,8 @@
 		"relevance": "Relevância",
 		"title": "Título",
 		"modalTitle": "Ordenar Por"
+	},
+	"categories": {
+		"title": "Categorias"
 	}
 }

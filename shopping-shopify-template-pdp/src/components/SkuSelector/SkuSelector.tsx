@@ -45,12 +45,12 @@ export default function SkuSelector(props: SkuSelectorProps) {
 			return (
 				<View
 					onClick={available ? () => handleSkuChange(optionName, optionValue) : undefined}
-					className={`relative flex flex-col items-center gap-1 ${!available ? 'opacity-40' : ''}`}>
+					className={`relative flex flex-col justify-center items-center gap-3 ${!available ? 'opacity-40' : ''}`}>
 					<View
 						style={{ backgroundColor: getColorClass(optionValue) }}
 						className={`
 							w-12 h-12 rounded-full border-4 transition-all
-							${isSelected ? 'border-blue-500 scale-110' : 'border-gray-200'}
+							${isSelected ? 'border-blue-500' : 'border-gray-200'}
 							${available && 'active:scale-95'}
 							${!available ? 'relative overflow-hidden' : ''}
           				`}>
@@ -61,7 +61,7 @@ export default function SkuSelector(props: SkuSelectorProps) {
 						)}
 					</View>
 					<Text
-						className={`text-xs ${isSelected ? 'text-blue-500 font-semibold' : 'text-gray-600'} ${!available ? 'line-through' : ''}`}>
+						className={`text-xs text-center ${isSelected ? 'text-blue-500 font-semibold' : 'text-gray-600'} ${!available ? 'line-through' : ''}`}>
 						{optionValue}
 					</Text>
 				</View>
@@ -103,12 +103,12 @@ export default function SkuSelector(props: SkuSelectorProps) {
 	}
 
 	return (
-		<View className={`flex flex-col gap-2 bg-white rounded shadow-sm border border-gray-300 p-4 w-full`}>
+		<View className={`flex flex-col gap-2`}>
 			{variantsOptions?.length > 0 &&
 				variantsOptions.map(option => (
 					<View key={option?.id}>
-						<Text className='text-lg font-semibold'>{`${option?.name}`}</Text>
-						<View className='flex flex-wrap mt-2 gap-2'>
+						<Text className='text font-semibold px-4'>{`${option?.name}`}</Text>
+						<View className='flex overflow-x-auto mt-2 gap-2 px-4'>
 							{option?.optionValues?.map(optionValue => (
 								<View key={optionValue.name}>
 									{renderOption(option.name, optionValue.name, optionValue.available)}

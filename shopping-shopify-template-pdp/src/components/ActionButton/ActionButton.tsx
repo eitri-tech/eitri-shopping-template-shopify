@@ -53,7 +53,7 @@ export default function ActionButton(props: ActionButtonProps) {
 
 	return (
 		<>
-			<View className='fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-300'>
+			<View className='fixed bottom-0 left-0 right-0 z-[999] backdrop-blur-sm bg-white/50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]'>
 				<View className='p-4'>
 					<CustomButton
 						isLoading={isLoading}

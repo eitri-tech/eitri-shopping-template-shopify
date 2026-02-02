@@ -1,0 +1,93 @@
+[
+	{
+		"id": "1750707882576",
+		"name": "CategoryListSwipe",
+		"content": [
+			{
+				"id": "1",
+				"action": {
+					"type": "collection",
+					"value": "best-sellers-com-desconto"
+				},
+				"subcategories": [],
+				"title": "Best-Sellers Week"
+			},
+			{
+				"id": "2",
+				"action": {
+					"type": "collection",
+					"value": "compre-e-ganhe"
+				},
+				"subcategories": [],
+				"title": "Compre e Ganhe"
+			},
+			{
+				"id": "3",
+				"action": {
+					"type": "collection",
+					"value": "kits-e-conjuntos-insider"
+				},
+				"subcategories": [
+					{
+						"title": "Shop The Creator Look",
+						"action": {
+							"type": "collection",
+							"value": "shop-the-creator-look"
+						}
+					},
+					{
+						"title": "Kits e Conjuntos Femininos",
+						"action": {
+							"type": "collection",
+							"value": "kits-femininos"
+						}
+					},
+					{
+						"title": "Kits e Conjuntos Masculinos",
+						"action": {
+							"type": "collection",
+							"value": "kits-masculinos"
+						}
+					}
+				],
+				"title": "Kits"
+			},
+			{
+				"id": "4",
+				"action": {
+					"type": "collection",
+					"value": "homem"
+				},
+				"subcategories": [],
+				"title": "Masculino"
+			},
+			{
+				"id": "5",
+				"action": {
+					"type": "collection",
+					"value": "mulher"
+				},
+				"subcategories": [],
+				"title": "Feminino"
+			},
+			{
+				"id": "6",
+				"action": {
+					"type": "collection",
+					"value": "tech-t-shirt-nossa-camiseta-mais-iconica"
+				},
+				"subcategories": [],
+				"title": "TECH T-SHIRT"
+			},
+			{
+				"id": "7",
+				"action": {
+					"type": "collection",
+					"value": "ultimos-lancamentos-e-cores-novas"
+				},
+				"subcategories": [],
+				"title": "Lançamentos"
+			}
+		]
+	}
+]
