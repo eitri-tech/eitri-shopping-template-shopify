@@ -1,14 +1,23 @@
-import cmsMock from '../mocks/cms.mock.json'
-import cmsCategoryMock from '../mocks/cms.categories.mock.json'
-import { CmsContent } from '../types/cmscontent.type'
+import { CmsContent, CMSPage } from '../types/cmscontent.type'
+import Eitri from 'eitri-bifrost'
 
-export const getCmsContent = async (page: string): Promise<CmsContent | null> => {
+type RemoteConfig = {
+	providerInfo: {
+		cmsUrl: string
+	}
+}
+
+export const getCmsContent = async (page: string = 'home'): Promise<CmsContent | null> => {
 	try {
-		if (page === 'categories') {
-			return cmsCategoryMock
-		}
+		const remoteConfig = (await Eitri.environment.getRemoteConfigs()) as RemoteConfig
 
-		return cmsMock
+		const response = await Eitri.http.get(remoteConfig.providerInfo.cmsUrl)
+
+		const pages: CMSPage[] = response.data.docs
+
+		let _page = pages?.find(doc => doc.type === page)
+
+		return _page.sections as CmsContent
 	} catch (e) {
 		console.error('Error trying get content', e)
 		return null

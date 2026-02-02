@@ -18,7 +18,7 @@ export default function CategoryListSwipe(props: CategoryListSwipeProps) {
 			handle: item?.action?.value
 		}
 
-		Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params } })
+		Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params, title: item?.title } })
 	}
 
 	return (
