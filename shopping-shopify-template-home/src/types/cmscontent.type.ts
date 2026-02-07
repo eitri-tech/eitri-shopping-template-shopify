@@ -1,4 +1,4 @@
-export type ActionType = 'collection' | 'search'
+export type ActionType = 'collection' | 'search' | 'product'
 
 export type SortKey =
 	| 'BEST_SELLING'

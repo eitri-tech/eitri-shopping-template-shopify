@@ -13,9 +13,12 @@ import ActionButton from '../components/ActionButton/ActionButton'
 import { useLocalShoppingCart } from '../providers/LocalCart'
 import Description from '../components/Description/Description'
 import RelatedProducts from '../components/RelatedProducts/RelatedProducts'
+import { getProduct } from '../services/productService'
 
 type StartParams = {
 	product: Product | null
+	handle: string | null
+	id: string | null
 }
 
 export default function Home(props) {
@@ -66,6 +69,9 @@ export default function Home(props) {
 			setVariantsOptions(optionsWithAvailability)
 			setProduct(product)
 			setMainLoading(false)
+		} else if (startParams.handle) {
+			const _product = await getProduct(startParams.handle)
+			console.log('p', _product)
 		}
 	}
 

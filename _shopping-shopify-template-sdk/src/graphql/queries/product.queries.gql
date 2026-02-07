@@ -123,3 +123,14 @@ query PRODUCT_RECOMMENDATIONS(
         }
     }
 }
+
+query PRODUCT(
+    $handle: String
+    $id: ID
+) {
+    product( handle: $handle, id: $id ) {
+        ... on Product {
+            ...ProductFields
+        }
+    }
+}

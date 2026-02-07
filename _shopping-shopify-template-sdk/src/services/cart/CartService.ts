@@ -30,6 +30,8 @@ import Eitri from 'eitri-bifrost'
 export class CartService {
 	static SHOPIFY_CART_KEY = 'shopify_cart_key'
 
+	static async assertCartEitriTag(cart: Cart) {}
+
 	static async getCurrentOrCreateCart() {
 		const cartId = await StorageService.getStorageItem(CartService.SHOPIFY_CART_KEY)
 
@@ -66,19 +68,18 @@ export class CartService {
 		return data.cart
 	}
 
-	static async generateNewCart(params: CreateCartInput) {
+	static async generateNewCart(params: CreateCartInput = {}) {
 		const config = await Eitri.getConfigs()
 		const platform = config.applicationData.platform
 
 		const body = {
 			query: CREATE_CART,
 			variables: {
-				input: params,
-				attribute: {
-					key: 'cart.attributes',
-					fields: [
+				input: {
+					...params,
+					attributes: [
 						{
-							key: 'provider',
+							key: 'origin',
 							value: platform === 'android' ? 'eitri_android' : 'eitri_ios'
 						}
 					]

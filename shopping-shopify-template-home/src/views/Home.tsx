@@ -19,6 +19,9 @@ export default function Home(props) {
 
 	useEffect(() => {
 		start()
+		Eitri.navigation.setOnResumeListener(() => {
+			startCart()
+		})
 	}, [])
 
 	const start = async () => {

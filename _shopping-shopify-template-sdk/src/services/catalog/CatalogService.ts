@@ -1,7 +1,12 @@
 import ShopifyCaller from '../_helpers/ShopifyCaller'
 import { SearchQueryArguments } from '../../models/SearchParams.types'
 // @ts-ignore
-import { SEARCH_QUERY, COLLECTION_QUERY, PRODUCT_RECOMMENDATIONS } from '../../graphql/queries/product.queries.gql'
+import {
+	SEARCH_QUERY,
+	COLLECTION_QUERY,
+	PRODUCT_RECOMMENDATIONS,
+	PRODUCT
+} from '../../graphql/queries/product.queries.gql'
 import { CollectionParams } from '../../models/CollectionParams.types'
 import RemoteConfig from '../RemoteConfig'
 import { CollectionReturn } from '../../models/CollectionReturn.types'
@@ -69,5 +74,16 @@ export default class CatalogService {
 		const res = await ShopifyCaller.post(body)
 
 		return res?.data?.data?.productRecommendations
+	}
+
+	static async product(params: { handle?: string; id?: string }, query: string = PRODUCT) {
+		const body = {
+			query,
+			variables: {
+				...params
+			}
+		}
+		const res = await ShopifyCaller.post(body)
+		return res?.data?.data?.product
 	}
 }

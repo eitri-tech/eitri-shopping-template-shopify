@@ -1,7 +1,7 @@
 // @ts-ignore
-import { Text, View, Image } from 'eitri-luminus'
+import { Text, View, Image, Video } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
-import { CustomCarousel, useScreen } from 'shopping-shopify-template-shared'
+import { useScreen } from 'shopping-shopify-template-shared'
 import { BannerContent } from '../../../../types/cmscontent.type'
 
 import Slider from '../../../../Slider/Slider'
@@ -30,11 +30,6 @@ export default function SliderHero(props: BannerProps) {
 		}
 	}, [availableWidth])
 
-	const onChange = i => {
-		console.log('i', i)
-		setCurrentSlide(i)
-	}
-
 	return (
 		<View className='relative'>
 			{data.title && (
@@ -54,19 +49,33 @@ export default function SliderHero(props: BannerProps) {
 					imagesList.map(image => (
 						<View
 							className='w-full flex justify-center snap-x snap-always keen-slider__slide'
-							key={`image_${image.imageUrl}`}>
-							<View
-								onClick={() => {
-									onClick(image)
-								}}
-								height={proportionalHeight}
-								width='100%'>
-								<Image
-									fadeIn={1000}
-									className='w-full h-full'
-									src={image.imageUrl}
-								/>
-							</View>
+							key={`image_${image.id}`}>
+							{image.videoUrl ? (
+								<View
+									className='w-full h-screen relative flex-shrink-0'
+									onClick={() => onClick(image)}>
+									<Video
+										source={image.videoUrl}
+										autoPlay
+										loop
+										muted
+										className='h-full w-full object-cover'
+									/>
+								</View>
+							) : (
+								<View
+									onClick={() => {
+										onClick(image)
+									}}
+									height={proportionalHeight}
+									width='100%'>
+									<Image
+										fadeIn={1000}
+										className='w-full h-full'
+										src={image.imageUrl}
+									/>
+								</View>
+							)}
 						</View>
 					))}
 			</Slider>

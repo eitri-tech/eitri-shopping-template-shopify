@@ -30,8 +30,14 @@ export default function ProductShelf({ data }: ProductShelfProps) {
 		}
 	}
 
+	const seeMore = () => {}
+
 	return (
 		<View>
+			<View className={'flex justify-between px-4'}>
+				<View className='text-xl font-bold mb-4 '>{data?.title}</View>
+				<View onClick={seeMore}>Ver tudo</View>
+			</View>
 			<>
 				{isLoadingProducts ? (
 					<View className='flex overflow-x-auto'>
