@@ -1,5 +1,5 @@
 eitri-apps:
-    - path: ./_shopping-shopify-template-shared
+    - path: ./shopping-shopify-template-shared
       workspace: shared
       alias: shared
       focus: false
@@ -26,21 +26,21 @@ bottom-tab-view-simulation:
           initialization-params:
               type: 'string'
               value: 'tabIndex=0'
-        - slug: "shopping-shopify-template-home"
-          title: "Categorias"
+        - slug: 'shopping-shopify-template-home'
+          title: 'Categorias'
           initialization-params:
-            type: "string"
-            value: "tabIndex=1&route=Categories"
+              type: 'string'
+              value: 'tabIndex=1&route=Categories'
         - slug: 'shopping-shopify-template-cart'
           title: 'Carrinho'
           initialization-params:
               type: 'string'
               value: 'tabIndex=2'
-        - slug: "shopping-shopify-template-home"
-          title: "Ofertas"
+        - slug: 'shopping-shopify-template-home'
+          title: 'Ofertas'
           initialization-params:
-            type: "string"
-            value: "tabIndex=3&route=ProductCatalog&handle=tech-t-shirt-nossa-camiseta-mais-iconica&type=collection"
+              type: 'string'
+              value: 'tabIndex=3&route=ProductCatalog&handle=tech-t-shirt-nossa-camiseta-mais-iconica&type=collection'
         #  - slug: "shopping-vtex-template-account"
         #    title: "Perfil"
         #    initialization-params:
@@ -49,8 +49,8 @@ bottom-tab-view-simulation:
 
 #application-id: cca11cae-342e-4ca6-a955-00abca321d86
 #insider
-#application-id: aaf9891b-c148-40fc-aa68-0a5028153b78
+application-id: aaf9891b-c148-40fc-aa68-0a5028153b78
 #sawari
-application-id: ac1670ea-7e0d-4458-8728-280671d4750b
-eitri-luminus: "2.22.3"
-eitri-bifrost: "4.7.0"
+# application-id: ac1670ea-7e0d-4458-8728-280671d4750b
+eitri-luminus: '2.22.3'
+eitri-bifrost: '4.7.0'
