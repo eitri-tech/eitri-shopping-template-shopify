@@ -5,7 +5,6 @@ import { View } from 'eitri-luminus'
 import { ProductShelfContent } from '../../../types/cmscontent.type'
 import { collection, getProductsService, search } from '../../../services/productService'
 import ProductCard from '../../ProductCard/ProductCard'
-import { title } from '_shopping-shopify-template-sdk/eitri-app.conf'
 
 interface ProductShelfProps {
 	data: ProductShelfContent
@@ -33,12 +32,13 @@ export default function ProductShelf({ data }: ProductShelfProps) {
 	}
 
 	const seeMore = async () => {
+		console.log(data)
 		const params = {
 			type: data?.params.type,
 			handle: data?.params?.value
 		}
 
-		await Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params,title: data?.title } })
+		await Eitri.navigation.navigate({ path: 'ProductCatalog', state: { params, title: data.title } })
 	}
 
 	return (

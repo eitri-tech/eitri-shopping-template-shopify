@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Text, View, TextInput, Button, Page } from 'eitri-luminus'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HeaderContentWrapper, HeaderReturn, HeaderText, BottomInset } from 'shopping-shopify-template-shared'
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import Eitri from 'eitri-bifrost'
@@ -20,10 +20,31 @@ export default function SignIn(props) {
 	const [recoveryLoading, setRecoveryLoading] = useState(false)
 	const [recoverySuccess, setRecoverySuccess] = useState(false)
 	const [recoveryError, setRecoveryError] = useState<string | null>(null)
+	const [rememberMe, setRememberMe] = useState(false)
+
+	// Check if user is already logged in
+	useEffect(() => {
+		const checkAuth = async () => {
+			const isAuthenticated = await Shopify.customer.isAuthenticated()
+			if (isAuthenticated) {
+				const redirectTo = location?.state?.redirectTo || '/'
+				Eitri.navigation.navigate({ path: redirectTo, replace: true })
+			}
+		}
+
+		checkAuth()
+	}, [location])
 
 	const handleSignIn = async () => {
 		if (!email || !password) {
 			setError(t('signIn.fillAllFields', 'Preencha todos os campos'))
+			return
+		}
+
+		// Basic email validation
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+		if (!emailRegex.test(email)) {
+			setError(t('signIn.invalidEmail', 'Por favor, insira um email válido'))
 			return
 		}
 
@@ -40,12 +61,8 @@ export default function SignIn(props) {
 			}
 
 			if (result.accessToken) {
-				const redirectTo = location?.state?.redirectTo
-				if (redirectTo) {
-					Eitri.navigation.navigate({ path: redirectTo, replace: true })
-				} else {
-					Eitri.navigation.back(-1)
-				}
+				const redirectTo = location?.state?.redirectTo || '/'
+				Eitri.navigation.navigate({ path: redirectTo, replace: true })
 			}
 		} catch (err) {
 			console.error('[SignIn] Erro ao fazer login:', err)
@@ -58,6 +75,13 @@ export default function SignIn(props) {
 	const handleRecoverPassword = async () => {
 		if (!recoveryEmail) {
 			setRecoveryError(t('signIn.enterEmail', 'Digite seu email'))
+			return
+		}
+
+		// Basic email validation
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+		if (!emailRegex.test(recoveryEmail)) {
+			setRecoveryError(t('signIn.invalidEmail', 'Por favor, insira um email válido'))
 			return
 		}
 
@@ -141,7 +165,7 @@ export default function SignIn(props) {
 						</View>
 					) : (
 						<View className='flex flex-col gap-4'>
-							<Text className='text-gray-500'>
+							<Text className='text-gray-500 mb-4'>
 								{t(
 									'signIn.recoveryDescription',
 									'Digite seu email e enviaremos um link para redefinir sua senha.'
@@ -155,7 +179,7 @@ export default function SignIn(props) {
 									value={recoveryEmail}
 									onChange={e => setRecoveryEmail(e.target.value)}
 									placeholder={t('signIn.emailPlaceholder', 'seu@email.com')}
-									className='input input-bordered w-full h-12'
+									className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 									autoCapitalize='none'
 									autoComplete='email'
 								/>
@@ -168,7 +192,7 @@ export default function SignIn(props) {
 							)}
 
 							<Button
-								className='btn btn-primary w-full h-12 mt-2'
+								className='btn btn-primary w-full h-12 mt-2 bg-blue-600 hover:bg-blue-700 rounded-lg'
 								onClick={handleRecoverPassword}
 								disabled={recoveryLoading}>
 								{recoveryLoading ? (
@@ -178,6 +202,12 @@ export default function SignIn(props) {
 										{t('signIn.sendRecoveryEmail', 'Enviar email')}
 									</Text>
 								)}
+							</Button>
+
+							<Button
+								className='btn btn-outline w-full h-12 mt-2 rounded-lg'
+								onClick={() => setShowRecovery(false)}>
+								<Text className='text-gray-700 font-semibold'>{t('signIn.cancel', 'Cancelar')}</Text>
 							</Button>
 						</View>
 					)}
@@ -205,9 +235,14 @@ export default function SignIn(props) {
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 							placeholder={t('signIn.emailPlaceholder', 'seu@email.com')}
-							className='input input-bordered w-full h-12'
+							className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 							autoCapitalize='none'
 							autoComplete='email'
+							onKeyDown={e => {
+								if (e.key === 'Enter') {
+									handleSignIn()
+								}
+							}}
 						/>
 					</View>
 
@@ -219,8 +254,13 @@ export default function SignIn(props) {
 								value={password}
 								onChange={e => setPassword(e.target.value)}
 								placeholder={t('signIn.passwordPlaceholder', 'Digite sua senha')}
-								className='input input-bordered w-full h-12 pr-12'
+								className='input input-bordered w-full h-12 px-4 py-3 pr-12 rounded-lg'
 								autoComplete='current-password'
+								onKeyDown={e => {
+									if (e.key === 'Enter') {
+										handleSignIn()
+									}
+								}}
 							/>
 							<View
 								className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
@@ -267,13 +307,41 @@ export default function SignIn(props) {
 						</View>
 					</View>
 
-					<View
-						className='self-end'
-						onClick={() => {
-							setShowRecovery(true)
-							setRecoveryEmail(email)
-						}}>
-						<Text className='text-primary text-sm'>{t('signIn.forgotPassword', 'Esqueceu a senha?')}</Text>
+					<View className='flex flex-row justify-between items-center'>
+						<View
+							className='flex flex-row items-center gap-2 cursor-pointer'
+							onClick={() => setRememberMe(!rememberMe)}>
+							<View
+								className={`w-5 h-5 border-2 rounded flex items-center justify-center ${rememberMe ? 'bg-blue-600 border-blue-600' : 'border-gray-300'}`}>
+								{rememberMe && (
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										width='14'
+										height='14'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										strokeWidth='3'
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										className='text-white'>
+										<polyline points='20 6 9 17 4 12'></polyline>
+									</svg>
+								)}
+							</View>
+							<Text className='text-sm text-gray-600'>{t('signIn.rememberMe', 'Lembrar-me')}</Text>
+						</View>
+
+						<View
+							className='cursor-pointer'
+							onClick={() => {
+								setShowRecovery(true)
+								setRecoveryEmail(email)
+							}}>
+							<Text className='text-blue-600 text-sm font-medium'>
+								{t('signIn.forgotPassword', 'Esqueceu a senha?')}
+							</Text>
+						</View>
 					</View>
 
 					{error && (
@@ -283,7 +351,7 @@ export default function SignIn(props) {
 					)}
 
 					<Button
-						className='btn btn-primary w-full h-12 mt-2'
+						className='btn btn-primary w-full h-12 mt-2 bg-blue-600 hover:bg-blue-700 rounded-lg'
 						onClick={handleSignIn}
 						disabled={loading}>
 						{loading ? (
@@ -304,7 +372,7 @@ export default function SignIn(props) {
 						onClick={goToSignUp}>
 						<Text className='text-gray-600'>
 							{t('signIn.noAccount', 'Não tem uma conta?')}{' '}
-							<Text className='text-primary font-semibold'>
+							<Text className='text-blue-600 font-semibold'>
 								{t('signIn.createAccount', 'Criar conta')}
 							</Text>
 						</Text>

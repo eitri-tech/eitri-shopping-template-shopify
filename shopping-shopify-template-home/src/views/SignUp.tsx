@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Text, View, TextInput, Button, Page, Checkbox } from 'eitri-luminus'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HeaderContentWrapper, HeaderReturn, HeaderText, BottomInset } from 'shopping-shopify-template-shared'
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import Eitri from 'eitri-bifrost'
@@ -21,6 +21,19 @@ export default function SignUp(props) {
 	const [error, setError] = useState<string | null>(null)
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+	// Check if user is already logged in
+	useEffect(() => {
+		const checkAuth = async () => {
+			const isAuthenticated = await Shopify.customer.isAuthenticated()
+			if (isAuthenticated) {
+				const redirectTo = location?.state?.redirectTo || '/'
+				Eitri.navigation.navigate({ path: redirectTo, replace: true })
+			}
+		}
+
+		checkAuth()
+	}, [location])
 
 	const validateForm = (): string | null => {
 		if (!email) {
@@ -74,15 +87,12 @@ export default function SignUp(props) {
 			}
 
 			if (result.customer) {
+				// Automatically sign in after successful registration
 				const signInResult = await Shopify.customer.signIn({ email, password })
 
 				if (signInResult.accessToken) {
-					const redirectTo = location?.state?.redirectTo
-					if (redirectTo) {
-						Eitri.navigation.navigate({ path: redirectTo, replace: true })
-					} else {
-						Eitri.navigation.back(-1)
-					}
+					const redirectTo = location?.state?.redirectTo || '/'
+					Eitri.navigation.navigate({ path: redirectTo, replace: true })
 				} else {
 					Eitri.navigation.navigate({
 						path: '/SignIn',
@@ -125,6 +135,13 @@ export default function SignUp(props) {
 		setPhone(formatted)
 	}
 
+	// Handle Enter key press to submit form
+	const handleKeyPress = (e: React.KeyboardEvent, callback: () => void) => {
+		if (e.key === 'Enter') {
+			callback()
+		}
+	}
+
 	return (
 		<Page title={t('signUp.title', 'Criar Conta')}>
 			<HeaderContentWrapper>
@@ -143,8 +160,9 @@ export default function SignUp(props) {
 								value={firstName}
 								onChange={e => setFirstName(e.target.value)}
 								placeholder={t('signUp.firstNamePlaceholder', 'Seu nome')}
-								className='input input-bordered w-full h-12'
+								className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 								autoComplete='given-name'
+								onKeyDown={e => handleKeyPress(e, handleSignUp)}
 							/>
 						</View>
 
@@ -155,8 +173,9 @@ export default function SignUp(props) {
 								value={lastName}
 								onChange={e => setLastName(e.target.value)}
 								placeholder={t('signUp.lastNamePlaceholder', 'Seu sobrenome')}
-								className='input input-bordered w-full h-12'
+								className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 								autoComplete='family-name'
+								onKeyDown={e => handleKeyPress(e, handleSignUp)}
 							/>
 						</View>
 					</View>
@@ -170,9 +189,10 @@ export default function SignUp(props) {
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 							placeholder={t('signUp.emailPlaceholder', 'seu@email.com')}
-							className='input input-bordered w-full h-12'
+							className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 							autoCapitalize='none'
 							autoComplete='email'
+							onKeyDown={e => handleKeyPress(e, handleSignUp)}
 						/>
 					</View>
 
@@ -183,8 +203,9 @@ export default function SignUp(props) {
 							value={phone}
 							onChange={handlePhoneChange}
 							placeholder={t('signUp.phonePlaceholder', '(00) 00000-0000')}
-							className='input input-bordered w-full h-12'
+							className='input input-bordered w-full h-12 px-4 py-3 rounded-lg'
 							autoComplete='tel'
+							onKeyDown={e => handleKeyPress(e, handleSignUp)}
 						/>
 					</View>
 
@@ -198,8 +219,9 @@ export default function SignUp(props) {
 								value={password}
 								onChange={e => setPassword(e.target.value)}
 								placeholder={t('signUp.passwordPlaceholder', 'Mínimo 5 caracteres')}
-								className='input input-bordered w-full h-12 pr-12'
+								className='input input-bordered w-full h-12 px-4 py-3 pr-12 rounded-lg'
 								autoComplete='new-password'
+								onKeyDown={e => handleKeyPress(e, handleSignUp)}
 							/>
 							<View
 								className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
@@ -256,8 +278,9 @@ export default function SignUp(props) {
 								value={confirmPassword}
 								onChange={e => setConfirmPassword(e.target.value)}
 								placeholder={t('signUp.confirmPasswordPlaceholder', 'Repita a senha')}
-								className='input input-bordered w-full h-12 pr-12'
+								className='input input-bordered w-full h-12 px-4 py-3 pr-12 rounded-lg'
 								autoComplete='new-password'
+								onKeyDown={e => handleKeyPress(e, handleSignUp)}
 							/>
 							<View
 								className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
@@ -305,12 +328,10 @@ export default function SignUp(props) {
 					</View>
 
 					<View
-						className='flex flex-row items-center gap-3 mt-2'
+						className='flex flex-row items-start gap-3 mt-2 cursor-pointer'
 						onClick={() => setAcceptsMarketing(!acceptsMarketing)}>
 						<View
-							className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
-								acceptsMarketing ? 'bg-primary border-primary' : 'border-gray-300'
-							}`}>
+							className={`w-5 h-5 border-2 rounded flex items-center justify-center mt-1 ${acceptsMarketing ? 'bg-blue-600 border-blue-600' : 'border-gray-300'}`}>
 							{acceptsMarketing && (
 								<svg
 									xmlns='http://www.w3.org/2000/svg'
@@ -339,7 +360,7 @@ export default function SignUp(props) {
 					)}
 
 					<Button
-						className='btn btn-primary w-full h-12 mt-2'
+						className='btn btn-primary w-full h-12 mt-4 bg-blue-600 hover:bg-blue-700 rounded-lg'
 						onClick={handleSignUp}
 						disabled={loading}>
 						{loading ? (
@@ -362,7 +383,7 @@ export default function SignUp(props) {
 						onClick={goToSignIn}>
 						<Text className='text-gray-600'>
 							{t('signUp.hasAccount', 'Já tem uma conta?')}{' '}
-							<Text className='text-primary font-semibold'>{t('signUp.signIn', 'Entrar')}</Text>
+							<Text className='text-blue-600 font-semibold'>{t('signUp.signIn', 'Entrar')}</Text>
 						</Text>
 					</View>
 				</View>
