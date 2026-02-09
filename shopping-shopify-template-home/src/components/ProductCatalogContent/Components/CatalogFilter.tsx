@@ -4,7 +4,7 @@ import { View, Text } from 'eitri-luminus'
 import { useTranslation } from 'eitri-i18n'
 // @ts-ignore
 import { CustomButton, BottomInset, CustomCheckbox, FilterValue } from 'shopping-shopify-template-shared'
-import { Filter } from 'shopping-shopify-template-sdk'
+import { Filter } from 'eitri-shopping-shopify-shared'
 
 interface CatalogFilterProps {
 	setSelectedFilters: Function

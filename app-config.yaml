@@ -1,9 +1,4 @@
 eitri-apps:
-    - path: ./_shopping-shopify-template-sdk
-      workspace: sdk
-      alias: sdk
-      focus: false
-      shared: true
     - path: ./_shopping-shopify-template-shared
       workspace: shared
       alias: shared

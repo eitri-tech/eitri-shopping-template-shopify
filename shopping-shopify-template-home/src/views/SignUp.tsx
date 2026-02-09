@@ -2,7 +2,7 @@
 import { Text, View, TextInput, Button, Page, Checkbox } from 'eitri-luminus'
 import { useState } from 'react'
 import { HeaderContentWrapper, HeaderReturn, HeaderText, BottomInset } from 'shopping-shopify-template-shared'
-import { Shopify } from 'shopping-shopify-template-sdk'
+import { Shopify } from 'eitri-shopping-shopify-shared'
 import Eitri from 'eitri-bifrost'
 import { useTranslation } from 'eitri-i18n'
 
@@ -308,8 +308,9 @@ export default function SignUp(props) {
 						className='flex flex-row items-center gap-3 mt-2'
 						onClick={() => setAcceptsMarketing(!acceptsMarketing)}>
 						<View
-							className={`w-5 h-5 border-2 rounded flex items-center justify-center ${acceptsMarketing ? 'bg-primary border-primary' : 'border-gray-300'
-								}`}>
+							className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
+								acceptsMarketing ? 'bg-primary border-primary' : 'border-gray-300'
+							}`}>
 							{acceptsMarketing && (
 								<svg
 									xmlns='http://www.w3.org/2000/svg'
@@ -344,7 +345,9 @@ export default function SignUp(props) {
 						{loading ? (
 							<View className='loading loading-spinner loading-sm' />
 						) : (
-							<Text className='text-white font-semibold'>{t('signUp.createAccountButton', 'Criar conta')}</Text>
+							<Text className='text-white font-semibold'>
+								{t('signUp.createAccountButton', 'Criar conta')}
+							</Text>
 						)}
 					</Button>
 

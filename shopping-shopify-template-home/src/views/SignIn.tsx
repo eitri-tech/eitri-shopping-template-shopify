@@ -2,7 +2,7 @@
 import { Text, View, TextInput, Button, Page } from 'eitri-luminus'
 import { useState } from 'react'
 import { HeaderContentWrapper, HeaderReturn, HeaderText, BottomInset } from 'shopping-shopify-template-shared'
-import { Shopify } from 'shopping-shopify-template-sdk'
+import { Shopify } from 'eitri-shopping-shopify-shared'
 import Eitri from 'eitri-bifrost'
 import { useTranslation } from 'eitri-i18n'
 
@@ -304,7 +304,9 @@ export default function SignIn(props) {
 						onClick={goToSignUp}>
 						<Text className='text-gray-600'>
 							{t('signIn.noAccount', 'Não tem uma conta?')}{' '}
-							<Text className='text-primary font-semibold'>{t('signIn.createAccount', 'Criar conta')}</Text>
+							<Text className='text-primary font-semibold'>
+								{t('signIn.createAccount', 'Criar conta')}
+							</Text>
 						</Text>
 					</View>
 				</View>

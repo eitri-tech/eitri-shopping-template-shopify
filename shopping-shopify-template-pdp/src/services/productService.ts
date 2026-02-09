@@ -1,4 +1,4 @@
-import { Shopify, ProductRecommendationsInput, Product } from 'shopping-shopify-template-sdk'
+import { Shopify, ProductRecommendationsInput, Product } from 'eitri-shopping-shopify-shared'
 
 export const productRecommendations = async (item: ProductRecommendationsInput): Promise<Product[]> => {
 	try {

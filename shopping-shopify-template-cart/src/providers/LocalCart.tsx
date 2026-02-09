@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { Cart, UpdateCartInput, CartLineUpdateInput } from 'shopping-shopify-template-sdk'
+import { Cart, UpdateCartInput, CartLineUpdateInput } from 'eitri-shopping-shopify-shared'
 import { addToCart, getCurrentOrCreateCart, removeItemFromCart, updateCartLines } from '../services/cartService'
 
 type CartContext = {

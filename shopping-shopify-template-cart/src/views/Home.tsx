@@ -2,7 +2,7 @@
 import { View, Page, Text, Image, Button, TextInput, Loading } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
-import { App, Cart, Shopify, DeliveryGroups } from 'shopping-shopify-template-sdk'
+import { App, Cart, Shopify, DeliveryGroups } from 'eitri-shopping-shopify-shared'
 import { HeaderContentWrapper, CustomButton, BottomInset, CustomInput } from 'shopping-shopify-template-shared'
 import { useLocalShoppingCart } from '../providers/LocalCart'
 import CartItems from '../components/CartItems'
@@ -330,10 +330,11 @@ export default function CartPage() {
 								edge.node.deliveryOptions.map((option, optIndex) => (
 									<View
 										key={`${index}-${optIndex}`}
-										className={`bg-base-200 p-3 rounded-lg ${edge.node.selectedDeliveryOption?.handle === option.handle
-											? 'border-2 border-primary'
-											: 'border border-base-300'
-											}`}>
+										className={`bg-base-200 p-3 rounded-lg ${
+											edge.node.selectedDeliveryOption?.handle === option.handle
+												? 'border-2 border-primary'
+												: 'border border-base-300'
+										}`}>
 										<View className='flex flex-row justify-between items-center'>
 											<View className='flex flex-col'>
 												<Text className='font-semibold text-sm'>{option.title}</Text>

@@ -1,4 +1,4 @@
-import { Shopify, ProductsConnection, SearchQueryArguments, CollectionReturn } from 'shopping-shopify-template-sdk'
+import { Shopify, ProductsConnection, SearchQueryArguments, CollectionReturn } from 'eitri-shopping-shopify-shared'
 import { ActionType, SortKey } from '../types/cmscontent.type'
 
 export const search = async params => {

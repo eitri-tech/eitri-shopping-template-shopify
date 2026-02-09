@@ -5,7 +5,7 @@ import { HeaderContentWrapper, HeaderLogo, BottomInset, HeaderCart } from 'shopp
 import { getCmsContent } from '../services/cmsService'
 import CmsContentRender from '../components/CmsContentRender/CmsContentRender'
 import { CmsContent } from '../types/cmscontent.type'
-import { App, Shopify } from 'shopping-shopify-template-sdk'
+import { App, Shopify } from 'eitri-shopping-shopify-shared'
 import { search } from '../services/productService'
 import Eitri from 'eitri-bifrost'
 import { FiSearch } from 'react-icons/fi'

@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Shopify } from 'shopping-shopify-template-sdk'
+import { Shopify } from 'eitri-shopping-shopify-shared'
 import { ProductCardFullImage } from 'shopping-shopify-template-shared'
 import { openProduct } from '../../services/navigationService'
 import { useLocalShoppingCart } from '../../providers/LocalCart'

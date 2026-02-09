@@ -1,7 +1,7 @@
 // @ts-ignore
 import { View, Page } from 'eitri-luminus'
 import { BottomInset } from 'shopping-shopify-template-shared'
-import { App } from 'shopping-shopify-template-sdk'
+import { App } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
 import Eitri from 'eitri-bifrost'
 import { OptionWithAvailable, Product, ProductVariant, SelectedOption } from '../types/product.type'

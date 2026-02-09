@@ -1,4 +1,4 @@
-import { Shopify, Cart, UpdateCartInput } from 'shopping-shopify-template-sdk'
+import { Shopify, Cart, UpdateCartInput } from 'eitri-shopping-shopify-shared'
 
 export const getCurrentOrCreateCart = async (): Promise<Cart> => {
 	const cart = await Shopify.cart.getCurrentOrCreateCart()
