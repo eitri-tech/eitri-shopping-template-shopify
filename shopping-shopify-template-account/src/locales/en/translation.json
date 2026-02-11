@@ -1,0 +1,112 @@
+{
+    "home": {
+        "description": "Inspired by leading Chinese apps, Eitri emerged from Calindra's extensive experience in developing mobile applications, especially for e-commerce. The goal was to make this process more scalable, flexible, agile, secure, and modular. Its name is derived from the dwarf in Norse mythology who forged Mjölnir and other magical artifacts for the gods, showcasing exceptional skills as a blacksmith and builder. This archetypal connection to Norse mythology draws an analogy to how building applications with Eitri is so fast and practical that it feels like magic.",
+        "title": "This is your new Eitri-App",
+        "pageTitle": "Home Page",
+        "button": "View Products"
+    },
+    "productList": {
+        "pageTitle": "Product List",
+        "errorLogMessage": "Error fetching data"
+    },
+    "account": {
+        "title": "My Account",
+        "welcome": "Sign in to your account",
+        "loginDescription": "Log in to track your orders, save your favorites, and enjoy a personalized experience.",
+        "ordersLabel": "Orders",
+        "favoritesLabel": "Favorites",
+        "addressesLabel": "Addresses",
+        "loginButton": "Sign in to my account",
+        "loginHint": "You will be redirected to a secure login page.",
+        "profile": {
+            "title": "Profile",
+            "unnamed": "User",
+            "orders": "My Orders",
+            "ordersDesc": "Track your orders",
+            "addresses": "My Addresses",
+            "addressesDesc": "Manage your addresses",
+            "personalData": "Personal Data",
+            "personalDataDesc": "Edit your information",
+            "defaultAddress": "Default address",
+            "logout": "Sign out"
+        },
+        "orders": {
+            "title": "My Orders",
+            "orderNumber": "Order",
+            "empty": "No orders yet",
+            "emptyDesc": "When you make a purchase, your orders will appear here.",
+            "loadMore": "Load more orders",
+            "qty": "Qty",
+            "moreItem": "item",
+            "moreItems": "items",
+            "total": "Total",
+            "financial": {
+                "PAID": "Paid",
+                "PENDING": "Pending",
+                "REFUNDED": "Refunded",
+                "PARTIALLY_REFUNDED": "Partially refunded",
+                "VOIDED": "Voided",
+                "EXPIRED": "Expired",
+                "AUTHORIZED": "Authorized",
+                "PARTIALLY_PAID": "Partially paid"
+            },
+            "fulfillment": {
+                "FULFILLED": "Delivered",
+                "UNFULFILLED": "Processing",
+                "PARTIALLY_FULFILLED": "Partially shipped",
+                "IN_PROGRESS": "In progress",
+                "ON_HOLD": "On hold"
+            }
+        },
+        "addresses": {
+            "title": "My Addresses",
+            "editTitle": "Edit Address",
+            "newTitle": "New Address",
+            "empty": "No addresses yet",
+            "emptyDesc": "Add an address to make your purchases easier.",
+            "addNew": "Add address",
+            "default": "Default address",
+            "edit": "Edit",
+            "delete": "Delete",
+            "setDefault": "Set as default",
+            "firstName": "First name",
+            "firstNamePlaceholder": "First name",
+            "lastName": "Last name",
+            "lastNamePlaceholder": "Last name",
+            "address1": "Address *",
+            "address1Placeholder": "Street, number",
+            "address2": "Apartment / Suite",
+            "address2Placeholder": "Apt, suite, etc.",
+            "city": "City *",
+            "cityPlaceholder": "City",
+            "province": "State",
+            "provincePlaceholder": "State",
+            "zip": "Zip code *",
+            "zipPlaceholder": "00000",
+            "phone": "Phone",
+            "phonePlaceholder": "(000) 000-0000",
+            "saveNew": "Save address",
+            "saveEdit": "Save changes",
+            "requiredFields": "Please fill in the required fields: address, city and zip code.",
+            "saveError": "Failed to save address. Please try again."
+        },
+        "editProfile": {
+            "title": "Personal Data",
+            "unnamed": "User",
+            "personalInfo": "Personal information",
+            "firstName": "First name *",
+            "firstNamePlaceholder": "Your first name",
+            "lastName": "Last name",
+            "lastNamePlaceholder": "Your last name",
+            "contactInfo": "Contact information",
+            "email": "Email",
+            "phone": "Phone",
+            "memberSince": "Member since",
+            "contactHint": "To change your email or phone, please contact support.",
+            "save": "Save changes",
+            "saveSuccess": "Profile updated successfully!",
+            "saveError": "Failed to save. Please try again.",
+            "requiredName": "First name is required."
+        }
+    }
+}

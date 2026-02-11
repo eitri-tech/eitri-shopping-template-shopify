@@ -1,0 +1,112 @@
+{
+    "home": {
+        "description": "Inspirado en las principales aplicaciones chinas, Eitri surgió a partir de la amplia experiencia de Calindra en el desarrollo de aplicaciones móviles, especialmente para el comercio electrónico. El objetivo era hacer este proceso más escalable, flexible, ágil, seguro y modular. Su nombre proviene del enano de la mitología nórdica que forjó Mjölnir y otros artefactos mágicos para los dioses, demostrando habilidades excepcionales como herrero y constructor. Esta conexión arquetípica con la mitología nórdica establece una analogía con el hecho de que construir aplicaciones con Eitri es tan rápido y práctico que parece magia.",
+        "title": "Este es tu nuevo Eitri-App",
+        "pageTitle": "Página Principal",
+        "button": "Ver Productos"
+    },
+    "productList": {
+        "pageTitle": "Lista de Productos",
+        "errorLogMessage": "Error al obtener datos"
+    },
+    "account": {
+        "title": "Mi Cuenta",
+        "welcome": "Inicia sesión en tu cuenta",
+        "loginDescription": "Inicia sesión para seguir tus pedidos, guardar tus favoritos y disfrutar de una experiencia personalizada.",
+        "ordersLabel": "Pedidos",
+        "favoritesLabel": "Favoritos",
+        "addressesLabel": "Direcciones",
+        "loginButton": "Iniciar sesión",
+        "loginHint": "Serás redirigido a una página segura de inicio de sesión.",
+        "profile": {
+            "title": "Perfil",
+            "unnamed": "Usuario",
+            "orders": "Mis Pedidos",
+            "ordersDesc": "Sigue tus pedidos",
+            "addresses": "Mis Direcciones",
+            "addressesDesc": "Administra tus direcciones",
+            "personalData": "Datos Personales",
+            "personalDataDesc": "Edita tu información",
+            "defaultAddress": "Dirección principal",
+            "logout": "Cerrar sesión"
+        },
+        "orders": {
+            "title": "Mis Pedidos",
+            "orderNumber": "Pedido",
+            "empty": "Aún no hay pedidos",
+            "emptyDesc": "Cuando realices una compra, tus pedidos aparecerán aquí.",
+            "loadMore": "Cargar más pedidos",
+            "qty": "Cant",
+            "moreItem": "artículo",
+            "moreItems": "artículos",
+            "total": "Total",
+            "financial": {
+                "PAID": "Pagado",
+                "PENDING": "Pendiente",
+                "REFUNDED": "Reembolsado",
+                "PARTIALLY_REFUNDED": "Reembolso parcial",
+                "VOIDED": "Anulado",
+                "EXPIRED": "Expirado",
+                "AUTHORIZED": "Autorizado",
+                "PARTIALLY_PAID": "Parcialmente pagado"
+            },
+            "fulfillment": {
+                "FULFILLED": "Entregado",
+                "UNFULFILLED": "En preparación",
+                "PARTIALLY_FULFILLED": "Parcialmente enviado",
+                "IN_PROGRESS": "En progreso",
+                "ON_HOLD": "En espera"
+            }
+        },
+        "addresses": {
+            "title": "Mis Direcciones",
+            "editTitle": "Editar Dirección",
+            "newTitle": "Nueva Dirección",
+            "empty": "No hay direcciones registradas",
+            "emptyDesc": "Agrega una dirección para facilitar tus compras.",
+            "addNew": "Agregar dirección",
+            "default": "Dirección principal",
+            "edit": "Editar",
+            "delete": "Eliminar",
+            "setDefault": "Definir como principal",
+            "firstName": "Nombre",
+            "firstNamePlaceholder": "Nombre",
+            "lastName": "Apellido",
+            "lastNamePlaceholder": "Apellido",
+            "address1": "Dirección *",
+            "address1Placeholder": "Calle, número",
+            "address2": "Apartamento / Piso",
+            "address2Placeholder": "Apto, piso, etc.",
+            "city": "Ciudad *",
+            "cityPlaceholder": "Ciudad",
+            "province": "Provincia",
+            "provincePlaceholder": "Provincia",
+            "zip": "Código postal *",
+            "zipPlaceholder": "00000",
+            "phone": "Teléfono",
+            "phonePlaceholder": "(000) 000-0000",
+            "saveNew": "Guardar dirección",
+            "saveEdit": "Guardar cambios",
+            "requiredFields": "Complete los campos obligatorios: dirección, ciudad y código postal.",
+            "saveError": "Error al guardar la dirección. Inténtalo de nuevo."
+        },
+        "editProfile": {
+            "title": "Datos Personales",
+            "unnamed": "Usuario",
+            "personalInfo": "Información personal",
+            "firstName": "Nombre *",
+            "firstNamePlaceholder": "Tu nombre",
+            "lastName": "Apellido",
+            "lastNamePlaceholder": "Tu apellido",
+            "contactInfo": "Información de contacto",
+            "email": "Correo electrónico",
+            "phone": "Teléfono",
+            "memberSince": "Miembro desde",
+            "contactHint": "Para cambiar tu correo o teléfono, contacta al soporte.",
+            "save": "Guardar cambios",
+            "saveSuccess": "¡Datos actualizados con éxito!",
+            "saveError": "Error al guardar. Inténtalo de nuevo.",
+            "requiredName": "El nombre es obligatorio."
+        }
+    }
+}

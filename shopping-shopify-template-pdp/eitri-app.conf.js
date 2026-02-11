@@ -15,7 +15,7 @@ module.exports = {
 	'eitri-app-dependencies': {
 		'eitri-shopping-shopify-shared': {
 			isEitriAppShared: true,
-			version: '0.1.0'
+			version: '0.2.1'
 		},
 		'shopping-shopify-template-shared': {
 			isEitriAppShared: true,

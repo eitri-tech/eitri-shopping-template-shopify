@@ -134,12 +134,18 @@ export default function CartPage() {
 
 	const goToCheckout = async (checkoutUrl: string) => {
 		try {
+			if (!cart.buyerIdentity?.email) {
+				// Associate the customer to the cart if logged in
+				await Shopify.cart.associateCustomerToCart()
+			}
+
 			const modules = await Eitri.modules()
 			const startCheckoutFn = modules?.shopify?.startCheckout
 			if (startCheckoutFn) {
 				const res = await startCheckoutFn({
 					checkoutUrl
 				})
+				console.log(res)
 			}
 		} catch (error) {
 			console.error(error)
