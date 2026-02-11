@@ -19,6 +19,11 @@ eitri-apps:
       alias: cart
       focus: false
       shared: false
+    - path: ./shopping-shopify-template-account
+      workspace: account
+      alias: account
+      focus: false
+      shared: false
 bottom-tab-view-simulation:
     eitri-apps:
         - slug: 'shopping-shopify-template-home'
@@ -41,11 +46,11 @@ bottom-tab-view-simulation:
           initialization-params:
               type: 'string'
               value: 'tabIndex=3&route=ProductCatalog&handle=tech-t-shirt-nossa-camiseta-mais-iconica&type=collection'
-        #  - slug: "shopping-vtex-template-account"
-        #    title: "Perfil"
-        #    initialization-params:
-        #      type: "string"
-        #      value: "tabIndex=4"
+        - slug: 'shopping-shopify-template-account'
+          title: 'Perfil'
+          initialization-params:
+              type: 'string'
+              value: 'tabIndex=4'
 
 #application-id: cca11cae-342e-4ca6-a955-00abca321d86
 #insider
