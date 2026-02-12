@@ -4,30 +4,19 @@ import { Text, View, Loading } from 'eitri-luminus'
 import { FiUser, FiShoppingBag, FiMapPin, FiChevronRight, FiMail, FiPhone, FiLogOut } from 'react-icons/fi'
 
 import { Shopify, App } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { HeaderContentWrapper, HeaderReturn, HeaderText } from 'shopping-shopify-template-shared'
 
 export default function Profile(props) {
 	const { t } = useTranslation()
-	const [customer, setCustomer] = useState(null)
-	const [loading, setLoading] = useState(true)
 
-	useEffect(() => {
-		App.configure({ verbose: true }).then(() => {
-			loadCustomer()
-		})
-	}, [])
-
-	const loadCustomer = async () => {
-		try {
-			const data = await Shopify.customer.getCurrentCustomer()
-			setCustomer(data)
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoading(false)
-		}
-	}
+	const { data: customer, isLoading } = useQuery({
+		queryKey: ['customer'],
+		queryFn: async () => {
+			await App.configure({ verbose: true })
+			return Shopify.customer.getCurrentCustomer()
+		},
+	})
 
 	const goToOrders = () => {
 		Eitri.navigation.navigate({ path: 'Orders' })
@@ -46,7 +35,7 @@ export default function Profile(props) {
 		}
 	}
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<View className='flex flex-col items-center justify-center pt-20'>
 				<Loading />
@@ -80,7 +69,7 @@ export default function Profile(props) {
 							size={14}
 							className='text-gray-400'
 						/>
-						<Text className='text-sm text-gray-500'>{customer.emailAddress.emailAddress}</Text>
+						<Text className='text-base text-gray-500'>{customer.emailAddress.emailAddress}</Text>
 					</View>
 				)}
 
@@ -90,7 +79,7 @@ export default function Profile(props) {
 							size={14}
 							className='text-gray-400'
 						/>
-						<Text className='text-sm text-gray-500'>{customer.phoneNumber.phoneNumber}</Text>
+						<Text className='text-base text-gray-500'>{customer.phoneNumber.phoneNumber}</Text>
 					</View>
 				)}
 			</View>
@@ -109,8 +98,8 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>{t('account.profile.orders', 'Meus Pedidos')}</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-base font-semibold'>{t('account.profile.orders', 'Meus Pedidos')}</Text>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.ordersDesc', 'Acompanhe seus pedidos')}
 							</Text>
 						</View>
@@ -133,10 +122,10 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>
+							<Text className='text-base font-semibold'>
 								{t('account.profile.addresses', 'Meus Endereços')}
 							</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.addressesDesc', 'Gerencie seus endereços')}
 							</Text>
 						</View>
@@ -159,10 +148,10 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>
+							<Text className='text-base font-semibold'>
 								{t('account.profile.personalData', 'Dados Pessoais')}
 							</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.personalDataDesc', 'Edite suas informações')}
 							</Text>
 						</View>
@@ -177,16 +166,16 @@ export default function Profile(props) {
 			{/* Default Address Preview */}
 			{customer?.defaultAddress && (
 				<View className='flex flex-col mx-4 mt-6'>
-					<Text className='text-sm font-semibold mb-2 px-1'>
+					<Text className='text-base font-semibold mb-2 px-1'>
 						{t('account.profile.defaultAddress', 'Endereço principal')}
 					</Text>
 					<View className='flex flex-col p-4 bg-gray-50 rounded-lg border border-gray-100'>
-						<Text className='text-sm text-gray-700'>
+						<Text className='text-base text-gray-700'>
 							{[customer.defaultAddress.address1, customer.defaultAddress.address2]
 								.filter(Boolean)
 								.join(', ')}
 						</Text>
-						<Text className='text-xs text-gray-500 mt-1'>
+						<Text className='text-sm text-gray-500 mt-1'>
 							{[
 								customer.defaultAddress.city,
 								customer.defaultAddress.province,
@@ -208,7 +197,7 @@ export default function Profile(props) {
 						size={16}
 						className='text-red-500'
 					/>
-					<Text className='text-sm font-medium text-red-500'>
+					<Text className='text-base font-medium text-red-500'>
 						{t('account.profile.logout', 'Sair da conta')}
 					</Text>
 				</View>

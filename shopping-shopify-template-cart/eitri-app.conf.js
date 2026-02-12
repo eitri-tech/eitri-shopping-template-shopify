@@ -2,7 +2,7 @@ module.exports = {
 	'name': 'shopping-shopify-template-cart',
 	'title': 'shopping-shopify-template-cart',
 	'slug': 'shopping-shopify-template-cart',
-	'eitri-luminus': '2.22.3',
+	'eitri-luminus': '2.22.5',
 	'eitri-bifrost': '4.7.0',
 	'version': '0.1.6',
 	'public-key': '9510e0dd-de42-4842-8ba8-78ef1f4a70d2',
@@ -15,7 +15,7 @@ module.exports = {
 	'eitri-app-dependencies': {
 		'eitri-shopping-shopify-shared': {
 			isEitriAppShared: true,
-			version: '0.2.1'
+			version: '0.3.0'
 		},
 		'shopping-shopify-template-shared': {
 			isEitriAppShared: true,

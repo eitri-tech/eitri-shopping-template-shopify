@@ -1,10 +1,11 @@
 import { useTranslation } from 'eitri-i18n'
+import Eitri from 'eitri-bifrost'
 import { Text, View, Image, Loading, Page } from 'eitri-luminus'
 import { HeaderContentWrapper, HeaderReturn, HeaderText, CustomButton, BottomInset } from 'shopping-shopify-template-shared'
-import { FiPackage, FiShoppingBag } from 'react-icons/fi'
+import { FiPackage, FiShoppingBag, FiChevronRight } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 
 const ORDERS_PER_PAGE = 10
 
@@ -65,53 +66,25 @@ function formatDate(dateString, locale) {
 export default function Orders(props) {
 	const { t, i18n } = useTranslation()
 	const locale = getIntlLocale(i18n.language)
-	const [orders, setOrders] = useState([])
-	const [loading, setLoading] = useState(true)
-	const [loadingMore, setLoadingMore] = useState(false)
-	const [pageInfo, setPageInfo] = useState(null)
-	const [lastCursor, setLastCursor] = useState(null)
 
-	useEffect(() => {
-		fetchOrders()
-	}, [])
+	const {
+		data,
+		isLoading,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useInfiniteQuery({
+		queryKey: ['orders'],
+		queryFn: ({ pageParam }) =>
+			Shopify.customer.getOrders({ first: ORDERS_PER_PAGE, after: pageParam }),
+		getNextPageParam: (lastPage) => {
+			if (!lastPage?.pageInfo?.hasNextPage) return undefined
+			const edges = lastPage?.orders || []
+			return edges.length > 0 ? edges[edges.length - 1].cursor : undefined
+		},
+	})
 
-	const fetchOrders = async () => {
-		try {
-			const result = await Shopify.customer.getOrders({ first: ORDERS_PER_PAGE })
-			const edges = result?.orders || []
-			setOrders(edges)
-			setPageInfo(result?.pageInfo || null)
-			if (edges.length > 0) {
-				setLastCursor(edges[edges.length - 1].cursor)
-			}
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const loadMore = async () => {
-		if (!pageInfo?.hasNextPage || loadingMore) return
-		setLoadingMore(true)
-		try {
-			const result = await Shopify.customer.getOrders({
-				first: ORDERS_PER_PAGE,
-				after: lastCursor,
-			})
-			const newEdges = result?.orders || []
-			setOrders(prev => [...prev, ...newEdges])
-			setPageInfo(result?.pageInfo || null)
-			if (newEdges.length > 0) {
-				setLastCursor(newEdges[newEdges.length - 1].cursor)
-			}
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoadingMore(false)
-		}
-	}
-
+	const orders = data?.pages?.flatMap((page) => page?.orders || []) || []
 	const title = t('account.orders.title', 'Meus Pedidos')
 
 	return (
@@ -123,7 +96,7 @@ export default function Orders(props) {
 				</View>
 			</HeaderContentWrapper>
 
-			{loading ? (
+			{isLoading ? (
 				<View className='flex flex-col items-center justify-center pt-20'>
 					<Loading />
 				</View>
@@ -138,12 +111,12 @@ export default function Orders(props) {
 						)
 					})}
 
-					{pageInfo?.hasNextPage && (
+					{hasNextPage && (
 						<View className='mt-2'>
 							<CustomButton
 								label={t('account.orders.loadMore', 'Carregar mais pedidos')}
-								onClick={loadMore}
-								isLoading={loadingMore}
+								onClick={() => fetchNextPage()}
+								isLoading={isFetchingNextPage}
 								outlined
 							/>
 						</View>
@@ -167,7 +140,7 @@ function EmptyOrders({ t }) {
 				{t('account.orders.empty', 'Nenhum pedido ainda')}
 			</Text>
 
-			<Text className='text-sm text-gray-500 text-center px-4'>
+			<Text className='text-base text-gray-500 text-center px-4'>
 				{t('account.orders.emptyDesc', 'Quando você fizer uma compra, seus pedidos aparecerão aqui.')}
 			</Text>
 		</View>
@@ -189,31 +162,40 @@ function OrderCard({ order, t, locale }) {
 		? order.subtotal
 		: order.totalPrice
 
+	const handlePress = () => {
+		Eitri.navigation.navigate({ path: `Order/${encodeURIComponent(order.id)}` })
+	}
+
 	return (
-		<View className='flex flex-col bg-white rounded-lg border border-gray-200 overflow-hidden'>
+		<View
+			onClick={handlePress}
+			className='flex flex-col bg-white rounded-lg border border-gray-200 overflow-hidden active:scale-[0.98] transition-transform'>
 			{/* Order Header */}
 			<View className='flex flex-row items-center justify-between px-4 pt-4 pb-3'>
 				<View className='flex flex-row items-center gap-2'>
 					<FiPackage size={16} className='text-primary' />
-					<Text className='text-sm font-bold'>{order.name || `#${order.number}`}</Text>
+					<Text className='text-base font-bold'>{order.name || `#${order.number}`}</Text>
 				</View>
-				<Text className='text-xs text-gray-400'>
-					{formatDate(order.processedAt || order.createdAt, locale)}
-				</Text>
+				<View className='flex flex-row items-center gap-2'>
+					<Text className='text-sm text-gray-400'>
+						{formatDate(order.processedAt || order.createdAt, locale)}
+					</Text>
+					<FiChevronRight size={16} className='text-gray-400' />
+				</View>
 			</View>
 
 			{/* Status Badges */}
 			<View className='flex flex-row px-4 pb-3 gap-2'>
 				{order.financialStatus && (
 					<View className={`px-2 py-0.5 rounded-full ${financialStyle}`}>
-						<Text className={`text-[10px] font-medium ${financialStyle}`}>
+						<Text className={`text-xs font-medium ${financialStyle}`}>
 							{t(`account.orders.financial.${order.financialStatus}`, order.financialStatus)}
 						</Text>
 					</View>
 				)}
 				{order.fulfillmentStatus && (
 					<View className={`px-2 py-0.5 rounded-full ${fulfillmentStyle}`}>
-						<Text className={`text-[10px] font-medium ${fulfillmentStyle}`}>
+						<Text className={`text-xs font-medium ${fulfillmentStyle}`}>
 							{t(`account.orders.fulfillment.${order.fulfillmentStatus}`, order.fulfillmentStatus)}
 						</Text>
 					</View>
@@ -236,15 +218,15 @@ function OrderCard({ order, t, locale }) {
 								</View>
 							)}
 							<View className='flex flex-col flex-1 min-w-0'>
-								<Text className='text-xs font-medium line-clamp-1'>{item.title}</Text>
-								<Text className='text-[10px] text-gray-400'>
+								<Text className='text-sm font-medium line-clamp-1'>{item.title}</Text>
+								<Text className='text-xs text-gray-400'>
 									{t('account.orders.qty', 'Qtd')}: {item.quantity} · {formatCurrency(item.price, locale)}
 								</Text>
 							</View>
 						</View>
 					))}
 					{remainingCount > 0 && (
-						<Text className='text-[10px] text-gray-400 pl-[56px]'>
+						<Text className='text-xs text-gray-400 pl-[56px]'>
 							+{remainingCount} {remainingCount === 1
 								? t('account.orders.moreItem', 'item')
 								: t('account.orders.moreItems', 'itens')}
@@ -255,8 +237,8 @@ function OrderCard({ order, t, locale }) {
 
 			{/* Order Total */}
 			<View className='flex flex-row items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-100'>
-				<Text className='text-xs text-gray-500'>{t('account.orders.total', 'Total')}</Text>
-				<Text className='text-sm font-bold'>{formatCurrency(displayPrice, locale)}</Text>
+				<Text className='text-sm text-gray-500'>{t('account.orders.total', 'Total')}</Text>
+				<Text className='text-base font-bold'>{formatCurrency(displayPrice, locale)}</Text>
 			</View>
 		</View>
 	)

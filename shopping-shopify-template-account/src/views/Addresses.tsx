@@ -11,7 +11,8 @@ import {
 import { FiMapPin, FiPlus, FiEdit2, FiTrash2, FiStar, FiArrowLeft } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const EMPTY_FORM = {
 	firstName: '',
@@ -26,33 +27,53 @@ const EMPTY_FORM = {
 
 export default function Addresses(props) {
 	const { t } = useTranslation()
-	const [addresses, setAddresses] = useState([])
-	const [defaultAddressId, setDefaultAddressId] = useState(null)
-	const [loading, setLoading] = useState(true)
+	const queryClient = useQueryClient()
 	const [mode, setMode] = useState('list') // 'list' | 'create' | 'edit'
 	const [editingId, setEditingId] = useState(null)
 	const [form, setForm] = useState(EMPTY_FORM)
-	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState(null)
 
-	useEffect(() => {
-		loadAddresses()
-	}, [])
+	const { data: customerData, isLoading } = useQuery({
+		queryKey: ['addresses'],
+		queryFn: () => Shopify.customer.getCurrentCustomer(),
+	})
 
-	const loadAddresses = async () => {
-		try {
-			const customer = await Shopify.customer.getCurrentCustomer()
-			if (customer) {
-				const list = customer.addresses?.edges?.map((e) => e.node) || []
-				setAddresses(list)
-				setDefaultAddressId(customer.defaultAddress?.id || null)
+	const addresses = customerData?.addresses?.edges?.map((e) => e.node) || []
+	const defaultAddressId = customerData?.defaultAddress?.id || null
+
+	const saveMutation = useMutation({
+		mutationFn: async ({ mode, editingId, addressInput, isFirst }) => {
+			if (mode === 'edit' && editingId) {
+				return Shopify.customer.updateAddress(editingId, addressInput)
 			}
-		} catch (err) {
-			console.error(err)
-		} finally {
-			setLoading(false)
-		}
-	}
+			return Shopify.customer.createAddress(addressInput, isFirst)
+		},
+		onSuccess: (result) => {
+			if (result.userErrors?.length > 0) {
+				setError(result.userErrors.map((e) => e.message).join('. '))
+				return
+			}
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+			backToList()
+		},
+		onError: () => {
+			setError(t('account.addresses.saveError', 'Erro ao salvar endereço. Tente novamente.'))
+		},
+	})
+
+	const deleteMutation = useMutation({
+		mutationFn: (addressId) => Shopify.customer.deleteAddress(addressId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+		},
+	})
+
+	const setDefaultMutation = useMutation({
+		mutationFn: (addressId) => Shopify.customer.setDefaultAddress(addressId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+		},
+	})
 
 	const openCreate = () => {
 		setForm(EMPTY_FORM)
@@ -83,67 +104,30 @@ export default function Addresses(props) {
 		setError(null)
 	}
 
-	const handleSave = async () => {
+	const handleSave = () => {
 		if (!form.address1?.trim() || !form.city?.trim() || !form.zip?.trim()) {
 			setError(t('account.addresses.requiredFields', 'Preencha os campos obrigatórios: endereço, cidade e CEP.'))
 			return
 		}
-
-		setSaving(true)
 		setError(null)
 
-		try {
-			const addressInput = {
-				firstName: form.firstName || undefined,
-				lastName: form.lastName || undefined,
-				address1: form.address1,
-				address2: form.address2 || undefined,
-				city: form.city,
-				zip: form.zip,
-				zoneCode: form.province || undefined,
-				phoneNumber: form.phoneNumber || undefined,
-			}
-
-			let result
-			if (mode === 'edit' && editingId) {
-				result = await Shopify.customer.updateAddress(editingId, addressInput)
-			} else {
-				const isFirst = addresses.length === 0
-				result = await Shopify.customer.createAddress(addressInput, isFirst)
-			}
-
-			if (result.userErrors?.length > 0) {
-				setError(result.userErrors.map((e) => e.message).join('. '))
-				return
-			}
-
-			await loadAddresses()
-			backToList()
-		} catch (err) {
-			console.error(err)
-			setError(t('account.addresses.saveError', 'Erro ao salvar endereço. Tente novamente.'))
-		} finally {
-			setSaving(false)
+		const addressInput = {
+			firstName: form.firstName || undefined,
+			lastName: form.lastName || undefined,
+			address1: form.address1,
+			address2: form.address2 || undefined,
+			city: form.city,
+			zip: form.zip,
+			zoneCode: form.province || undefined,
+			phoneNumber: form.phoneNumber || undefined,
 		}
-	}
 
-	const handleDelete = async (addressId) => {
-		try {
-			await Shopify.customer.deleteAddress(addressId)
-			await loadAddresses()
-		} catch (err) {
-			console.error(err)
-		}
-	}
-
-	const handleSetDefault = async (addressId) => {
-		try {
-			await Shopify.customer.setDefaultAddress(addressId)
-			setDefaultAddressId(addressId)
-			await loadAddresses()
-		} catch (err) {
-			console.error(err)
-		}
+		saveMutation.mutate({
+			mode,
+			editingId,
+			addressInput,
+			isFirst: addresses.length === 0,
+		})
 	}
 
 	const updateField = (field, value) => {
@@ -176,7 +160,7 @@ export default function Addresses(props) {
 					form={form}
 					updateField={updateField}
 					onSave={handleSave}
-					saving={saving}
+					saving={saveMutation.isLoading}
 					error={error}
 					t={t}
 					isEdit={mode === 'edit'}
@@ -196,7 +180,7 @@ export default function Addresses(props) {
 				</View>
 			</HeaderContentWrapper>
 
-			{loading ? (
+			{isLoading ? (
 				<View className='flex flex-col items-center justify-center pt-20'>
 					<Loading />
 				</View>
@@ -211,8 +195,8 @@ export default function Addresses(props) {
 								address={address}
 								isDefault={address.id === defaultAddressId}
 								onEdit={() => openEdit(address)}
-								onDelete={() => handleDelete(address.id)}
-								onSetDefault={() => handleSetDefault(address.id)}
+								onDelete={() => deleteMutation.mutate(address.id)}
+								onSetDefault={() => setDefaultMutation.mutate(address.id)}
 								t={t}
 							/>
 						))
@@ -242,7 +226,7 @@ function EmptyAddresses({ t }) {
 				{t('account.addresses.empty', 'Nenhum endereço cadastrado')}
 			</Text>
 
-			<Text className='text-sm text-gray-500 text-center px-4'>
+			<Text className='text-base text-gray-500 text-center px-4'>
 				{t('account.addresses.emptyDesc', 'Adicione um endereço para facilitar suas compras.')}
 			</Text>
 		</View>
@@ -260,20 +244,20 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 				{isDefault && (
 					<View className='flex flex-row items-center gap-1 mb-1'>
 						<FiStar size={12} className='text-primary' />
-						<Text className='text-[10px] font-semibold text-primary'>
+						<Text className='text-xs font-semibold text-primary'>
 							{t('account.addresses.default', 'Endereço principal')}
 						</Text>
 					</View>
 				)}
 
-				{name && <Text className='text-sm font-semibold'>{name}</Text>}
-				{line1 && <Text className='text-sm text-gray-700'>{line1}</Text>}
-				{line2 && <Text className='text-xs text-gray-500'>{line2}</Text>}
+				{name && <Text className='text-base font-semibold'>{name}</Text>}
+				{line1 && <Text className='text-base text-gray-700'>{line1}</Text>}
+				{line2 && <Text className='text-sm text-gray-500'>{line2}</Text>}
 				{address.country && (
-					<Text className='text-xs text-gray-400'>{address.country}</Text>
+					<Text className='text-sm text-gray-400'>{address.country}</Text>
 				)}
 				{address.phoneNumber && (
-					<Text className='text-xs text-gray-400'>{address.phoneNumber}</Text>
+					<Text className='text-sm text-gray-400'>{address.phoneNumber}</Text>
 				)}
 			</View>
 
@@ -283,7 +267,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 					className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 active:bg-gray-50'
 				>
 					<FiEdit2 size={14} className='text-gray-500' />
-					<Text className='text-xs text-gray-500'>{t('account.addresses.edit', 'Editar')}</Text>
+					<Text className='text-sm text-gray-500'>{t('account.addresses.edit', 'Editar')}</Text>
 				</View>
 
 				{!isDefault && (
@@ -292,7 +276,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 						className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 border-l border-gray-100 active:bg-gray-50'
 					>
 						<FiStar size={14} className='text-gray-500' />
-						<Text className='text-xs text-gray-500'>{t('account.addresses.setDefault', 'Tornar principal')}</Text>
+						<Text className='text-sm text-gray-500'>{t('account.addresses.setDefault', 'Tornar principal')}</Text>
 					</View>
 				)}
 
@@ -302,7 +286,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 						className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 border-l border-gray-100 active:bg-gray-50'
 					>
 						<FiTrash2 size={14} className='text-red-400' />
-						<Text className='text-xs text-red-400'>{t('account.addresses.delete', 'Excluir')}</Text>
+						<Text className='text-sm text-red-400'>{t('account.addresses.delete', 'Excluir')}</Text>
 					</View>
 				)}
 			</View>
@@ -387,7 +371,7 @@ function AddressForm({ form, updateField, onSave, saving, error, t, isEdit }) {
 
 			{error && (
 				<View className='p-3 rounded bg-red-50'>
-					<Text className='text-xs text-red-600'>{error}</Text>
+					<Text className='text-sm text-red-600'>{error}</Text>
 				</View>
 			)}
 

@@ -57,5 +57,5 @@ bottom-tab-view-simulation:
 application-id: aaf9891b-c148-40fc-aa68-0a5028153b78
 #sawari
 # application-id: ac1670ea-7e0d-4458-8728-280671d4750b
-eitri-luminus: '2.22.3'
+eitri-luminus: '2.22.5'
 eitri-bifrost: '4.7.0'

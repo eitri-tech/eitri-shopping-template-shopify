@@ -2,7 +2,7 @@ module.exports = {
 	'name': 'shopping-shopify-template-shared',
 	'title': 'shopping-shopify-template-shared',
 	'slug': 'shopping-shopify-template-shared',
-	'eitri-luminus': '2.22.3',
+	'eitri-luminus': '2.22.5',
 	'eitri-bifrost': '4.7.0',
 	'version': '0.1.3',
 	'public-key': 'dc2a845a-a80a-4c25-b434-61dde87f6c49',

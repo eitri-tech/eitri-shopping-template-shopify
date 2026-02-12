@@ -1,6 +1,6 @@
 import Eitri from 'eitri-bifrost'
 import { useTranslation } from 'eitri-i18n'
-import { Text, View, Page } from 'eitri-luminus'
+import { Text, View, Page, Loading } from 'eitri-luminus'
 import {
 	HeaderContentWrapper,
 	HeaderReturn,
@@ -12,23 +12,23 @@ import { FiUser, FiShoppingBag, FiHeart, FiMapPin } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import Profile from './Profile'
 
 export default function Home(props) {
 	const { t } = useTranslation()
-	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const title = t('account.title', 'Minha Conta')
+	const { data: isAuthenticated, isLoading: checkingAuth } = useQuery({
+		queryKey: ['auth'],
+		queryFn: () => Shopify.customer.isAuthenticated(),
+	})
 
 	useEffect(() => {
-		Shopify.customer.isAuthenticated().then(isAuthenticated => {
-			setIsAuthenticated(isAuthenticated)
-			if (isAuthenticated) {
-				Eitri.navigation.navigate({ path: '/Profile', replace: true })
-			}
-		})
-	}, [])
+		if (isAuthenticated) {
+			Eitri.navigation.navigate({ path: '/Profile', replace: true })
+		}
+	}, [isAuthenticated])
 
 	const makeLogin = async () => {
 		setIsLoading(true)
@@ -42,6 +42,8 @@ export default function Home(props) {
 		}
 	}
 
+	const title = t('account.title', 'Minha Conta')
+
 	return (
 		<Page title={title}>
 			<HeaderContentWrapper className={`justify-between`}>
@@ -51,7 +53,11 @@ export default function Home(props) {
 				</View>
 			</HeaderContentWrapper>
 
-			{!isAuthenticated ? (
+			{checkingAuth ? (
+				<View className='flex flex-col items-center justify-center pt-20'>
+					<Loading />
+				</View>
+			) : !isAuthenticated ? (
 				<View className={`flex flex-col items-center px-6 pt-12`}>
 					<View
 						className={`flex items-center justify-center w-[96px] h-[96px] rounded-full bg-primary/10 mb-6`}>
@@ -65,7 +71,7 @@ export default function Home(props) {
 						{t('account.welcome', 'Entre na sua conta')}
 					</Text>
 
-					<Text className={`text-sm text-gray-500 text-center mb-8 px-4`}>
+					<Text className={`text-base text-gray-500 text-center mb-8 px-4`}>
 						{t(
 							'account.loginDescription',
 							'Faça login para acompanhar seus pedidos, salvar seus favoritos e ter uma experiência personalizada.'
@@ -81,7 +87,7 @@ export default function Home(props) {
 									className='text-gray-600'
 								/>
 							</View>
-							<Text className={`text-xs text-gray-500`}>{t('account.ordersLabel', 'Pedidos')}</Text>
+							<Text className={`text-sm text-gray-500`}>{t('account.ordersLabel', 'Pedidos')}</Text>
 						</View>
 
 						<View className={`flex flex-col items-center gap-2`}>
@@ -92,7 +98,7 @@ export default function Home(props) {
 									className='text-gray-600'
 								/>
 							</View>
-							<Text className={`text-xs text-gray-500`}>{t('account.favoritesLabel', 'Favoritos')}</Text>
+							<Text className={`text-sm text-gray-500`}>{t('account.favoritesLabel', 'Favoritos')}</Text>
 						</View>
 
 						<View className={`flex flex-col items-center gap-2`}>
@@ -103,7 +109,7 @@ export default function Home(props) {
 									className='text-gray-600'
 								/>
 							</View>
-							<Text className={`text-xs text-gray-500`}>{t('account.addressesLabel', 'Endereços')}</Text>
+							<Text className={`text-sm text-gray-500`}>{t('account.addressesLabel', 'Endereços')}</Text>
 						</View>
 					</View>
 
@@ -114,7 +120,7 @@ export default function Home(props) {
 							isLoading={isLoading}
 						/>
 
-						<Text className={`text-xs text-gray-400 text-center mt-4`}>
+						<Text className={`text-sm text-gray-400 text-center mt-4`}>
 							{t('account.loginHint', 'Você será redirecionado para uma página segura de login.')}
 						</Text>
 					</View>

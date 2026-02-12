@@ -1,5 +1,4 @@
 import { useTranslation } from 'eitri-i18n'
-import Eitri from 'eitri-bifrost'
 import { Text, View, Loading, Page } from 'eitri-luminus'
 import {
 	HeaderContentWrapper,
@@ -13,71 +12,53 @@ import { FiUser, FiMail, FiPhone, FiCalendar, FiCheck } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function EditProfile(props) {
 	const { t } = useTranslation()
-	const [customer, setCustomer] = useState(null)
-	const [loading, setLoading] = useState(true)
-	const [saving, setSaving] = useState(false)
+	const queryClient = useQueryClient()
 	const [firstName, setFirstName] = useState('')
 	const [lastName, setLastName] = useState('')
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useState(false)
 
+	const { data: customer, isLoading } = useQuery({
+		queryKey: ['customer'],
+		queryFn: () => Shopify.customer.getCurrentCustomer(),
+		initialData: props?.state?.customer || undefined,
+	})
+
 	useEffect(() => {
-		loadCustomer()
-	}, [])
-
-	const loadCustomer = async () => {
-		try {
-			// Try navigation state first, fallback to API
-			const navState = props?.state?.customer
-			const data = navState || await Shopify.customer.getCurrentCustomer()
-			if (data) {
-				setCustomer(data)
-				setFirstName(data.firstName || '')
-				setLastName(data.lastName || '')
-			}
-		} catch (err) {
-			console.error(err)
-		} finally {
-			setLoading(false)
+		if (customer) {
+			setFirstName(customer.firstName || '')
+			setLastName(customer.lastName || '')
 		}
-	}
+	}, [customer])
 
-	const handleSave = async () => {
-		if (!firstName.trim()) {
-			setError(t('account.editProfile.requiredName', 'O nome é obrigatório.'))
-			return
-		}
-
-		setSaving(true)
-		setError(null)
-		setSuccess(false)
-
-		try {
-			const result = await Shopify.customer.updateCustomer({
-				firstName: firstName.trim(),
-				lastName: lastName.trim(),
-			})
-
+	const mutation = useMutation({
+		mutationFn: (data) => Shopify.customer.updateCustomer(data),
+		onSuccess: (result) => {
 			if (result.userErrors?.length > 0) {
 				setError(result.userErrors.map((e) => e.message).join('. '))
 				return
 			}
-
-			if (result.customer) {
-				setCustomer(result.customer)
-			}
-
+			queryClient.invalidateQueries({ queryKey: ['customer'] })
 			setSuccess(true)
 			setTimeout(() => setSuccess(false), 3000)
-		} catch (err) {
-			console.error(err)
+		},
+		onError: () => {
 			setError(t('account.editProfile.saveError', 'Erro ao salvar. Tente novamente.'))
-		} finally {
-			setSaving(false)
+		},
+	})
+
+	const handleSave = () => {
+		if (!firstName.trim()) {
+			setError(t('account.editProfile.requiredName', 'O nome é obrigatório.'))
+			return
 		}
+		setError(null)
+		setSuccess(false)
+		mutation.mutate({ firstName: firstName.trim(), lastName: lastName.trim() })
 	}
 
 	const hasChanges = customer && (
@@ -87,7 +68,7 @@ export default function EditProfile(props) {
 
 	const title = t('account.editProfile.title', 'Dados Pessoais')
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<Page title={title}>
 				<HeaderContentWrapper className='justify-between'>
@@ -129,7 +110,7 @@ export default function EditProfile(props) {
 
 				{/* Editable Fields */}
 				<View className='flex flex-col gap-3'>
-					<Text className='text-sm font-semibold'>
+					<Text className='text-base font-semibold'>
 						{t('account.editProfile.personalInfo', 'Informações pessoais')}
 					</Text>
 
@@ -151,7 +132,7 @@ export default function EditProfile(props) {
 				{/* Read-only Info */}
 				{(email || phone || creationDate) && (
 					<View className='flex flex-col gap-3 mt-6'>
-						<Text className='text-sm font-semibold'>
+						<Text className='text-base font-semibold'>
 							{t('account.editProfile.contactInfo', 'Informações de contato')}
 						</Text>
 
@@ -179,7 +160,7 @@ export default function EditProfile(props) {
 							/>
 						)}
 
-						<Text className='text-[10px] text-gray-400 mt-1'>
+						<Text className='text-xs text-gray-400 mt-1'>
 							{t('account.editProfile.contactHint', 'Para alterar e-mail ou telefone, entre em contato com o suporte.')}
 						</Text>
 					</View>
@@ -188,7 +169,7 @@ export default function EditProfile(props) {
 				{/* Error */}
 				{error && (
 					<View className='p-3 rounded bg-red-50 mt-4'>
-						<Text className='text-xs text-red-600'>{error}</Text>
+						<Text className='text-sm text-red-600'>{error}</Text>
 					</View>
 				)}
 
@@ -196,7 +177,7 @@ export default function EditProfile(props) {
 				{success && (
 					<View className='flex flex-row items-center gap-2 p-3 rounded bg-green-50 mt-4'>
 						<FiCheck size={16} className='text-green-600' />
-						<Text className='text-xs text-green-600'>
+						<Text className='text-sm text-green-600'>
 							{t('account.editProfile.saveSuccess', 'Dados atualizados com sucesso!')}
 						</Text>
 					</View>
@@ -207,7 +188,7 @@ export default function EditProfile(props) {
 					<CustomButton
 						label={t('account.editProfile.save', 'Salvar alterações')}
 						onClick={handleSave}
-						isLoading={saving}
+						isLoading={mutation.isLoading}
 						disabled={!hasChanges}
 					/>
 				</View>
@@ -223,8 +204,8 @@ function ReadOnlyField({ icon, label, value }) {
 		<View className='flex flex-row items-center gap-3 p-3 bg-gray-50 rounded-lg'>
 			{icon}
 			<View className='flex flex-col'>
-				<Text className='text-[10px] text-gray-400'>{label}</Text>
-				<Text className='text-sm text-gray-700'>{value}</Text>
+				<Text className='text-xs text-gray-400'>{label}</Text>
+				<Text className='text-base text-gray-700'>{value}</Text>
 			</View>
 		</View>
 	)
