@@ -4,30 +4,19 @@ import { Text, View, Loading } from 'eitri-luminus'
 import { FiUser, FiShoppingBag, FiMapPin, FiChevronRight, FiMail, FiPhone, FiLogOut } from 'react-icons/fi'
 
 import { Shopify, App } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { HeaderContentWrapper, HeaderReturn, HeaderText } from 'shopping-shopify-template-shared'
 
 export default function Profile(props) {
 	const { t } = useTranslation()
-	const [customer, setCustomer] = useState(null)
-	const [loading, setLoading] = useState(true)
 
-	useEffect(() => {
-		App.configure({ verbose: true }).then(() => {
-			loadCustomer()
-		})
-	}, [])
-
-	const loadCustomer = async () => {
-		try {
-			const data = await Shopify.customer.getCurrentCustomer()
-			setCustomer(data)
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoading(false)
-		}
-	}
+	const { data: customer, isLoading } = useQuery({
+		queryKey: ['customer'],
+		queryFn: async () => {
+			await App.configure({ verbose: true })
+			return Shopify.customer.getCurrentCustomer()
+		},
+	})
 
 	const goToOrders = () => {
 		Eitri.navigation.navigate({ path: 'Orders' })
@@ -46,7 +35,7 @@ export default function Profile(props) {
 		}
 	}
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<View className='flex flex-col items-center justify-center pt-20'>
 				<Loading />

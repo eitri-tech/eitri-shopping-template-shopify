@@ -11,7 +11,7 @@ import {
 import { FiPackage, FiTruck, FiMapPin, FiCreditCard, FiExternalLink, FiAlertCircle } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 const financialStatusStyles = {
 	PAID: 'bg-green-100 text-green-700',
@@ -72,31 +72,14 @@ export default function OrderDetails(props) {
 	const { t, i18n } = useTranslation()
 	const locale = getIntlLocale(i18n.language)
 
-	const [order, setOrder] = useState(null)
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(false)
-
-	useEffect(() => {
-		loadOrder()
-	}, [])
-
-	const loadOrder = async () => {
-		setLoading(true)
-		setError(false)
-		try {
-			const result = await Shopify.customer.getOrder(decodeURIComponent(id))
-			setOrder(result)
-		} catch (err) {
-			console.error(err)
-			setError(true)
-		} finally {
-			setLoading(false)
-		}
-	}
+	const { data: order, isLoading, isError, refetch } = useQuery({
+		queryKey: ['order', id],
+		queryFn: () => Shopify.customer.getOrder(decodeURIComponent(id)),
+	})
 
 	const title = t('account.orderDetail.title', 'Detalhes do Pedido')
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<Page title={title}>
 				<HeaderContentWrapper className='justify-between'>
@@ -112,7 +95,7 @@ export default function OrderDetails(props) {
 		)
 	}
 
-	if (error || !order) {
+	if (isError || !order) {
 		return (
 			<Page title={title}>
 				<HeaderContentWrapper className='justify-between'>
@@ -136,7 +119,7 @@ export default function OrderDetails(props) {
 					</Text>
 					<CustomButton
 						label={t('account.orderDetail.retry', 'Tentar novamente')}
-						onClick={loadOrder}
+						onClick={() => refetch()}
 					/>
 				</View>
 				<BottomInset />

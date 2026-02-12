@@ -11,7 +11,8 @@ import {
 import { FiMapPin, FiPlus, FiEdit2, FiTrash2, FiStar, FiArrowLeft } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const EMPTY_FORM = {
 	firstName: '',
@@ -26,33 +27,53 @@ const EMPTY_FORM = {
 
 export default function Addresses(props) {
 	const { t } = useTranslation()
-	const [addresses, setAddresses] = useState([])
-	const [defaultAddressId, setDefaultAddressId] = useState(null)
-	const [loading, setLoading] = useState(true)
+	const queryClient = useQueryClient()
 	const [mode, setMode] = useState('list') // 'list' | 'create' | 'edit'
 	const [editingId, setEditingId] = useState(null)
 	const [form, setForm] = useState(EMPTY_FORM)
-	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState(null)
 
-	useEffect(() => {
-		loadAddresses()
-	}, [])
+	const { data: customerData, isLoading } = useQuery({
+		queryKey: ['addresses'],
+		queryFn: () => Shopify.customer.getCurrentCustomer(),
+	})
 
-	const loadAddresses = async () => {
-		try {
-			const customer = await Shopify.customer.getCurrentCustomer()
-			if (customer) {
-				const list = customer.addresses?.edges?.map((e) => e.node) || []
-				setAddresses(list)
-				setDefaultAddressId(customer.defaultAddress?.id || null)
+	const addresses = customerData?.addresses?.edges?.map((e) => e.node) || []
+	const defaultAddressId = customerData?.defaultAddress?.id || null
+
+	const saveMutation = useMutation({
+		mutationFn: async ({ mode, editingId, addressInput, isFirst }) => {
+			if (mode === 'edit' && editingId) {
+				return Shopify.customer.updateAddress(editingId, addressInput)
 			}
-		} catch (err) {
-			console.error(err)
-		} finally {
-			setLoading(false)
-		}
-	}
+			return Shopify.customer.createAddress(addressInput, isFirst)
+		},
+		onSuccess: (result) => {
+			if (result.userErrors?.length > 0) {
+				setError(result.userErrors.map((e) => e.message).join('. '))
+				return
+			}
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+			backToList()
+		},
+		onError: () => {
+			setError(t('account.addresses.saveError', 'Erro ao salvar endereço. Tente novamente.'))
+		},
+	})
+
+	const deleteMutation = useMutation({
+		mutationFn: (addressId) => Shopify.customer.deleteAddress(addressId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+		},
+	})
+
+	const setDefaultMutation = useMutation({
+		mutationFn: (addressId) => Shopify.customer.setDefaultAddress(addressId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['addresses'] })
+		},
+	})
 
 	const openCreate = () => {
 		setForm(EMPTY_FORM)
@@ -83,67 +104,30 @@ export default function Addresses(props) {
 		setError(null)
 	}
 
-	const handleSave = async () => {
+	const handleSave = () => {
 		if (!form.address1?.trim() || !form.city?.trim() || !form.zip?.trim()) {
 			setError(t('account.addresses.requiredFields', 'Preencha os campos obrigatórios: endereço, cidade e CEP.'))
 			return
 		}
-
-		setSaving(true)
 		setError(null)
 
-		try {
-			const addressInput = {
-				firstName: form.firstName || undefined,
-				lastName: form.lastName || undefined,
-				address1: form.address1,
-				address2: form.address2 || undefined,
-				city: form.city,
-				zip: form.zip,
-				zoneCode: form.province || undefined,
-				phoneNumber: form.phoneNumber || undefined,
-			}
-
-			let result
-			if (mode === 'edit' && editingId) {
-				result = await Shopify.customer.updateAddress(editingId, addressInput)
-			} else {
-				const isFirst = addresses.length === 0
-				result = await Shopify.customer.createAddress(addressInput, isFirst)
-			}
-
-			if (result.userErrors?.length > 0) {
-				setError(result.userErrors.map((e) => e.message).join('. '))
-				return
-			}
-
-			await loadAddresses()
-			backToList()
-		} catch (err) {
-			console.error(err)
-			setError(t('account.addresses.saveError', 'Erro ao salvar endereço. Tente novamente.'))
-		} finally {
-			setSaving(false)
+		const addressInput = {
+			firstName: form.firstName || undefined,
+			lastName: form.lastName || undefined,
+			address1: form.address1,
+			address2: form.address2 || undefined,
+			city: form.city,
+			zip: form.zip,
+			zoneCode: form.province || undefined,
+			phoneNumber: form.phoneNumber || undefined,
 		}
-	}
 
-	const handleDelete = async (addressId) => {
-		try {
-			await Shopify.customer.deleteAddress(addressId)
-			await loadAddresses()
-		} catch (err) {
-			console.error(err)
-		}
-	}
-
-	const handleSetDefault = async (addressId) => {
-		try {
-			await Shopify.customer.setDefaultAddress(addressId)
-			setDefaultAddressId(addressId)
-			await loadAddresses()
-		} catch (err) {
-			console.error(err)
-		}
+		saveMutation.mutate({
+			mode,
+			editingId,
+			addressInput,
+			isFirst: addresses.length === 0,
+		})
 	}
 
 	const updateField = (field, value) => {
@@ -176,7 +160,7 @@ export default function Addresses(props) {
 					form={form}
 					updateField={updateField}
 					onSave={handleSave}
-					saving={saving}
+					saving={saveMutation.isLoading}
 					error={error}
 					t={t}
 					isEdit={mode === 'edit'}
@@ -196,7 +180,7 @@ export default function Addresses(props) {
 				</View>
 			</HeaderContentWrapper>
 
-			{loading ? (
+			{isLoading ? (
 				<View className='flex flex-col items-center justify-center pt-20'>
 					<Loading />
 				</View>
@@ -211,8 +195,8 @@ export default function Addresses(props) {
 								address={address}
 								isDefault={address.id === defaultAddressId}
 								onEdit={() => openEdit(address)}
-								onDelete={() => handleDelete(address.id)}
-								onSetDefault={() => handleSetDefault(address.id)}
+								onDelete={() => deleteMutation.mutate(address.id)}
+								onSetDefault={() => setDefaultMutation.mutate(address.id)}
 								t={t}
 							/>
 						))

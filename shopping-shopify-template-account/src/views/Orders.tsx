@@ -5,7 +5,7 @@ import { HeaderContentWrapper, HeaderReturn, HeaderText, CustomButton, BottomIns
 import { FiPackage, FiShoppingBag, FiChevronRight } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
-import { useEffect, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 
 const ORDERS_PER_PAGE = 10
 
@@ -66,53 +66,25 @@ function formatDate(dateString, locale) {
 export default function Orders(props) {
 	const { t, i18n } = useTranslation()
 	const locale = getIntlLocale(i18n.language)
-	const [orders, setOrders] = useState([])
-	const [loading, setLoading] = useState(true)
-	const [loadingMore, setLoadingMore] = useState(false)
-	const [pageInfo, setPageInfo] = useState(null)
-	const [lastCursor, setLastCursor] = useState(null)
 
-	useEffect(() => {
-		fetchOrders()
-	}, [])
+	const {
+		data,
+		isLoading,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useInfiniteQuery({
+		queryKey: ['orders'],
+		queryFn: ({ pageParam }) =>
+			Shopify.customer.getOrders({ first: ORDERS_PER_PAGE, after: pageParam }),
+		getNextPageParam: (lastPage) => {
+			if (!lastPage?.pageInfo?.hasNextPage) return undefined
+			const edges = lastPage?.orders || []
+			return edges.length > 0 ? edges[edges.length - 1].cursor : undefined
+		},
+	})
 
-	const fetchOrders = async () => {
-		try {
-			const result = await Shopify.customer.getOrders({ first: ORDERS_PER_PAGE })
-			const edges = result?.orders || []
-			setOrders(edges)
-			setPageInfo(result?.pageInfo || null)
-			if (edges.length > 0) {
-				setLastCursor(edges[edges.length - 1].cursor)
-			}
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const loadMore = async () => {
-		if (!pageInfo?.hasNextPage || loadingMore) return
-		setLoadingMore(true)
-		try {
-			const result = await Shopify.customer.getOrders({
-				first: ORDERS_PER_PAGE,
-				after: lastCursor,
-			})
-			const newEdges = result?.orders || []
-			setOrders(prev => [...prev, ...newEdges])
-			setPageInfo(result?.pageInfo || null)
-			if (newEdges.length > 0) {
-				setLastCursor(newEdges[newEdges.length - 1].cursor)
-			}
-		} catch (error) {
-			console.error(error)
-		} finally {
-			setLoadingMore(false)
-		}
-	}
-
+	const orders = data?.pages?.flatMap((page) => page?.orders || []) || []
 	const title = t('account.orders.title', 'Meus Pedidos')
 
 	return (
@@ -124,7 +96,7 @@ export default function Orders(props) {
 				</View>
 			</HeaderContentWrapper>
 
-			{loading ? (
+			{isLoading ? (
 				<View className='flex flex-col items-center justify-center pt-20'>
 					<Loading />
 				</View>
@@ -139,12 +111,12 @@ export default function Orders(props) {
 						)
 					})}
 
-					{pageInfo?.hasNextPage && (
+					{hasNextPage && (
 						<View className='mt-2'>
 							<CustomButton
 								label={t('account.orders.loadMore', 'Carregar mais pedidos')}
-								onClick={loadMore}
-								isLoading={loadingMore}
+								onClick={() => fetchNextPage()}
+								isLoading={isFetchingNextPage}
 								outlined
 							/>
 						</View>

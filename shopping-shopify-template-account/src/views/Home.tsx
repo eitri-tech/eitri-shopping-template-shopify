@@ -12,26 +12,23 @@ import { FiUser, FiShoppingBag, FiHeart, FiMapPin } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import Profile from './Profile'
 
 export default function Home(props) {
 	const { t } = useTranslation()
-	const [isAuthenticated, setIsAuthenticated] = useState(false)
-	const [checkingAuth, setCheckingAuth] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const title = t('account.title', 'Minha Conta')
+	const { data: isAuthenticated, isLoading: checkingAuth } = useQuery({
+		queryKey: ['auth'],
+		queryFn: () => Shopify.customer.isAuthenticated(),
+	})
 
 	useEffect(() => {
-		Shopify.customer.isAuthenticated().then(isAuthenticated => {
-			setIsAuthenticated(isAuthenticated)
-			if (isAuthenticated) {
-				Eitri.navigation.navigate({ path: '/Profile', replace: true })
-			}
-		}).finally(() => {
-			setCheckingAuth(false)
-		})
-	}, [])
+		if (isAuthenticated) {
+			Eitri.navigation.navigate({ path: '/Profile', replace: true })
+		}
+	}, [isAuthenticated])
 
 	const makeLogin = async () => {
 		setIsLoading(true)
@@ -44,6 +41,8 @@ export default function Home(props) {
 			setIsLoading(false)
 		}
 	}
+
+	const title = t('account.title', 'Minha Conta')
 
 	return (
 		<Page title={title}>
