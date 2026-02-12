@@ -80,7 +80,7 @@ export default function Profile(props) {
 							size={14}
 							className='text-gray-400'
 						/>
-						<Text className='text-sm text-gray-500'>{customer.emailAddress.emailAddress}</Text>
+						<Text className='text-base text-gray-500'>{customer.emailAddress.emailAddress}</Text>
 					</View>
 				)}
 
@@ -90,7 +90,7 @@ export default function Profile(props) {
 							size={14}
 							className='text-gray-400'
 						/>
-						<Text className='text-sm text-gray-500'>{customer.phoneNumber.phoneNumber}</Text>
+						<Text className='text-base text-gray-500'>{customer.phoneNumber.phoneNumber}</Text>
 					</View>
 				)}
 			</View>
@@ -109,8 +109,8 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>{t('account.profile.orders', 'Meus Pedidos')}</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-base font-semibold'>{t('account.profile.orders', 'Meus Pedidos')}</Text>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.ordersDesc', 'Acompanhe seus pedidos')}
 							</Text>
 						</View>
@@ -133,10 +133,10 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>
+							<Text className='text-base font-semibold'>
 								{t('account.profile.addresses', 'Meus Endereços')}
 							</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.addressesDesc', 'Gerencie seus endereços')}
 							</Text>
 						</View>
@@ -159,10 +159,10 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-sm font-semibold'>
+							<Text className='text-base font-semibold'>
 								{t('account.profile.personalData', 'Dados Pessoais')}
 							</Text>
-							<Text className='text-xs text-gray-400'>
+							<Text className='text-sm text-gray-400'>
 								{t('account.profile.personalDataDesc', 'Edite suas informações')}
 							</Text>
 						</View>
@@ -177,16 +177,16 @@ export default function Profile(props) {
 			{/* Default Address Preview */}
 			{customer?.defaultAddress && (
 				<View className='flex flex-col mx-4 mt-6'>
-					<Text className='text-sm font-semibold mb-2 px-1'>
+					<Text className='text-base font-semibold mb-2 px-1'>
 						{t('account.profile.defaultAddress', 'Endereço principal')}
 					</Text>
 					<View className='flex flex-col p-4 bg-gray-50 rounded-lg border border-gray-100'>
-						<Text className='text-sm text-gray-700'>
+						<Text className='text-base text-gray-700'>
 							{[customer.defaultAddress.address1, customer.defaultAddress.address2]
 								.filter(Boolean)
 								.join(', ')}
 						</Text>
-						<Text className='text-xs text-gray-500 mt-1'>
+						<Text className='text-sm text-gray-500 mt-1'>
 							{[
 								customer.defaultAddress.city,
 								customer.defaultAddress.province,
@@ -208,7 +208,7 @@ export default function Profile(props) {
 						size={16}
 						className='text-red-500'
 					/>
-					<Text className='text-sm font-medium text-red-500'>
+					<Text className='text-base font-medium text-red-500'>
 						{t('account.profile.logout', 'Sair da conta')}
 					</Text>
 				</View>

@@ -129,7 +129,7 @@ export default function EditProfile(props) {
 
 				{/* Editable Fields */}
 				<View className='flex flex-col gap-3'>
-					<Text className='text-sm font-semibold'>
+					<Text className='text-base font-semibold'>
 						{t('account.editProfile.personalInfo', 'Informações pessoais')}
 					</Text>
 
@@ -151,7 +151,7 @@ export default function EditProfile(props) {
 				{/* Read-only Info */}
 				{(email || phone || creationDate) && (
 					<View className='flex flex-col gap-3 mt-6'>
-						<Text className='text-sm font-semibold'>
+						<Text className='text-base font-semibold'>
 							{t('account.editProfile.contactInfo', 'Informações de contato')}
 						</Text>
 
@@ -179,7 +179,7 @@ export default function EditProfile(props) {
 							/>
 						)}
 
-						<Text className='text-[10px] text-gray-400 mt-1'>
+						<Text className='text-xs text-gray-400 mt-1'>
 							{t('account.editProfile.contactHint', 'Para alterar e-mail ou telefone, entre em contato com o suporte.')}
 						</Text>
 					</View>
@@ -188,7 +188,7 @@ export default function EditProfile(props) {
 				{/* Error */}
 				{error && (
 					<View className='p-3 rounded bg-red-50 mt-4'>
-						<Text className='text-xs text-red-600'>{error}</Text>
+						<Text className='text-sm text-red-600'>{error}</Text>
 					</View>
 				)}
 
@@ -196,7 +196,7 @@ export default function EditProfile(props) {
 				{success && (
 					<View className='flex flex-row items-center gap-2 p-3 rounded bg-green-50 mt-4'>
 						<FiCheck size={16} className='text-green-600' />
-						<Text className='text-xs text-green-600'>
+						<Text className='text-sm text-green-600'>
 							{t('account.editProfile.saveSuccess', 'Dados atualizados com sucesso!')}
 						</Text>
 					</View>
@@ -223,8 +223,8 @@ function ReadOnlyField({ icon, label, value }) {
 		<View className='flex flex-row items-center gap-3 p-3 bg-gray-50 rounded-lg'>
 			{icon}
 			<View className='flex flex-col'>
-				<Text className='text-[10px] text-gray-400'>{label}</Text>
-				<Text className='text-sm text-gray-700'>{value}</Text>
+				<Text className='text-xs text-gray-400'>{label}</Text>
+				<Text className='text-base text-gray-700'>{value}</Text>
 			</View>
 		</View>
 	)

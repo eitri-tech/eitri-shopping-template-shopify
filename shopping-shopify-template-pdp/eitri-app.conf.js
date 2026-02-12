@@ -2,7 +2,7 @@ module.exports = {
 	'name': 'shopping-shopify-template-pdp',
 	'title': 'shopping-shopify-template-pdp',
 	'slug': 'shopping-shopify-template-pdp',
-	'eitri-luminus': '2.22.3',
+	'eitri-luminus': '2.22.5',
 	'eitri-bifrost': '4.7.0',
 	'version': '0.1.7',
 	'public-key': '75da036b-ac57-4c6d-b35b-cddce4cc9262',
@@ -15,7 +15,7 @@ module.exports = {
 	'eitri-app-dependencies': {
 		'eitri-shopping-shopify-shared': {
 			isEitriAppShared: true,
-			version: '0.2.1'
+			version: '0.3.0'
 		},
 		'shopping-shopify-template-shared': {
 			isEitriAppShared: true,

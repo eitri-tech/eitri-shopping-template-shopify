@@ -2,7 +2,7 @@ module.exports = {
 	'name': 'shopping-shopify-template-account',
 	'title': 'shopping-shopify-template-account',
 	'slug': 'shopping-shopify-template-account',
-	'eitri-luminus': '2.22.4',
+	'eitri-luminus': '2.22.5',
 	'eitri-bifrost': '4.7.0',
 	'eitri-commons': '2.2.0',
 	'version': '0.1.0',
@@ -17,7 +17,7 @@ module.exports = {
 		},
 		'eitri-shopping-shopify-shared': {
 			isEitriAppShared: true,
-			version: '0.2.1'
+			version: '0.3.0'
 		},
 		'shopping-shopify-template-shared': {
 			isEitriAppShared: true,
@@ -25,6 +25,9 @@ module.exports = {
 		},
 		'react-icons': {
 			version: '5.5.0'
+		},
+		'@tanstack/react-query': {
+			version: '4.41.0'
 		}
 	},
 	'type': 'module',

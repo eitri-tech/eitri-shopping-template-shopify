@@ -242,7 +242,7 @@ function EmptyAddresses({ t }) {
 				{t('account.addresses.empty', 'Nenhum endereço cadastrado')}
 			</Text>
 
-			<Text className='text-sm text-gray-500 text-center px-4'>
+			<Text className='text-base text-gray-500 text-center px-4'>
 				{t('account.addresses.emptyDesc', 'Adicione um endereço para facilitar suas compras.')}
 			</Text>
 		</View>
@@ -260,20 +260,20 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 				{isDefault && (
 					<View className='flex flex-row items-center gap-1 mb-1'>
 						<FiStar size={12} className='text-primary' />
-						<Text className='text-[10px] font-semibold text-primary'>
+						<Text className='text-xs font-semibold text-primary'>
 							{t('account.addresses.default', 'Endereço principal')}
 						</Text>
 					</View>
 				)}
 
-				{name && <Text className='text-sm font-semibold'>{name}</Text>}
-				{line1 && <Text className='text-sm text-gray-700'>{line1}</Text>}
-				{line2 && <Text className='text-xs text-gray-500'>{line2}</Text>}
+				{name && <Text className='text-base font-semibold'>{name}</Text>}
+				{line1 && <Text className='text-base text-gray-700'>{line1}</Text>}
+				{line2 && <Text className='text-sm text-gray-500'>{line2}</Text>}
 				{address.country && (
-					<Text className='text-xs text-gray-400'>{address.country}</Text>
+					<Text className='text-sm text-gray-400'>{address.country}</Text>
 				)}
 				{address.phoneNumber && (
-					<Text className='text-xs text-gray-400'>{address.phoneNumber}</Text>
+					<Text className='text-sm text-gray-400'>{address.phoneNumber}</Text>
 				)}
 			</View>
 
@@ -283,7 +283,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 					className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 active:bg-gray-50'
 				>
 					<FiEdit2 size={14} className='text-gray-500' />
-					<Text className='text-xs text-gray-500'>{t('account.addresses.edit', 'Editar')}</Text>
+					<Text className='text-sm text-gray-500'>{t('account.addresses.edit', 'Editar')}</Text>
 				</View>
 
 				{!isDefault && (
@@ -292,7 +292,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 						className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 border-l border-gray-100 active:bg-gray-50'
 					>
 						<FiStar size={14} className='text-gray-500' />
-						<Text className='text-xs text-gray-500'>{t('account.addresses.setDefault', 'Tornar principal')}</Text>
+						<Text className='text-sm text-gray-500'>{t('account.addresses.setDefault', 'Tornar principal')}</Text>
 					</View>
 				)}
 
@@ -302,7 +302,7 @@ function AddressCard({ address, isDefault, onEdit, onDelete, onSetDefault, t }) 
 						className='flex flex-row flex-1 items-center justify-center gap-1 py-2.5 border-l border-gray-100 active:bg-gray-50'
 					>
 						<FiTrash2 size={14} className='text-red-400' />
-						<Text className='text-xs text-red-400'>{t('account.addresses.delete', 'Excluir')}</Text>
+						<Text className='text-sm text-red-400'>{t('account.addresses.delete', 'Excluir')}</Text>
 					</View>
 				)}
 			</View>
@@ -387,7 +387,7 @@ function AddressForm({ form, updateField, onSave, saving, error, t, isEdit }) {
 
 			{error && (
 				<View className='p-3 rounded bg-red-50'>
-					<Text className='text-xs text-red-600'>{error}</Text>
+					<Text className='text-sm text-red-600'>{error}</Text>
 				</View>
 			)}
 
