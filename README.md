@@ -87,6 +87,10 @@ Para utilizar este template, configure as seguintes variáveis no Remote Config 
 | `providerInfo.callbackUrl`           | Sim         | Deep link de redirect após autenticação OAuth                            |
 | `providerInfo.apiVersion`            | Não         | Versão da Storefront API. Default: `"2026-01"`                           |
 
+#### Escopos necessários para o `clientId`
+
+Ao configurar o cliente na Customer Account API, habilite o escopo `customer_read_customers`. Ele concede acesso ao objeto `Customer`, que contém os dados de pedidos, endereços e perfil usados por este template.
+
 #### Como encontrar o `callbackUrl`
 
 Você pode obter esse valor pelo painel do Shopify Admin, na seção da Customer Account API. Uma alternativa mais rápida é acessar a página de login da loja pelo navegador e inspecionar a URL — ela contém múltiplos parâmetros `redirect_uri`. O valor correto é o que traz uma URL completa (não um caminho relativo).
