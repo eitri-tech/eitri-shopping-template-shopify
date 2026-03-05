@@ -13,7 +13,7 @@ import { FiUser, FiShoppingBag, FiHeart, FiMapPin } from 'react-icons/fi'
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { App } from 'shopping-shopify-template-sdk'
+import { App } from 'eitri-shopping-shopify-shared'
 
 export default function Home(props) {
 	const { t } = useTranslation()
