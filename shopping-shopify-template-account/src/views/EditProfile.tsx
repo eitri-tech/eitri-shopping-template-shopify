@@ -6,7 +6,7 @@ import {
 	HeaderText,
 	CustomButton,
 	CustomInput,
-	BottomInset,
+	BottomInset
 } from 'shopping-shopify-template-shared'
 import { FiUser, FiMail, FiPhone, FiCalendar, FiCheck } from 'react-icons/fi'
 
@@ -25,7 +25,7 @@ export default function EditProfile(props) {
 	const { data: customer, isLoading } = useQuery({
 		queryKey: ['customer'],
 		queryFn: () => Shopify.customer.getCurrentCustomer(),
-		initialData: props?.state?.customer || undefined,
+		initialData: props?.state?.customer || undefined
 	})
 
 	useEffect(() => {
@@ -36,10 +36,10 @@ export default function EditProfile(props) {
 	}, [customer])
 
 	const mutation = useMutation({
-		mutationFn: (data) => Shopify.customer.updateCustomer(data),
-		onSuccess: (result) => {
+		mutationFn: data => Shopify.customer.updateCustomer(data),
+		onSuccess: result => {
 			if (result.userErrors?.length > 0) {
-				setError(result.userErrors.map((e) => e.message).join('. '))
+				setError(result.userErrors.map(e => e.message).join('. '))
 				return
 			}
 			queryClient.invalidateQueries({ queryKey: ['customer'] })
@@ -48,7 +48,7 @@ export default function EditProfile(props) {
 		},
 		onError: () => {
 			setError(t('account.editProfile.saveError', 'Erro ao salvar. Tente novamente.'))
-		},
+		}
 	})
 
 	const handleSave = () => {
@@ -61,10 +61,8 @@ export default function EditProfile(props) {
 		mutation.mutate({ firstName: firstName.trim(), lastName: lastName.trim() })
 	}
 
-	const hasChanges = customer && (
-		firstName.trim() !== (customer.firstName || '') ||
-		lastName.trim() !== (customer.lastName || '')
-	)
+	const hasChanges =
+		customer && (firstName.trim() !== (customer.firstName || '') || lastName.trim() !== (customer.lastName || ''))
 
 	const title = t('account.editProfile.title', 'Dados Pessoais')
 
@@ -101,7 +99,10 @@ export default function EditProfile(props) {
 				{/* Avatar + Name Preview */}
 				<View className='flex flex-col items-center pb-6'>
 					<View className='flex items-center justify-center w-[72px] h-[72px] rounded-full bg-primary mb-3'>
-						<FiUser size={28} className='text-primary-content' />
+						<FiUser
+							size={28}
+							className='text-primary-content'
+						/>
 					</View>
 					<Text className='text-base font-bold text-center'>
 						{customer?.displayName || t('account.editProfile.unnamed', 'Usuário')}
@@ -117,14 +118,14 @@ export default function EditProfile(props) {
 					<CustomInput
 						label={t('account.editProfile.firstName', 'Nome *')}
 						value={firstName}
-						onChange={(e) => setFirstName(e.target.value)}
+						onChange={e => setFirstName(e.target.value)}
 						placeholder={t('account.editProfile.firstNamePlaceholder', 'Seu nome')}
 					/>
 
 					<CustomInput
 						label={t('account.editProfile.lastName', 'Sobrenome')}
 						value={lastName}
-						onChange={(e) => setLastName(e.target.value)}
+						onChange={e => setLastName(e.target.value)}
 						placeholder={t('account.editProfile.lastNamePlaceholder', 'Seu sobrenome')}
 					/>
 				</View>
@@ -138,7 +139,12 @@ export default function EditProfile(props) {
 
 						{email && (
 							<ReadOnlyField
-								icon={<FiMail size={16} className='text-gray-400' />}
+								icon={
+									<FiMail
+										size={16}
+										className='text-gray-400'
+									/>
+								}
 								label={t('account.editProfile.email', 'E-mail')}
 								value={email}
 							/>
@@ -146,7 +152,12 @@ export default function EditProfile(props) {
 
 						{phone && (
 							<ReadOnlyField
-								icon={<FiPhone size={16} className='text-gray-400' />}
+								icon={
+									<FiPhone
+										size={16}
+										className='text-gray-400'
+									/>
+								}
 								label={t('account.editProfile.phone', 'Telefone')}
 								value={phone}
 							/>
@@ -154,14 +165,22 @@ export default function EditProfile(props) {
 
 						{creationDate && (
 							<ReadOnlyField
-								icon={<FiCalendar size={16} className='text-gray-400' />}
+								icon={
+									<FiCalendar
+										size={16}
+										className='text-gray-400'
+									/>
+								}
 								label={t('account.editProfile.memberSince', 'Membro desde')}
 								value={formatMemberDate(creationDate)}
 							/>
 						)}
 
 						<Text className='text-xs text-gray-400 mt-1'>
-							{t('account.editProfile.contactHint', 'Para alterar e-mail ou telefone, entre em contato com o suporte.')}
+							{t(
+								'account.editProfile.contactHint',
+								'Para alterar e-mail ou telefone, entre em contato com o suporte.'
+							)}
 						</Text>
 					</View>
 				)}
@@ -176,7 +195,10 @@ export default function EditProfile(props) {
 				{/* Success */}
 				{success && (
 					<View className='flex flex-row items-center gap-2 p-3 rounded bg-green-50 mt-4'>
-						<FiCheck size={16} className='text-green-600' />
+						<FiCheck
+							size={16}
+							className='text-green-600'
+						/>
 						<Text className='text-sm text-green-600'>
 							{t('account.editProfile.saveSuccess', 'Dados atualizados com sucesso!')}
 						</Text>
@@ -216,7 +238,7 @@ function formatMemberDate(dateString) {
 	try {
 		return new Intl.DateTimeFormat('pt-BR', {
 			month: 'long',
-			year: 'numeric',
+			year: 'numeric'
 		}).format(new Date(dateString))
 	} catch {
 		return dateString

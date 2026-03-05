@@ -61,7 +61,7 @@ export default function Home(props) {
 			<View>
 				<CmsContentRender cmsContent={cmsContent} />
 			</View>
-			<BottomInset />\
+			<BottomInset />
 		</Page>
 	)
 }
