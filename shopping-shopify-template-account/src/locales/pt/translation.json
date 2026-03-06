@@ -17,6 +17,7 @@
         "favoritesLabel": "Favoritos",
         "addressesLabel": "Endereços",
         "loginButton": "Entrar na minha conta",
+        "updateRequired": "Atualize o aplicativo para fazer login",
         "loginHint": "Você será redirecionado para uma página segura de login.",
         "profile": {
             "title": "Perfil",

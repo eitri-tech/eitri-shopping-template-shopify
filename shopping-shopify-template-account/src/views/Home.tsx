@@ -19,6 +19,10 @@ export default function Home(props) {
 	const { t } = useTranslation()
 	const [isLoading, setIsLoading] = useState(false)
 
+	const MINIMUM_API_LEVEL_FOR_LOGIN = 33
+
+	const canDoLogin = Eitri.canIUse(MINIMUM_API_LEVEL_FOR_LOGIN)
+
 	const { data: initialized } = useQuery({
 		queryKey: ['appInitialization'],
 		queryFn: async () => {
@@ -134,6 +138,14 @@ export default function Home(props) {
 							onClick={makeLogin}
 							isLoading={isLoading}
 						/>
+
+						{canDoLogin === false && (
+							<View className='w-full flex items-center justify-center mt-3 px-2 py-3 bg-red-50 border border-red-300 rounded-lg'>
+								<Text className='text-sm text-red-600 font-semibold text-center'>
+									{t('account.updateRequired', 'Atualize o aplicativo para fazer login')}
+								</Text>
+							</View>
+						)}
 
 						<Text className={`text-sm text-gray-400 text-center mt-4`}>
 							{t('account.loginHint', 'Você será redirecionado para uma página segura de login.')}

@@ -17,6 +17,7 @@
         "favoritesLabel": "Favoritos",
         "addressesLabel": "Direcciones",
         "loginButton": "Iniciar sesión",
+        "updateRequired": "Actualiza la aplicación para iniciar sesión",
         "loginHint": "Serás redirigido a una página segura de inicio de sesión.",
         "profile": {
             "title": "Perfil",
