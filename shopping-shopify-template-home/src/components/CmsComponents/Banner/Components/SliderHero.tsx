@@ -1,10 +1,8 @@
 // @ts-ignore
 import { Text, View, Image, Video } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
-import { useScreen } from 'shopping-shopify-template-shared'
+import { useScreen, Slider } from 'shopping-shopify-template-shared'
 import { BannerContent } from '../../../../types/cmscontent.type'
-
-import Slider from '../../../../Slider/Slider'
 
 interface BannerProps {
 	data: BannerContent
@@ -47,9 +45,7 @@ export default function SliderHero(props: BannerProps) {
 				}}>
 				{imagesList &&
 					imagesList.map(image => (
-						<View
-							className='w-full flex justify-center snap-x snap-always keen-slider__slide'
-							key={`image_${image.id}`}>
+						<View key={`image_${image.id}`}>
 							{image.videoUrl ? (
 								<View
 									className='w-full h-screen relative flex-shrink-0'

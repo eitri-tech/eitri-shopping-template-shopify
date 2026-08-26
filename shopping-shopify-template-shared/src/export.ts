@@ -12,3 +12,5 @@ export { default as CustomCheckbox } from './components/CustomCheckbox/CustomChe
 export { default as CustomInput } from './components/CustomInput/CustomInput'
 
 export { default as useScreen } from './services/useScreen'
+
+export { default as Slider } from './Slider/Slider'

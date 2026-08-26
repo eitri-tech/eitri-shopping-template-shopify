@@ -2,8 +2,7 @@
 import { Text, View, Image, Video } from 'eitri-luminus'
 import { useEffect, useState } from 'react'
 import { BannerContent } from '../../../../types/cmscontent.type'
-
-import Slider from '../../../../Slider/Slider'
+import { Slider } from 'shopping-shopify-template-shared'
 
 interface BannerProps {
 	data: BannerContent

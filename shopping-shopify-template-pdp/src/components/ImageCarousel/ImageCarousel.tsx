@@ -1,9 +1,8 @@
 // @ts-ignore
 import { View, Image } from 'eitri-luminus'
 import { useState } from 'react'
-import { CustomCarousel, useScreen } from 'shopping-shopify-template-shared'
+import { Slider, useScreen } from 'shopping-shopify-template-shared'
 import { Product } from '../../types/product.type'
-import Slider from '../../Slider/Slider'
 import { BottomInset } from 'shopping-shopify-template-shared'
 
 type ImageCarouselProps = {
@@ -36,8 +35,7 @@ export default function ImageCarousel(props: ImageCarouselProps) {
 							key={item.url}
 							style={{
 								height: availableHeight - 72
-							}}
-							className={`keen-slider__slide`}>
+							}}>
 							<Image
 								pinchZoom
 								zoomMaxScale={8}
