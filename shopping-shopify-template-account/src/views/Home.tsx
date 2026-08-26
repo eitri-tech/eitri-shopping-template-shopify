@@ -13,15 +13,28 @@ import { FiUser, FiShoppingBag, FiHeart, FiMapPin } from 'react-icons/fi'
 import { Shopify } from 'eitri-shopping-shopify-shared'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import Profile from './Profile'
+import { App } from 'eitri-shopping-shopify-shared'
 
 export default function Home(props) {
 	const { t } = useTranslation()
 	const [isLoading, setIsLoading] = useState(false)
 
+	const MINIMUM_API_LEVEL_FOR_LOGIN = 33
+
+	const canDoLogin = Eitri.canIUse(MINIMUM_API_LEVEL_FOR_LOGIN)
+
+	const { data: initialized } = useQuery({
+		queryKey: ['appInitialization'],
+		queryFn: async () => {
+			await App.configure({ verbose: true })
+			return true
+		}
+	})
+
 	const { data: isAuthenticated, isLoading: checkingAuth } = useQuery({
 		queryKey: ['auth'],
 		queryFn: () => Shopify.customer.isAuthenticated(),
+		enabled: initialized === true
 	})
 
 	useEffect(() => {
@@ -32,11 +45,17 @@ export default function Home(props) {
 
 	const makeLogin = async () => {
 		setIsLoading(true)
+
 		try {
-			await Shopify.customer.auth.login()
-			await Eitri.navigation.navigate({ path: '/Profile', replace: true })
+			const response = await Shopify.customer.auth.login()
+
+			if (response && response.success) {
+				await Eitri.navigation.navigate({ path: '/Profile', replace: true })
+			} else {
+				console.error('Erro retornado pela Shopify:', response?.error)
+			}
 		} catch (error) {
-			console.error(error)
+			console.error('Erro no fluxo de login:', error)
 		} finally {
 			setIsLoading(false)
 		}
@@ -54,7 +73,7 @@ export default function Home(props) {
 			</HeaderContentWrapper>
 
 			{checkingAuth ? (
-				<View className='flex flex-col items-center justify-center pt-20'>
+				<View className='flex flex-col items-center justify-center h-full min-h-[70vh]'>
 					<Loading />
 				</View>
 			) : !isAuthenticated ? (
@@ -120,13 +139,21 @@ export default function Home(props) {
 							isLoading={isLoading}
 						/>
 
+						{canDoLogin === false && (
+							<View className='w-full flex items-center justify-center mt-3 px-2 py-3 bg-red-50 border border-red-300 rounded-lg'>
+								<Text className='text-sm text-red-600 font-semibold text-center'>
+									{t('account.updateRequired', 'Atualize o aplicativo para fazer login')}
+								</Text>
+							</View>
+						)}
+
 						<Text className={`text-sm text-gray-400 text-center mt-4`}>
 							{t('account.loginHint', 'Você será redirecionado para uma página segura de login.')}
 						</Text>
 					</View>
 				</View>
 			) : (
-				<Profile />
+				<></>
 			)}
 
 			<BottomInset />

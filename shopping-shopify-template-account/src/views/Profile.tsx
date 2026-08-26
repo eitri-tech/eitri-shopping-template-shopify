@@ -1,21 +1,23 @@
 import { useTranslation } from 'eitri-i18n'
 import Eitri from 'eitri-bifrost'
-import { Text, View, Loading } from 'eitri-luminus'
+import { Text, View, Loading, Page } from 'eitri-luminus'
 import { FiUser, FiShoppingBag, FiMapPin, FiChevronRight, FiMail, FiPhone, FiLogOut } from 'react-icons/fi'
 
 import { Shopify, App } from 'eitri-shopping-shopify-shared'
 import { useQuery } from '@tanstack/react-query'
-import { HeaderContentWrapper, HeaderReturn, HeaderText } from 'shopping-shopify-template-shared'
+import { BottomInset, HeaderContentWrapper, HeaderText } from 'shopping-shopify-template-shared'
+import { useState } from 'react'
 
 export default function Profile(props) {
 	const { t } = useTranslation()
+	const [isLoggingOut, setIsLoggingOut] = useState(false)
 
 	const { data: customer, isLoading } = useQuery({
 		queryKey: ['customer'],
 		queryFn: async () => {
 			await App.configure({ verbose: true })
 			return Shopify.customer.getCurrentCustomer()
-		},
+		}
 	})
 
 	const goToOrders = () => {
@@ -27,17 +29,20 @@ export default function Profile(props) {
 	}
 
 	const handleLogout = async () => {
+		setIsLoggingOut(true)
 		try {
 			await Shopify.customer.auth.logout()
-			Eitri.navigation.back(-1)
+			await Eitri.navigation.navigate({ path: '/', replace: true })
+			setIsLoggingOut(false)
 		} catch (error) {
 			console.error(error)
+			setIsLoggingOut(false)
 		}
 	}
 
-	if (isLoading) {
+	if (isLoading || isLoggingOut) {
 		return (
-			<View className='flex flex-col items-center justify-center pt-20'>
+			<View className='flex flex-col items-center justify-center h-full min-h-[100vh]'>
 				<Loading />
 			</View>
 		)
@@ -46,10 +51,9 @@ export default function Profile(props) {
 	const initials = [customer?.firstName?.[0], customer?.lastName?.[0]].filter(Boolean).join('').toUpperCase() || '?'
 
 	return (
-		<View className='flex flex-col pb-6'>
+		<Page className='flex flex-col pb-6'>
 			<HeaderContentWrapper className={`justify-between`}>
 				<View className={`flex items-center gap-4`}>
-					<HeaderReturn />
 					<HeaderText text={t('account.profile.title', 'Perfil')} />
 				</View>
 			</HeaderContentWrapper>
@@ -98,7 +102,9 @@ export default function Profile(props) {
 							/>
 						</View>
 						<View className='flex flex-col'>
-							<Text className='text-base font-semibold'>{t('account.profile.orders', 'Meus Pedidos')}</Text>
+							<Text className='text-base font-semibold'>
+								{t('account.profile.orders', 'Meus Pedidos')}
+							</Text>
 							<Text className='text-sm text-gray-400'>
 								{t('account.profile.ordersDesc', 'Acompanhe seus pedidos')}
 							</Text>
@@ -197,11 +203,10 @@ export default function Profile(props) {
 						size={16}
 						className='text-red-500'
 					/>
-					<Text className='text-base font-medium text-red-500'>
-						{t('account.profile.logout', 'Sair da conta')}
-					</Text>
+					<Text className='text-base font-medium text-red-500'>{t('account.profile.logout', 'Sair')}</Text>
 				</View>
 			</View>
-		</View>
+			<BottomInset />
+		</Page>
 	)
 }

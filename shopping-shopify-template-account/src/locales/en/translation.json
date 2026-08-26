@@ -17,6 +17,7 @@
         "favoritesLabel": "Favorites",
         "addressesLabel": "Addresses",
         "loginButton": "Sign in to my account",
+        "updateRequired": "Update the app to log in",
         "loginHint": "You will be redirected to a secure login page.",
         "profile": {
             "title": "Profile",

@@ -1,7 +1,13 @@
 import { useTranslation } from 'eitri-i18n'
 import Eitri from 'eitri-bifrost'
 import { Text, View, Image, Loading, Page } from 'eitri-luminus'
-import { HeaderContentWrapper, HeaderReturn, HeaderText, CustomButton, BottomInset } from 'shopping-shopify-template-shared'
+import {
+	HeaderContentWrapper,
+	HeaderReturn,
+	HeaderText,
+	CustomButton,
+	BottomInset
+} from 'shopping-shopify-template-shared'
 import { FiPackage, FiShoppingBag, FiChevronRight } from 'react-icons/fi'
 
 import { Shopify } from 'eitri-shopping-shopify-shared'
@@ -17,7 +23,7 @@ const financialStatusStyles = {
 	VOIDED: 'bg-red-100 text-red-600',
 	EXPIRED: 'bg-red-100 text-red-600',
 	AUTHORIZED: 'bg-blue-100 text-blue-700',
-	PARTIALLY_PAID: 'bg-yellow-100 text-yellow-700',
+	PARTIALLY_PAID: 'bg-yellow-100 text-yellow-700'
 }
 
 const fulfillmentStatusStyles = {
@@ -25,13 +31,13 @@ const fulfillmentStatusStyles = {
 	UNFULFILLED: 'bg-orange-100 text-orange-700',
 	PARTIALLY_FULFILLED: 'bg-blue-100 text-blue-700',
 	IN_PROGRESS: 'bg-blue-100 text-blue-700',
-	ON_HOLD: 'bg-yellow-100 text-yellow-700',
+	ON_HOLD: 'bg-yellow-100 text-yellow-700'
 }
 
 const localeMap = {
 	pt: 'pt-BR',
 	en: 'en-US',
-	es: 'es-ES',
+	es: 'es-ES'
 }
 
 function getIntlLocale(i18nLang) {
@@ -56,7 +62,7 @@ function formatDate(dateString, locale) {
 		return new Intl.DateTimeFormat(locale, {
 			day: '2-digit',
 			month: 'short',
-			year: 'numeric',
+			year: 'numeric'
 		}).format(new Date(dateString))
 	} catch {
 		return dateString
@@ -67,24 +73,17 @@ export default function Orders(props) {
 	const { t, i18n } = useTranslation()
 	const locale = getIntlLocale(i18n.language)
 
-	const {
-		data,
-		isLoading,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-	} = useInfiniteQuery({
+	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
 		queryKey: ['orders'],
-		queryFn: ({ pageParam }) =>
-			Shopify.customer.getOrders({ first: ORDERS_PER_PAGE, after: pageParam }),
-		getNextPageParam: (lastPage) => {
+		queryFn: ({ pageParam }) => Shopify.customer.getOrders({ first: ORDERS_PER_PAGE, after: pageParam }),
+		getNextPageParam: lastPage => {
 			if (!lastPage?.pageInfo?.hasNextPage) return undefined
 			const edges = lastPage?.orders || []
 			return edges.length > 0 ? edges[edges.length - 1].cursor : undefined
-		},
+		}
 	})
 
-	const orders = data?.pages?.flatMap((page) => page?.orders || []) || []
+	const orders = data?.pages?.flatMap(page => page?.orders || []) || []
 	const title = t('account.orders.title', 'Meus Pedidos')
 
 	return (
@@ -107,7 +106,12 @@ export default function Orders(props) {
 					{orders.map((edge, index) => {
 						const order = edge?.node || edge
 						return (
-							<OrderCard key={order?.id || index} order={order} t={t} locale={locale} />
+							<OrderCard
+								key={(order as any)?.id || index}
+								order={order}
+								t={t}
+								locale={locale}
+							/>
 						)
 					})}
 
@@ -133,7 +137,10 @@ function EmptyOrders({ t }) {
 	return (
 		<View className='flex flex-col items-center justify-center pt-16 px-6'>
 			<View className='flex items-center justify-center w-[80px] h-[80px] rounded-full bg-gray-100 mb-5'>
-				<FiShoppingBag size={32} className='text-gray-400' />
+				<FiShoppingBag
+					size={32}
+					className='text-gray-400'
+				/>
 			</View>
 
 			<Text className='text-lg font-bold text-center mb-2'>
@@ -153,14 +160,15 @@ function OrderCard({ order, t, locale }) {
 	const financialStyle = financialStatusStyles[order.financialStatus] || 'bg-gray-100 text-gray-600'
 	const fulfillmentStyle = fulfillmentStatusStyles[order.fulfillmentStatus] || 'bg-gray-100 text-gray-600'
 
-	const lineItems = order.lineItems?.edges?.map((e) => e.node) || []
+	const lineItems = order.lineItems?.edges?.map(e => e.node) || []
 	const visibleItems = lineItems.slice(0, 3)
 	const remainingCount = lineItems.length - visibleItems.length
 
 	// Use subtotal if totalPrice is zero (e.g. expired orders)
-	const displayPrice = (parseFloat(order.totalPrice?.amount) === 0 && parseFloat(order.subtotal?.amount) > 0)
-		? order.subtotal
-		: order.totalPrice
+	const displayPrice =
+		parseFloat(order.totalPrice?.amount) === 0 && parseFloat(order.subtotal?.amount) > 0
+			? order.subtotal
+			: order.totalPrice
 
 	const handlePress = () => {
 		Eitri.navigation.navigate({ path: `Order/${encodeURIComponent(order.id)}` })
@@ -173,14 +181,20 @@ function OrderCard({ order, t, locale }) {
 			{/* Order Header */}
 			<View className='flex flex-row items-center justify-between px-4 pt-4 pb-3'>
 				<View className='flex flex-row items-center gap-2'>
-					<FiPackage size={16} className='text-primary' />
+					<FiPackage
+						size={16}
+						className='text-primary'
+					/>
 					<Text className='text-base font-bold'>{order.name || `#${order.number}`}</Text>
 				</View>
 				<View className='flex flex-row items-center gap-2'>
 					<Text className='text-sm text-gray-400'>
 						{formatDate(order.processedAt || order.createdAt, locale)}
 					</Text>
-					<FiChevronRight size={16} className='text-gray-400' />
+					<FiChevronRight
+						size={16}
+						className='text-gray-400'
+					/>
 				</View>
 			</View>
 
@@ -205,8 +219,10 @@ function OrderCard({ order, t, locale }) {
 			{/* Line Items */}
 			{visibleItems.length > 0 && (
 				<View className='flex flex-col px-4 pb-3 gap-2'>
-					{visibleItems.map((item) => (
-						<View key={item.id} className='flex flex-row items-center gap-3'>
+					{visibleItems.map(item => (
+						<View
+							key={item.id}
+							className='flex flex-row items-center gap-3'>
 							{item.image?.url ? (
 								<Image
 									src={item.image.url}
@@ -214,20 +230,25 @@ function OrderCard({ order, t, locale }) {
 								/>
 							) : (
 								<View className='flex items-center justify-center w-[44px] h-[44px] rounded bg-gray-100'>
-									<FiPackage size={16} className='text-gray-300' />
+									<FiPackage
+										size={16}
+										className='text-gray-300'
+									/>
 								</View>
 							)}
 							<View className='flex flex-col flex-1 min-w-0'>
 								<Text className='text-sm font-medium line-clamp-1'>{item.title}</Text>
 								<Text className='text-xs text-gray-400'>
-									{t('account.orders.qty', 'Qtd')}: {item.quantity} · {formatCurrency(item.price, locale)}
+									{t('account.orders.qty', 'Qtd')}: {item.quantity} ·{' '}
+									{formatCurrency(item.price, locale)}
 								</Text>
 							</View>
 						</View>
 					))}
 					{remainingCount > 0 && (
 						<Text className='text-xs text-gray-400 pl-[56px]'>
-							+{remainingCount} {remainingCount === 1
+							+{remainingCount}{' '}
+							{remainingCount === 1
 								? t('account.orders.moreItem', 'item')
 								: t('account.orders.moreItems', 'itens')}
 						</Text>
