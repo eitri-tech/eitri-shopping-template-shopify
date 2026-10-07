@@ -115,6 +115,84 @@ https://account.my-store.com/authentication/login
 
 No exemplo acima, o `callbackUrl` é `https://account.my-store.com/callback`.
 
+### Bottom bar
+
+A bottom bar do app é configurada no nó `eitriConfig.dynamicBottomBar` do Remote Config: `layout` define a aparência e `eitriApps` define as abas, na ordem de exibição, com o app (`slug`) e os `initParams` de cada uma.
+
+```json
+{
+	"eitriConfig": {
+		"dynamicBottomBar": {
+			"layout": {
+				"theme": "classic",
+				"backgroundColor": "#FFFFFF",
+				"selectedColor": "#373737",
+				"unselectedColor": "#8B8D98",
+				"badgeBackground": "#E5484D",
+				"badgeTextColor": "#FFFFFF",
+				"themeCustomizations": {
+					"classic": {
+						"labels": "shown",
+						"topBorder": {
+							"thickness": 1,
+							"color": "#DBDDE0"
+						}
+					}
+				}
+			},
+			"eitriApps": [
+				{
+					"slug": "shopping-shopify-template-home",
+					"title": "Inicio",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_home_v1.png",
+					"initParams": {
+						"tabIndex": 0
+					}
+				},
+				{
+					"slug": "shopping-shopify-template-home",
+					"title": "Categorias",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_menu_v1.png",
+					"initParams": {
+						"tabIndex": 1,
+						"route": "Categories"
+					}
+				},
+				{
+					"slug": "shopping-shopify-template-cart",
+					"title": "Carrinho",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_cart_v1.png",
+					"initParams": {
+						"tabIndex": 2
+					}
+				},
+				{
+					"slug": "shopping-shopify-template-home",
+					"title": "Ofertas",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_favorite_v1.png",
+					"initParams": {
+						"tabIndex": 3,
+						"route": "ProductCatalog",
+						"handle": "tech-t-shirt-nossa-camiseta-mais-iconica",
+						"type": "collection"
+					}
+				},
+				{
+					"slug": "shopping-shopify-template-account",
+					"title": "Perfil",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_user_v1.png",
+					"initParams": {
+						"tabIndex": 4
+					}
+				}
+			]
+		}
+	}
+}
+```
+
+Os ícones precisam ser PNG `https` com fundo transparente, numa cor só (a barra aplica as cores), quadrados e com cerca de 96×96 px. Na simulação local (`eitri app start`), a mesma barra é configurada em `bottom-tab-view-simulation.layout` no `app-config.yaml`.
+
 ## Autenticação
 
 O login do cliente é realizado via **OAuth 2.0 com PKCE** através da Shopify Customer Account API, utilizando o método `Shopify.customer.auth.login()` do SDK.
