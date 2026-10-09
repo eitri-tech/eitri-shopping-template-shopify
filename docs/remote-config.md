@@ -17,9 +17,33 @@ O Remote Config da aplicação fica no [Eitri Console](https://console.eitri.tec
 	"appConfigs": {
 		"headerLogo": "https://.../logo.png",
 		"headerScrollEffect": true
+	},
+	"eitriConfig": {
+		"mainApp": "home",
+		"dynamicBottomBar": {
+			"layout": {
+				"theme": "classic",
+				"selectedColor": "#373737",
+				"unselectedColor": "#8B8D98"
+			},
+			"eitriApps": [
+				{
+					"slug": "home",
+					"title": "Início",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_home_v1.png"
+				},
+				{
+					"slug": "cart",
+					"title": "Carrinho",
+					"icon": "https://media-eitri-content.eitri.tech/default/icon_cart_v1.png"
+				}
+			]
+		}
 	}
 }
 ```
+
+O [`remoteConfig.json`](../remoteConfig.json) na raiz do repositório traz uma configuração base completa.
 
 ## `providerInfo`
 
@@ -70,3 +94,20 @@ Aparência do app.
 | --- | --- | --- | --- | --- |
 | `headerLogo` | string (URL de imagem) | sem logo | Logo exibido no header principal | `shopping-shopify-template-shared`: `HeaderLogo` (usado no header da home) |
 | `headerScrollEffect` | boolean | `false` | Esconde o header ao rolar a tela. A configuração vale só nas telas cujo header não define o efeito no próprio código. Hoje a PDP sempre usa o efeito, independentemente desse valor | `shopping-shopify-template-shared`: `HeaderContentWrapper` (home, cart e account) |
+
+## `eitriConfig`
+
+Configurações lidas pelo app nativo (não pelos Eitri-Apps): o app aberto inicialmente e a bottom bar.
+
+| Campo | Obrigatório | Tipo | Descrição |
+| --- | --- | --- | --- |
+| `mainApp` | Sim | string | Slug do Eitri-App aberto ao iniciar o app |
+| `dynamicBottomBar` | Sim, para ter bottom bar | object | Bottom bar do app: `layout` define a aparência e `eitriApps` define as abas, na ordem de exibição, com o app (`slug`) e os `initParams` de cada uma |
+
+O formato completo do `dynamicBottomBar` (campos, defaults e requisitos dos ícones) está na [documentação oficial da DynamicBottomBar](https://cdn.83io.com.br/library/eitri-shopping-modules-doc/doc/latest/classes/_internal_.DynamicBottomBar.html).
+
+No `shopping-shopify-template-home`, o `route` dos `initParams` abre a rota indicada (ex.: `"Categories"`) e os demais campos são repassados a ela.
+
+### Simulação local
+
+No `eitri app start`, a bottom bar é simulada a partir de `bottom-tab-view-simulation` no [`app-config.yaml`](../app-config.yaml): `eitri-apps` define as abas e `layout` repete o formato do `dynamicBottomBar` (`layout.layout` para a aparência e `layout.eitriApps` para título e ícone). As abas de `layout.eitriApps` casam com as de `eitri-apps` pela posição, então mantenha as duas listas na mesma ordem.
