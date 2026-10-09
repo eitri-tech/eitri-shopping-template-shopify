@@ -1,6 +1,6 @@
 # Eitri Shopping Template — Shopify
 
-Template de e-commerce mobile-first para Shopify, construído com o ecossistema Eitri (Luminus UI + Bifrost).
+Template de e-commerce para Shopify, construído com o ecossistema Eitri (Luminus UI + Bifrost).
 
 ## Eitri-Apps
 
@@ -44,76 +44,41 @@ O projeto é composto por 5 Eitri-Apps independentes:
 
 ## Como rodar
 
-Cada app é executado individualmente. Acesse o diretório do app desejado e execute:
+Pré-requisito: [`eitri-cli`](https://www.npmjs.com/package/eitri-cli) instalado e autenticado.
 
 ```bash
-# Compilação e teste local
-eitri start
-
-# Deploy (lembre de incrementar o `version` no eitri-app.conf.js antes)
-eitri push-version
+npm install -g eitri-cli
+eitri login
 ```
 
-Exemplo para rodar o app de home:
+### App completo (recomendado)
+
+Na raiz do repositório, execute:
+
+```bash
+eitri app start
+```
+
+Esse comando sobe o app completo, com todos os Eitri-Apps listados em [`app-config.yaml`](app-config.yaml) e a simulação da bottom tab definida no mesmo arquivo.
+
+### Um Eitri-App isolado
+
+Também é possível rodar um único Eitri-App. Acesse o diretório dele e execute:
 
 ```bash
 cd shopping-shopify-template-home
 eitri start
 ```
 
+### Publicação
+
+Para publicar uma nova versão, incremente o `version` no `eitri-app.conf.js` do app e faça push para a `main`. A CI cuida da publicação (veja [docs/ci.md](docs/ci.md)).
+
 ## Configuração — Remote Config
 
-Para utilizar este template, configure as seguintes variáveis no Remote Config da sua aplicação Eitri:
+As configurações da loja ficam no Remote Config da aplicação, acessível pelo [Eitri Console](https://console.eitri.tech). Ele já vem com diversas configurações prontas para uso pelo template: dados de conexão com a Shopify (Storefront API e Customer Account API), URL do CMS e aparência do header.
 
-```json
-{
-	"providerInfo": {
-		"host": "https://my-store.myshopify.com",
-		"storefrontAccessToken": "",
-		"clientId": "",
-		"callbackUrl": "myapp://auth/callback",
-		"apiVersion": "2026-01"
-	}
-}
-```
-
-### Descrição dos campos
-
-| Campo                                | Obrigatório | Descrição                                                                |
-| ------------------------------------ | ----------- | ------------------------------------------------------------------------ |
-| `providerInfo.host`                  | Sim         | URL da loja Shopify                                                      |
-| `providerInfo.storefrontAccessToken` | Sim         | Token da Storefront API — Shopify Admin → Apps → Storefront API          |
-| `providerInfo.clientId`              | Sim         | Client ID da Customer Account API — Shopify Admin → Customer Account API |
-| `providerInfo.callbackUrl`           | Sim         | Deep link de redirect após autenticação OAuth                            |
-| `providerInfo.apiVersion`            | Não         | Versão da Storefront API. Default: `"2026-01"`                           |
-
-#### Escopos necessários para o `clientId`
-
-Ao configurar o cliente na Customer Account API, habilite o escopo `customer_read_customers`. Ele concede acesso ao objeto `Customer`, que contém os dados de pedidos, endereços e perfil usados por este template.
-
-#### Como encontrar o `callbackUrl`
-
-Você pode obter esse valor pelo painel do Shopify Admin, na seção da Customer Account API. Uma alternativa mais rápida é acessar a página de login da loja pelo navegador e inspecionar a URL — ela contém múltiplos parâmetros `redirect_uri`. O valor correto é o que traz uma URL completa (não um caminho relativo).
-
-Exemplo de URL de login (dados fictícios):
-
-```
-https://account.my-store.com/authentication/login
-  ?client_id=a1b2c3d4-e5f6-7890-abcd-ef1234567890
-  &locale=pt-BR
-  &redirect_uri=/authentication/oauth/authorize
-    ?client_id=a1b2c3d4-e5f6-7890-abcd-ef1234567890
-    &locale=pt-BR
-    &nonce=00000000-1111-2222-3333-444444444444
-    &redirect_uri=https%3A%2F%2Faccount.my-store.com%2Fcallback   ← este é o callbackUrl
-    &region_country=BR
-    &response_type=code
-    &scope=openid+email+customer-account-api%3Afull
-    &state=AAAAAAAAAAAAAAAAAAAAAAAAA
-  &region_country=BR
-```
-
-No exemplo acima, o `callbackUrl` é `https://account.my-store.com/callback`.
+A descrição de cada configuração está em [docs/remote-config.md](docs/remote-config.md).
 
 ## Autenticação
 
@@ -135,17 +100,20 @@ O método retorna um objeto `LoginResponse`:
 | `data`    | `object`  | Tokens (presente quando `success: true`)               |
 | `error`   | `string`  | Descrição do erro (presente quando `success: false`)   |
 
-### Variáveis de Remote Config necessárias
+### Remote Config necessário
 
-| Campo                    | Descrição                                              |
-| ------------------------ | ------------------------------------------------------ |
-| `providerInfo.host`      | URL da loja Shopify                                    |
-| `providerInfo.clientId`  | Client ID da Customer Account API                      |
-| `providerInfo.callbackUrl` | Deep link de redirect após a autenticação OAuth      |
+O login usa `providerInfo.host`, `providerInfo.clientId` e `providerInfo.callbackUrl`. Veja [docs/remote-config.md](docs/remote-config.md).
 
 ## Dependências compartilhadas
 
 Todos os apps consomem dois shared apps como base:
 
-- `eitri-shopping-shopify-shared` `v0.3.0` — serviços e integrações com a Shopify API
+- [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared) `v0.3.0` — serviços e integrações com a Shopify API
 - `shopping-shopify-template-shared` `v0.1.3` — componentes e utilitários internos do template
+
+## Documentação
+
+| Documento | Conteúdo |
+| --- | --- |
+| [CI — Publicação automática de versões](docs/ci.md) | Como a pipeline (GitHub Actions e Bitbucket Pipelines) verifica e publica as versões dos Eitri-Apps, e o que é preciso configurar para ela funcionar |
+| [Remote Config](docs/remote-config.md) | Todas as configurações do Remote Config lidas pelo template, com tipo, default e onde cada uma é usada |
