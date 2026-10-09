@@ -15,40 +15,69 @@
   },
   "eitriConfig": {
     "mainApp": "home",
-    "bottomNavItems": [
-      {
-        "slug": "home",
-        "initParams": {
-          "tabIndex": 0
+    "dynamicBottomBar": {
+      "layout": {
+        "theme": "classic",
+        "backgroundColor": "#FFFFFF",
+        "selectedColor": "#373737",
+        "unselectedColor": "#8B8D98",
+        "badgeBackground": "#E5484D",
+        "badgeTextColor": "#FFFFFF",
+        "themeCustomizations": {
+          "classic": {
+            "labels": "shown",
+            "topBorder": {
+              "thickness": 1,
+              "color": "#DBDDE0"
+            }
+          }
         }
       },
-      {
-        "slug": "account",
-        "initParams": {
-          "tabIndex": 1,
-          "route": "Wishlist"
+      "eitriApps": [
+        {
+          "slug": "home",
+          "title": "Início",
+          "icon": "https://media-eitri-content.eitri.tech/default/icon_home_v1.png",
+          "initParams": {
+            "tabIndex": 0
+          }
+        },
+        {
+          "slug": "account",
+          "title": "Favoritos",
+          "icon": "https://media-eitri-content.eitri.tech/default/icon_favorite_v1.png",
+          "initParams": {
+            "tabIndex": 1,
+            "route": "Wishlist"
+          }
+        },
+        {
+          "slug": "home",
+          "title": "Categorias",
+          "icon": "https://media-eitri-content.eitri.tech/default/icon_menu_v1.png",
+          "initParams": {
+            "tabIndex": 2,
+            "route": "Categories"
+          }
+        },
+        {
+          "slug": "account",
+          "title": "Perfil",
+          "icon": "https://media-eitri-content.eitri.tech/default/icon_user_v1.png",
+          "initParams": {
+            "tabIndex": 3
+          }
+        },
+        {
+          "slug": "cart",
+          "title": "Carrinho",
+          "icon": "https://media-eitri-content.eitri.tech/default/icon_cart_v1.png",
+          "initParams": {
+            "tabIndex": 4
+          }
         }
-      },
-      {
-        "slug": "home",
-        "initParams": {
-          "tabIndex": 2,
-          "route": "Categories"
-        }
-      },
-      {
-        "slug": "account",
-        "initParams": {
-          "tabIndex": 3
-        }
-      },
-      {
-        "slug": "cart",
-        "initParams": {
-          "tabIndex": 4
-        }
-      }
-    ]
+      ]
+    }
   },
   "deeplinkResolver": {
     "slug": "deeplink-resolver"
