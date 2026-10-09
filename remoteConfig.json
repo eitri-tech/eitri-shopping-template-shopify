@@ -1,0 +1,56 @@
+{
+  "providerInfo": {
+    "ecommerceProvider": "SHOPIFY",
+    "apiVersion": "2026-01",
+    "host": "www.dlkmodas.com.br",
+    "storefrontAccessToken": "",
+    "cmsUrl": "https://dlk-shopify.eitri.tech/eitri-content/api/shopify-cms-pages",
+    "clientId": "",
+    "callbackUrl": ""
+  },
+  "appConfigs": {
+    "headerLogo": "https://assets.cuponomia.com.br/img/stores/medium/dlk-637849308048486572.png?v4",
+    "statusBarTextColor": "black",
+    "clarityId": ""
+  },
+  "eitriConfig": {
+    "mainApp": "home",
+    "bottomNavItems": [
+      {
+        "slug": "home",
+        "initParams": {
+          "tabIndex": 0
+        }
+      },
+      {
+        "slug": "account",
+        "initParams": {
+          "tabIndex": 1,
+          "route": "Wishlist"
+        }
+      },
+      {
+        "slug": "home",
+        "initParams": {
+          "tabIndex": 2,
+          "route": "Categories"
+        }
+      },
+      {
+        "slug": "account",
+        "initParams": {
+          "tabIndex": 3
+        }
+      },
+      {
+        "slug": "cart",
+        "initParams": {
+          "tabIndex": 4
+        }
+      }
+    ]
+  },
+  "deeplinkResolver": {
+    "slug": "deeplink-resolver"
+  }
+}
