@@ -59,7 +59,7 @@ Na raiz do repositório, execute:
 eitri app start
 ```
 
-Esse comando sobe o app completo, com todos os Eitri-Apps listados em [`app-config.yaml`](app-config.yaml) e a simulação da bottom tab definida no mesmo arquivo.
+Esse comando sobe o app completo, com todos os Eitri-Apps listados em [`app-config.yaml`](app-config.yaml) e a simulação da bottom tab definida no mesmo arquivo. A aparência da bottom bar simulada fica em [`dynamic-bottom-tab-view-spec.json`](dynamic-bottom-tab-view-spec.json).
 
 ### Um Eitri-App isolado
 
