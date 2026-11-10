@@ -52,9 +52,9 @@ Dados de conexão com a loja Shopify.
 | Campo | Obrigatório | Tipo | Descrição | Onde é usado |
 | --- | --- | --- | --- | --- |
 | `host` | Sim | string (URL) | URL da loja Shopify | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared): chamadas à Shopify e login |
-| `storefrontAccessToken` | Sim | string | Token da Storefront API (Shopify Admin → Apps → Storefront API) | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared) |
-| `clientId` | Sim | string | Client ID da Customer Account API (Shopify Admin → Customer Account API) | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared): login OAuth e renovação do token |
-| `callbackUrl` | Sim | string (URL ou deep link) | URL de redirect após a autenticação OAuth | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared): login |
+| `storefrontAccessToken` | Sim | string | **Token de acesso público** da Storefront API, obtido no app headless da loja (veja [README](../README.md#configuração-crítica--app-headless-na-shopify)). **Nunca use o token privado (`shpat_...`).** | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared) |
+| `clientId` | Sim | string | ID do cliente da Customer Account API, obtido no app headless da loja (veja [README](../README.md#configuração-crítica--app-headless-na-shopify)) | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared): login OAuth e renovação do token |
+| `callbackUrl` | Sim | string (URL) | URL de callback do OAuth, obtida na configuração do app headless da loja (veja [README](../README.md#configuração-crítica--app-headless-na-shopify)) | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared): login |
 | `apiVersion` | Não | string | Versão da Storefront API. Default: `"2026-01"` | Lib [`eitri-shopping-shopify-shared`](https://github.com/eitri-tech/eitri-shopping-services-shared/tree/main/eitri-shopping-shopify-shared) |
 | `cmsUrl` | Sim, para ter conteúdo na Home e em Categorias | string (URL) | URL do CMS que fornece as seções das páginas. A resposta deve conter `data.docs[]`, e cada documento tem um `type` (`home` ou `category`) e as suas `sections`. Sem esse campo, a Home e as Categorias ficam sem conteúdo | `shopping-shopify-template-home`: `src/services/cmsService.ts` |
 
@@ -64,7 +64,11 @@ Ao configurar o cliente na Customer Account API, habilite o escopo `customer_rea
 
 ### Como encontrar o `callbackUrl`
 
-Você pode obter esse valor pelo painel do Shopify Admin, na seção da Customer Account API. Uma alternativa mais rápida é acessar a página de login da loja pelo navegador e inspecionar a URL — ela contém múltiplos parâmetros `redirect_uri`. O valor correto é o que traz uma URL completa (não um caminho relativo).
+A forma direta é pelo painel do app headless da loja:
+
+**Shopify Admin → Canais de vendas → Headless → App Eitri → API de conta de cliente → Configuração do app → URL de callback**
+
+Caso o valor não esteja visível nessa tela, uma alternativa é acessar a página de login da loja pelo navegador e inspecionar a URL — ela contém múltiplos parâmetros `redirect_uri`. O valor correto é o que traz uma URL completa (não um caminho relativo).
 
 Exemplo de URL de login (dados fictícios):
 
