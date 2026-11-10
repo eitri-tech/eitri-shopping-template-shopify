@@ -80,6 +80,51 @@ As configurações da loja ficam no Remote Config da aplicação, acessível pel
 
 A descrição de cada configuração está em [docs/remote-config.md](docs/remote-config.md).
 
+## Configuração crítica — App headless na Shopify
+
+Antes de preencher o Remote Config, é necessário criar um app do tipo **Headless** no painel da loja Shopify. Esse app é a fonte dos três campos de credenciais do `providerInfo`.
+
+> **Por que um app headless exclusivo?** A Shopify atribui cada pedido ao canal que gerou o carrinho — que é o app dono do `storefrontAccessToken`. Com um headless próprio, as vendas do app aparecem separadas do site nos relatórios e na lista de pedidos. Reutilizar o token do tema ou de outro canal mistura as vendas irreversivelmente.
+
+### 1. Criar o app headless
+
+No painel do Shopify Admin da loja:
+
+1. No menu lateral, acesse **Canais de vendas > Headless**
+2. Crie uma nova vitrine virtual pelo canal **Headless**
+3. Renomeie para **"App Eitri"** (ou o nome do app da marca)
+
+A URL do app criado será: `admin.shopify.com/store/<loja>/headless/<id>`
+
+### 2. Obter o `storefrontAccessToken`
+
+Na página do app, clique em **Gerenciar** na seção **API Storefront**.
+
+Copie o **Token de acesso público** (hash hexadecimal).
+
+> **Nunca use o token de acesso privado** (começa com `shpat_`). Ele é server-side only e não deve ser exposto no app.
+
+Cole o valor em `providerInfo.storefrontAccessToken` no Remote Config.
+
+### 3. Obter o `clientId` e o `callbackUrl`
+
+Na página do app, clique em **Gerenciar** na seção **API de conta de cliente**.
+
+| Seção na página | Campo | Remote Config |
+| --- | --- | --- |
+| **Credenciais da API de Conta de Cliente** | ID do cliente | `providerInfo.clientId` |
+| **Configuração do app** | URL de callback | `providerInfo.callbackUrl` |
+
+### Resumo — origem de cada credencial
+
+| Remote Config | Origem no painel Shopify |
+| --- | --- |
+| `providerInfo.storefrontAccessToken` | App headless → API Storefront → Token de acesso **público** |
+| `providerInfo.clientId` | App headless → API de conta de cliente → Credenciais → ID do cliente |
+| `providerInfo.callbackUrl` | App headless → API de conta de cliente → Configuração do app → URL de callback |
+
+---
+
 ## Autenticação
 
 O login do cliente é realizado via **OAuth 2.0 com PKCE** através da Shopify Customer Account API, utilizando o método `Shopify.customer.auth.login()` do SDK.
